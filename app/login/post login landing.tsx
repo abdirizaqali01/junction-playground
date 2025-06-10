@@ -4,12 +4,10 @@ import { useState, useEffect } from 'react'
 import { Footer } from "@/components/footer"
 import { JunctionLogo } from '@/components/logo'
 
-
 // Logo component placeholder (Logo 1 - colorful circle)
 const Logo = () => (
   <div className="w-12 h-12 bg-gradient-to-br from-purple-500 via-blue-500 to-green-500 rounded-full"></div>
 )
-
 
 interface Event {
   id: number
@@ -22,42 +20,95 @@ interface Event {
   status: 'upcoming' | 'past'
 }
 
+interface DashboardData {
+  sidebar: {
+    navigation: {
+      events: {
+        title: string
+        yourEvents: string
+        organizeEvent: string
+      }
+      profile: string
+      logOut: string
+    }
+  }
+  upcomingEvents: {
+    title: string
+    subtitle: string
+  }
+  pastEvents: {
+    title: string
+  }
+  eventActions: {
+    seeMore: string
+    submittedProjects: string
+  }
+  events: Event[]
+}
+
 export default function DashboardPage() {
   const [sidebarWidth, setSidebarWidth] = useState(256) // 256px = w-64
   const [isResizing, setIsResizing] = useState(false)
   
-  const [events] = useState<Event[]>([
-    {
-      id: 1,
-      title: 'JunctionX ITP Prizren',
-      description: '🚀 Welcome to JunctionX ITP Prizren - where innovation meets impact!\n\n⚡ Happening for the FIRST TIME in Kosovo, JunctionX ITP Prizren is not your typical hackathon - it\'s a 48-hour tech showdown powered by AI and Cybersecurity, lighting up the Digital Skills Festival on May 21-23, 2025, at ITP Prizren!',
-      date: 'MAY 21, 2025',
-      location: 'PRIZREN, KOSOVO',
-      prize: '',
-      image: '/api/placeholder/300/200',
-      status: 'upcoming'
+  // Static data dictionary - backend team can replace with API calls
+  const dashboardData: DashboardData = {
+    sidebar: {
+      navigation: {
+        events: {
+          title: "Events",
+          yourEvents: "Your events",
+          organizeEvent: "Organize event"
+        },
+        profile: "Profile",
+        logOut: "Log Out"
+      }
     },
-    {
-      id: 2,
-      title: 'JunctionX ITP Prizren',
-      description: '🚀 Welcome to JunctionX ITP Prizren - where innovation meets impact!\n\n⚡ Happening for the FIRST TIME in Kosovo, JunctionX ITP Prizren is not your typical hackathon - it\'s a 48-hour tech showdown powered by AI and Cybersecurity, lighting up the Digital Skills Festival on May 21-23, 2025, at ITP Prizren!',
-      date: 'MAY 21, 2025',
-      location: 'PRIZREN, KOSOVO',
-      prize: '',
-      image: '/api/placeholder/300/200',
-      status: 'upcoming'
+    upcomingEvents: {
+      title: "Upcoming events",
+      subtitle: "You have registered to these events"
     },
-    {
-      id: 3,
-      title: 'JunctionX ITP Prizren',
-      description: '🚀 Welcome to JunctionX ITP Prizren - where innovation meets impact!\n\n⚡ Happening for the FIRST TIME in Kosovo, JunctionX ITP Prizren is not your typical hackathon - it\'s a 48-hour tech showdown powered by AI and Cybersecurity, lighting up the Digital Skills Festival on May 21-23, 2025, at ITP Prizren!',
-      date: 'MAY 21, 2025',
-      location: 'PRIZREN, KOSOVO',
-      prize: '',
-      image: '/api/placeholder/300/200',
-      status: 'upcoming'
-    }
-  ])
+    pastEvents: {
+      title: "Past events"
+    },
+    eventActions: {
+      seeMore: "See more",
+      submittedProjects: "Submitted projects"
+    },
+    events: [
+      {
+        id: 1,
+        title: 'JunctionX ITP Prizren',
+        description: '🚀 Welcome to JunctionX ITP Prizren - where innovation meets impact!\n\n⚡ Happening for the FIRST TIME in Kosovo, JunctionX ITP Prizren is not your typical hackathon - it\'s a 48-hour tech showdown powered by AI and Cybersecurity, lighting up the Digital Skills Festival on May 21-23, 2025, at ITP Prizren!',
+        date: 'MAY 21, 2025',
+        location: 'PRIZREN, KOSOVO',
+        prize: '',
+        image: '/api/placeholder/300/200',
+        status: 'upcoming'
+      },
+      {
+        id: 2,
+        title: 'JunctionX ITP Prizren',
+        description: '🚀 Welcome to JunctionX ITP Prizren - where innovation meets impact!\n\n⚡ Happening for the FIRST TIME in Kosovo, JunctionX ITP Prizren is not your typical hackathon - it\'s a 48-hour tech showdown powered by AI and Cybersecurity, lighting up the Digital Skills Festival on May 21-23, 2025, at ITP Prizren!',
+        date: 'MAY 21, 2025',
+        location: 'PRIZREN, KOSOVO',
+        prize: '',
+        image: '/api/placeholder/300/200',
+        status: 'upcoming'
+      },
+      {
+        id: 3,
+        title: 'JunctionX ITP Prizren',
+        description: '🚀 Welcome to JunctionX ITP Prizren - where innovation meets impact!\n\n⚡ Happening for the FIRST TIME in Kosovo, JunctionX ITP Prizren is not your typical hackathon - it\'s a 48-hour tech showdown powered by AI and Cybersecurity, lighting up the Digital Skills Festival on May 21-23, 2025, at ITP Prizren!',
+        date: 'MAY 21, 2025',
+        location: 'PRIZREN, KOSOVO',
+        prize: '',
+        image: '/api/placeholder/300/200',
+        status: 'upcoming'
+      }
+    ]
+  }
+
+  const [events] = useState<Event[]>(dashboardData.events)
 
   const upcomingEvents = events.filter(event => event.status === 'upcoming')
   const pastEvents = events.filter(event => event.status === 'past').length > 0 
@@ -112,16 +163,16 @@ export default function DashboardPage() {
             {/* Navigation */}
             <nav className="space-y-6">
               <div>
-                <h3 className="text-white font-['Space_Grotesk'] font-medium mb-3">Events</h3>
+                <h3 className="text-white font-['Space_Grotesk'] font-medium mb-3">{dashboardData.sidebar.navigation.events.title}</h3>
                 <div className="space-y-2 ml-4">
-                  <a href="#" className="block text-white/60 hover:text-white text-sm font-['Inter'] transition-colors">Your events</a>
-                  <a href="#" className="block text-white/60 hover:text-white text-sm font-['Inter'] transition-colors">Organize event</a>
+                  <a href="#" className="block text-white/60 hover:text-white text-sm font-['Inter'] transition-colors">{dashboardData.sidebar.navigation.events.yourEvents}</a>
+                  <a href="#" className="block text-white/60 hover:text-white text-sm font-['Inter'] transition-colors">{dashboardData.sidebar.navigation.events.organizeEvent}</a>
                 </div>
               </div>
               
               <div className="space-y-2">
-                <a href="#" className="block text-white/60 hover:text-white text-sm font-['Inter'] transition-colors">Profile</a>
-                <a href="#" className="block text-white/60 hover:text-white text-sm font-['Inter'] transition-colors">Log Out</a>
+                <a href="#" className="block text-white/60 hover:text-white text-sm font-['Inter'] transition-colors">{dashboardData.sidebar.navigation.profile}</a>
+                <a href="#" className="block text-white/60 hover:text-white text-sm font-['Inter'] transition-colors">{dashboardData.sidebar.navigation.logOut}</a>
               </div>
             </nav>
           </div>
@@ -154,8 +205,8 @@ export default function DashboardPage() {
             {/* Upcoming Events Section */}
             <div className="mb-16">
               <div className="text-center mb-8">
-                <h1 className="text-4xl font-['Space_Grotesk'] font-bold text-white mb-2">Upcoming events</h1>
-                <p className="text-white/60 text-sm font-['Inter']">You have registered to these events</p>
+                <h1 className="text-4xl font-['Space_Grotesk'] font-bold text-white mb-2">{dashboardData.upcomingEvents.title}</h1>
+                <p className="text-white/60 text-sm font-['Inter']">{dashboardData.upcomingEvents.subtitle}</p>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
@@ -183,10 +234,10 @@ export default function DashboardPage() {
                       
                       <div className="flex justify-between items-center">
                         <button className="text-green-300/80 hover:text-green-300 text-sm font-['Space_Mono'] transition-colors">
-                          See more
+                          {dashboardData.eventActions.seeMore}
                         </button>
                         <button className="text-green-300/80 hover:text-green-300 text-sm font-['Space_Mono'] transition-colors">
-                          Submitted projects
+                          {dashboardData.eventActions.submittedProjects}
                         </button>
                       </div>
                     </div>
@@ -198,7 +249,7 @@ export default function DashboardPage() {
             {/* Past Events Section */}
             <div>
               <div className="text-center mb-8">
-                <h2 className="text-4xl font-['Space_Grotesk'] font-bold text-white">Past events</h2>
+                <h2 className="text-4xl font-['Space_Grotesk'] font-bold text-white">{dashboardData.pastEvents.title}</h2>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
@@ -226,10 +277,10 @@ export default function DashboardPage() {
                       
                       <div className="flex justify-between items-center">
                         <button className="text-green-300/80 hover:text-green-300 text-sm font-['Space_Mono'] transition-colors">
-                          See more
+                          {dashboardData.eventActions.seeMore}
                         </button>
                         <button className="text-green-300/80 hover:text-green-300 text-sm font-['Space_Mono'] transition-colors">
-                          Submitted projects
+                          {dashboardData.eventActions.submittedProjects}
                         </button>
                       </div>
                     </div>

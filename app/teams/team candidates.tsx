@@ -11,29 +11,52 @@ interface Candidate {
   avatar?: string
 }
 
+interface TeamCandidatesData {
+  pageTitle: string
+  navigationTabs: {
+    all: string
+    my: string
+    candidates: string
+    challenges: string
+  }
+  candidates: Candidate[]
+  emptyStateMessage: string
+}
+
 export default function TeamCandidatesPage() {
   const [activeTab, setActiveTab] = useState<'all' | 'my' | 'candidates'>('candidates')
   
-  const candidates: Candidate[] = [
-    {
-      id: 1,
-      name: 'John Smith',
-      appliedFor: ['Role name'],
-      avatar: ''
+  // Static data dictionary - backend team can replace with API calls
+  const teamCandidatesData: TeamCandidatesData = {
+    pageTitle: "Team Candidates",
+    navigationTabs: {
+      all: "ALL TEAMS",
+      my: "MY TEAM", 
+      candidates: "TEAM CANDIDATES",
+      challenges: "ALL CHALLENGES"
     },
-    {
-      id: 2,
-      name: 'Sarah Johnson',
-      appliedFor: ['Frontend Developer', 'UI Designer'],
-      avatar: ''
-    },
-    {
-      id: 3,
-      name: 'Mike Chen',
-      appliedFor: ['Backend Developer'],
-      avatar: ''
-    }
-  ]
+    candidates: [
+      {
+        id: 1,
+        name: 'John Smith',
+        appliedFor: ['Role name'],
+        avatar: ''
+      },
+      {
+        id: 2,
+        name: 'Sarah Johnson',
+        appliedFor: ['Frontend Developer', 'UI Designer'],
+        avatar: ''
+      },
+      {
+        id: 3,
+        name: 'Mike Chen',
+        appliedFor: ['Backend Developer'],
+        avatar: ''
+      }
+    ],
+    emptyStateMessage: "No candidates available"
+  }
 
   const handleAccept = (candidateId: number) => {
     console.log('Accept candidate:', candidateId)
@@ -76,7 +99,7 @@ export default function TeamCandidatesPage() {
                   : 'text-white/60 hover:text-white/80'
               }`}
             >
-              ALL TEAMS
+              {teamCandidatesData.navigationTabs.all}
             </button>
             <button 
               onClick={() => setActiveTab('my')}
@@ -86,7 +109,7 @@ export default function TeamCandidatesPage() {
                   : 'text-white/60 hover:text-white/80'
               }`}
             >
-              MY TEAM
+              {teamCandidatesData.navigationTabs.my}
             </button>
             <button 
               onClick={() => setActiveTab('candidates')}
@@ -96,14 +119,14 @@ export default function TeamCandidatesPage() {
                   : 'text-white/60 hover:text-white/80'
               }`}
             >
-              TEAM CANDIDATES
+              {teamCandidatesData.navigationTabs.candidates}
             </button>
           </div>
           
           {/* Right Navigation */}
           <div>
             <button className="text-xs font-['Space_Mono'] font-medium tracking-wider text-white/60 hover:text-white/80 transition-colors">
-              ALL CHALLENGES
+              {teamCandidatesData.navigationTabs.challenges}
             </button>
           </div>
         </div>
@@ -112,13 +135,13 @@ export default function TeamCandidatesPage() {
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Page Title */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-['Space_Grotesk'] font-bold text-white">Team Candidates</h1>
+          <h1 className="text-4xl font-['Space_Grotesk'] font-bold text-white">{teamCandidatesData.pageTitle}</h1>
         </div>
 
         {/* Candidates Grid or Empty State */}
-        {candidates.length > 0 ? (
+        {teamCandidatesData.candidates.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {candidates.map((candidate) => (
+            {teamCandidatesData.candidates.map((candidate) => (
               <div key={candidate.id} className="bg-white/5 border border-white/10 rounded-2xl p-8 flex flex-col">
                 {/* Candidate Header */}
                 <div className="flex items-center space-x-4 mb-8">
@@ -176,7 +199,7 @@ export default function TeamCandidatesPage() {
           </div>
         ) : (
           <div className="text-center py-24">
-            <p className="text-white/60 text-lg font-['Inter']">No candidates available</p>
+            <p className="text-white/60 text-lg font-['Inter']">{teamCandidatesData.emptyStateMessage}</p>
           </div>
         )}
       </div>

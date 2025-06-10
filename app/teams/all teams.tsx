@@ -12,30 +12,63 @@ interface TeamCard {
   availableRoles: string[]
 }
 
+interface TeamManagementData {
+  pageTitle: string
+  navigationTabs: {
+    all: string
+    my: string
+    candidates: string
+    challenges: string
+  }
+  joinTeamButton: string
+  teams: TeamCard[]
+  emptyStateMessage: string
+  labels: {
+    workingOn: string
+    availableRoles: string
+  }
+}
+
 export default function TeamManagementPage() {
   const [activeTab, setActiveTab] = useState<'all' | 'my' | 'candidates'>('all')
   
-  const teams: TeamCard[] = [
-    {
-      id: 1,
-      name: 'Name of team',
-      type: 'available',
-      availableRoles: ['Role name']
+  // Static data dictionary - backend team can replace with API calls
+  const teamManagementData: TeamManagementData = {
+    pageTitle: "Team management",
+    navigationTabs: {
+      all: "ALL TEAMS",
+      my: "MY TEAM",
+      candidates: "TEAM CANDIDATES",
+      challenges: "ALL CHALLENGES"
     },
-    {
-      id: 2,
-      name: 'Name of team',
-      type: 'working',
-      description: 'Description of project.',
-      availableRoles: ['Role name']
-    },
-    {
-      id: 3,
-      name: 'Name of team',
-      type: 'available',
-      availableRoles: ['Role name']
+    joinTeamButton: "Join a team using a code",
+    teams: [
+      {
+        id: 1,
+        name: 'Name of team',
+        type: 'available',
+        availableRoles: ['Role name']
+      },
+      {
+        id: 2,
+        name: 'Name of team',
+        type: 'working',
+        description: 'Description of project.',
+        availableRoles: ['Role name']
+      },
+      {
+        id: 3,
+        name: 'Name of team',
+        type: 'available',
+        availableRoles: ['Role name']
+      }
+    ],
+    emptyStateMessage: "No teams available",
+    labels: {
+      workingOn: "Working on",
+      availableRoles: "Available roles"
     }
-  ]
+  }
 
   return (
     <div className="min-h-screen bg-black text-white font-['Inter']">
@@ -66,7 +99,7 @@ export default function TeamManagementPage() {
                   : 'text-white/60 hover:text-white/80'
               }`}
             >
-              ALL TEAMS
+              {teamManagementData.navigationTabs.all}
             </button>
             <button 
               onClick={() => setActiveTab('my')}
@@ -76,7 +109,7 @@ export default function TeamManagementPage() {
                   : 'text-white/60 hover:text-white/80'
               }`}
             >
-              MY TEAM
+              {teamManagementData.navigationTabs.my}
             </button>
             <button 
               onClick={() => setActiveTab('candidates')}
@@ -86,25 +119,25 @@ export default function TeamManagementPage() {
                   : 'text-white/60 hover:text-white/80'
               }`}
             >
-              TEAM CANDIDATES
+              {teamManagementData.navigationTabs.candidates}
             </button>
           </div>
           
           {/* Right Navigation */}
           <div>
             <button className="text-xs font-['Space_Mono'] font-medium tracking-wider text-white/60 hover:text-white/80 transition-colors">
-              ALL CHALLENGES
+              {teamManagementData.navigationTabs.challenges}
             </button>
           </div>
         </div>
       </div>
 
       {/* Join Team Button - Only shown when no teams */}
-      {teams.length === 0 && (
+      {teamManagementData.teams.length === 0 && (
         <div className="bg-black">
           <div className="container mx-auto px-6 py-4">
             <button className="px-4 py-2 border border-green-600/40 text-white text-sm font-['Space_Mono'] rounded-full hover:bg-green-600/10 transition-colors">
-              Join a team using a code
+              {teamManagementData.joinTeamButton}
             </button>
           </div>
         </div>
@@ -113,13 +146,13 @@ export default function TeamManagementPage() {
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Page Title */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-['Space_Grotesk'] font-bold text-white">Team management</h1>
+          <h1 className="text-4xl font-['Space_Grotesk'] font-bold text-white">{teamManagementData.pageTitle}</h1>
         </div>
 
         {/* Team Cards Grid or Empty State */}
-        {teams.length > 0 ? (
+        {teamManagementData.teams.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {teams.map((team) => (
+            {teamManagementData.teams.map((team) => (
               <div key={team.id} className="bg-white/5 border border-white/10 rounded-lg overflow-hidden">
                 {/* Card Header with Muted Gradient */}
                 <div className="h-24 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-500"></div>
@@ -131,14 +164,14 @@ export default function TeamManagementPage() {
                   {/* Working On Section (only for working teams) */}
                   {team.type === 'working' && team.description && (
                     <div className="mb-4">
-                      <p className="text-white/60 text-sm font-['Inter'] mb-2">Working on</p>
+                      <p className="text-white/60 text-sm font-['Inter'] mb-2">{teamManagementData.labels.workingOn}</p>
                       <p className="text-white/80 text-sm font-['Inter']">{team.description}</p>
                     </div>
                   )}
                   
                   {/* Available Roles Section */}
                   <div className="mb-6">
-                    <p className="text-white/60 text-sm font-['Inter'] mb-3">Available roles</p>
+                    <p className="text-white/60 text-sm font-['Inter'] mb-3">{teamManagementData.labels.availableRoles}</p>
                     <div className="flex flex-wrap gap-2">
                       {team.availableRoles.map((role, index) => (
                         <button
@@ -156,7 +189,7 @@ export default function TeamManagementPage() {
           </div>
         ) : (
           <div className="text-center py-24">
-            <p className="text-white/60 text-lg font-['Inter']">No teams available</p>
+            <p className="text-white/60 text-lg font-['Inter']">{teamManagementData.emptyStateMessage}</p>
           </div>
         )}
       </div>
