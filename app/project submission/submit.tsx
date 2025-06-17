@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Footer } from '@/components/footer'
 import { ArrowLeft, Upload, Play, Plus, X, Users, Code, Trophy } from 'lucide-react'
 
