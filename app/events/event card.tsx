@@ -7,31 +7,46 @@ import { Footer } from "@/components/footer"
 export default function EventsPage() {
   return (
     <div className="min-h-screen bg-black text-white font-sans">
-      {/* Top Bar - Fixed Header with Backdrop Blur */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-gray-800">
-        <div className="container mx-auto px-6 py-3 flex items-center justify-between">
-          {/* Logo */}
-          <JunctionLogo />
-          
-          {/* Navigation - Single Bar with 3 Tabs */}
-          <div className="flex items-center bg-gray-900/30 border border-gray-800/50 rounded-lg p-1">
-            <button className="px-6 py-2 text-gray-400 hover:text-white text-sm transition-colors rounded-md">
-              Dashboard
-            </button>
-            <button className="px-6 py-2 bg-green-500/90 text-white text-sm font-medium rounded-md">
-              Events
-            </button>
-            <button className="px-6 py-2 text-gray-400 hover:text-white text-sm transition-colors rounded-md">
-              Community
-            </button>
-          </div>
-          
-          {/* Profile */}
-          <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-            <span className="text-white text-sm font-bold">JU</span>
-          </div>
-        </div>
-      </div>
+{/* Header */}
+<header className="border-b border-zinc-800 px-6 py-4 fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md">
+  <div className="max-w-7xl mx-auto flex items-center justify-between">
+    {/* Logo */}
+    <JunctionLogo />
+    
+    {/* Navigation Tabs */}
+    <div className="flex items-center border border-zinc-700 rounded-2xl p-1">
+      {['Dashboard', 'Events', 'Community'].map((tab) => {
+        const isActive = tab === 'Events' // hardcoded active tab
+        return (
+          <button
+            key={tab}
+            className={`px-8 py-3 text-sm rounded-xl transition-all duration-500 ease-in-out min-w-[120px] relative
+              ${isActive
+                ? 'text-emerald-400 bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent border border-transparent'
+                : tab === 'Events'
+                ? 'text-emerald-400 hover:text-emerald-300'
+                : 'text-zinc-500 hover:text-zinc-300'}
+            `}
+            style={isActive ? {
+              background: 'linear-gradient(90deg, rgba(16,185,129,0) 0%, rgba(16,185,129,0.1) 50%, rgba(16,185,129,0) 100%)',
+              border: '1px solid transparent',
+              backgroundClip: 'padding-box',
+              boxShadow: 'inset 0 0 0 1px rgba(16,185,129,0.8), inset 0 0 0 2px rgba(16,185,129,0.4), inset 0 0 0 3px rgba(16,185,129,0.1)'
+            } : {}}
+          >
+            {tab}
+          </button>
+        )
+      })}
+    </div>
+    
+    {/* Profile Avatar */}
+    <div className="w-10 h-10 bg-emerald-400 rounded-full flex items-center justify-center text-black font-semibold text-sm">
+      JM
+    </div>
+  </div>
+</header>
+
 
       {/* Content with top padding to account for fixed header */}
       <div className="pt-20">
