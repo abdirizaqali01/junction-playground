@@ -1,7 +1,7 @@
 'use client'
 
 import { Footer } from "@/components/footer"
-import Navbar from '@/components/navbar' // Import the navbar component
+import Navbar from "@/components/navi"
 import React, { useState } from 'react'
 
 export default function EventsListingPage() {
@@ -120,7 +120,7 @@ export default function EventsListingPage() {
 
   return (
     <div className="min-h-screen bg-black text-white font-sans">
-      {/* Header using imported Navbar component */}
+      {/* Header using Navbar component */}
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />
 
       {/* Content */}
