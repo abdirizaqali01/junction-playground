@@ -4,11 +4,6 @@ import { useState, useEffect } from 'react'
 import { Footer } from "@/components/footer"
 import { JunctionLogo } from '@/components/logo'
 
-// Logo component placeholder (Logo 1 - colorful circle)
-const Logo = () => (
-  <div className="w-12 h-12 bg-gradient-to-br from-purple-500 via-blue-500 to-green-500 rounded-full"></div>
-)
-
 interface ProfileData {
   sidebar: {
     navigation: {
@@ -232,7 +227,7 @@ export default function ProfilePage() {
           <div className="p-6">
             {/* Logo 1 in sidebar */}
             <div className="mb-8">
-              <Logo />
+              <JunctionLogo />
             </div>
             
             {/* Splitting line above Events */}

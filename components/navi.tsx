@@ -16,15 +16,15 @@ export default function Navbar({ activeTab, setActiveTab, tabs = ['Dashboard', '
         {/* Logo */}
         <JunctionLogo />
         
-        {/* Navigation Tabs */}
-        <div className="flex items-center border border-zinc-700 rounded-2xl p-1">
+        {/* Navigation Tabs with regular rounded corners */}
+        <div className="flex items-center border border-zinc-700 rounded-xl p-1">
           {tabs.map((tab) => {
             const isActive = activeTab === tab
             return (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-8 py-3 text-sm rounded-xl transition-all duration-500 ease-in-out min-w-[120px] relative
+                className={`px-8 py-3 text-sm rounded-lg transition-all duration-500 ease-in-out min-w-[120px] relative
                   ${isActive
                     ? 'text-white bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent border border-transparent'
                     : tab === 'Events'

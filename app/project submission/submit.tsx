@@ -403,18 +403,24 @@ export default function ProjectSubmissionPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
             <button
               type="button"
-              className="flex items-center justify-center space-x-2 bg-white/5 hover:bg-white/10 border border-white/20 rounded-lg px-6 py-4 transition-colors font-['Space_Mono']"
+              className="flex flex-col items-center justify-center space-y-1 bg-white/5 hover:bg-white/10 border border-white/20 rounded-lg px-6 py-4 transition-colors font-['Space_Mono']"
             >
-              <Play className="w-5 h-5" />
-              <span>{projectSubmissionData.actionButtons.demo}</span>
+              <div className="flex items-center space-x-2">
+                <Play className="w-5 h-5" />
+                <span>{projectSubmissionData.actionButtons.demo}</span>
+              </div>
+              <span className="text-xs text-white/60 font-['Inter']">Working demo of product</span>
             </button>
             
             <button
               type="button"
-              className="flex items-center justify-center space-x-2 bg-white/5 hover:bg-white/10 border border-white/20 rounded-lg px-6 py-4 transition-colors font-['Space_Mono']"
+              className="flex flex-col items-center justify-center space-y-1 bg-white/5 hover:bg-white/10 border border-white/20 rounded-lg px-6 py-4 transition-colors font-['Space_Mono']"
             >
-              <Code className="w-5 h-5" />
-              <span>{projectSubmissionData.actionButtons.sourceCode}</span>
+              <div className="flex items-center space-x-2">
+                <Code className="w-5 h-5" />
+                <span>{projectSubmissionData.actionButtons.sourceCode}</span>
+              </div>
+              <span className="text-xs text-white/60 font-['Inter']">Link to GitHub repository</span>
             </button>
             
             <button
