@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 interface NavigationItem {
   id: string
@@ -47,6 +48,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const [sidebarState, setSidebarState] = useState<SidebarState>('expanded')
   const [lastClickTime, setLastClickTime] = useState(0)
+  const router = useRouter()
   
   const handleSidebarToggle = () => {
     const currentTime = Date.now()
@@ -62,6 +64,19 @@ export default function Sidebar({
       }
     }
     setLastClickTime(currentTime)
+  }
+
+  const handleNavigation = (href: string, id: string) => {
+    // Map specific navigation items to their routes
+    const routeMap: { [key: string]: string } = {
+      'dashboard': '/dash',
+      'challenges': '/challenges',
+      'team': '/teams',
+      'hackerpack': '/hackerpack'
+    }
+
+    const route = routeMap[id.toLowerCase()] || href
+    router.push(route)
   }
 
   const defaultImagePlaceholder = (
@@ -119,10 +134,10 @@ export default function Sidebar({
             )}
             
             {section.items.map((item) => (
-              <a 
+              <button 
                 key={item.id}
-                href={item.href} 
-                className={`flex items-center px-3 py-2 text-sm rounded mb-1 transition-colors ${
+                onClick={() => handleNavigation(item.href, item.id)}
+                className={`w-full flex items-center px-3 py-2 text-sm rounded mb-1 transition-colors text-left ${
                   item.isActive 
                     ? 'text-white bg-white/20' 
                     : 'text-white/60 hover:text-white hover:bg-white/10'
@@ -133,7 +148,7 @@ export default function Sidebar({
                   {item.icon}
                 </div>
                 {sidebarState === 'expanded' && item.label}
-              </a>
+              </button>
             ))}
           </div>
         ))}
