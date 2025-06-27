@@ -168,8 +168,17 @@ export default function EventsListingPage() {
                           className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
                         />
 
+                        
+                        
+                      </div>
+                      
+                      {/* Card Content */}
+                      <div className="p-4">
+                        {/* Event Details - Stacked */}
+                        
                         {/* Event Name Overlay - Bottom Left */}
-                        <div className="absolute bottom-3 left-3 right-3">
+                        <div className="space-y-2 mb-4">
+                        <div className="">
                           <h3 className="text-white text-lg font-bold mb-2">{event.name}</h3>
                           
                           {/* Tags Row */}
@@ -186,12 +195,7 @@ export default function EventsListingPage() {
                             )}
                           </div>
                         </div>
-                      </div>
-                      
-                      {/* Card Content */}
-                      <div className="p-4">
-                        {/* Event Details - Stacked */}
-                        <div className="space-y-2 mb-4">
+
                           <div className="flex items-center space-x-2">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400">
                               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
