@@ -1,346 +1,325 @@
 'use client'
 
 import { useState } from 'react'
-import { Footer } from '@/components/footer'
-import { JunctionLogo } from '@/components/logo'
+import { useRouter } from 'next/navigation'
+import Sidebar from '@/components/sidebar'
+import { Footer } from "@/components/footer"
 
-interface TeamMember {
-  id: number
-  name: string
-  role: string
-  avatar: string
-}
-
-const TEAM_DATA = {
-  navigation: {
-    tabs: { all: "ALL TEAMS", my: "MY TEAM", candidates: "TEAM CANDIDATES", challenges: "ALL CHALLENGES" }
+// Define your navigation data for sidebar
+const navigationSections = [
+  {
+    id: 'general',
+    title: 'General',
+    items: [
+      {
+        id: 'dashboard',
+        label: 'Dashboard',
+        href: '#',
+        icon: (
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 4a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V4.5A.5.5 0 0 1 8 4zM3.732 5.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707zM2 10a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 10zm9.5 0a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5zm.754-4.246a.389.389 0 0 0-.527-.02L7.547 9.31a.91.91 0 1 0 1.302 1.258l3.434-4.297a.389.389 0 0 0-.029-.518z"/>
+          </svg>
+        )
+      },
+      {
+        id: 'challenges',
+        label: 'Challenges',
+        href: '#',
+        icon: (
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z"/>
+          </svg>
+        )
+      },
+      {
+        id: 'team',
+        label: 'Team',
+        href: '#',
+        isActive: true,
+        icon: (
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+            <path fillRule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 h4.216z"/>
+          </svg>
+        )
+      },
+      {
+        id: 'hackerpack',
+        label: 'Hackerpack',
+        href: '#',
+        icon: (
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5z"/>
+          </svg>
+        )
+      }
+    ]
   },
-  team: {
-    name: "Name of team",
-    code: "TEAM CODE",
-    description: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.",
-    roles: ["Role name", "Role name", "Role name"],
-    members: [{ id: 1, name: 'John Smith', role: 'Role', avatar: '' }]
-  },
-  noTeam: {
-    message: "It seems like you don't have a team yet. Here you can create a new team or join already existing one.",
-    joinText: "Join an existing team",
-    createText: "Create a new team"
-  },
-  join: {
-    title: "Join a team using a code",
-    description: "If one of your team members has already created a team, all you need to do is fill in the team code here.",
-    placeholder: "Your team code here"
-  },
-  create: {
-    title: "Create a new team",
-    subtitle: "Fields marked with * are required"
-  },
-  sections: {
-    teamCode: "TEAM CODE",
-    availableRoles: "Available roles", 
-    teamMembers: "Team members"
-  },
-  actions: { edit: "EDIT", delete: "DELETE THE TEAM", seeMore: "See more" },
-  deleteModal: {
-    title: "Delete Team",
-    message: "Are you sure you want to delete this team? This action cannot be undone.",
-    confirm: "Delete",
-    cancel: "Cancel"
+  {
+    id: 'in-progress',
+    title: 'In Progress',
+    items: [
+      {
+        id: 'project-submission',
+        label: 'Project Submission',
+        href: '#',
+        icon: (
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          </svg>
+        )
+      },
+      {
+        id: 'meetings',
+        label: 'Meetings',
+        href: '#',
+        icon: (
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
+          </svg>
+        )
+      },
+      {
+        id: 'review-projects',
+        label: 'Review Projects',
+        href: '#',
+        icon: (
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
+          </svg>
+        )
+      },
+      {
+        id: 'finalist-voting',
+        label: 'Finalist Voting',
+        href: '#',
+        icon: (
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+          </svg>
+        )
+      }
+    ]
   }
-}
-
-const FORM_FIELDS = [
-  { key: 'teamName', label: 'Team name *', placeholder: 'Awesome team', description: 'Write a name for your team' },
-  { key: 'challenge', label: 'Challenge', placeholder: 'Select challenge', type: 'select', description: 'Select one of the challenges' },
-  { key: 'subtitle', label: 'Subtitle', placeholder: 'Solving problems with code', description: 'Write a subtitle for your team' },
-  { key: 'briefDescription', label: 'Brief description about your team', placeholder: 'Our team is...', type: 'textarea', description: 'Share what your team is about' },
-  { key: 'ideaTitle', label: 'Title of the idea explored by your team', placeholder: 'Great idea 1.0', description: 'Write a title for your idea' },
-  { key: 'ideaExplanation', label: 'Brief explanation of the idea explored by your team', placeholder: 'Our team is working on...', type: 'textarea', description: 'Explain your idea in a few sentences' },
-  { key: 'availableRoles', label: 'Available roles in your team (optional)', placeholder: 'Select...', type: 'select' },
-  { key: 'contactEmail', label: "Team's contact email", placeholder: 'team.email@email.com', type: 'email', description: 'Your team must have at least an email, a slack, discord or a telegram channel' },
-  { key: 'slack', label: "Team's Slack", placeholder: "Your team's Slack" },
-  { key: 'telegram', label: "Team's Telegram", placeholder: "Your team's Telegram" },
-  { key: 'discord', label: "Team's Discord", placeholder: "Your team's Discord" }
 ]
 
-const DEFAULT_FORM = Object.fromEntries(FORM_FIELDS.map(f => [f.key, '']))
+const userProfile = {
+  name: 'Junction Hack',
+  email: 'ju@hackjunction.com',
+  initials: 'JU',
+  avatarColor: 'bg-green-600'
+}
 
-export default function TeamAdminPage() {
-  const [activeTab, setActiveTab] = useState<'all' | 'my' | 'candidates'>('my')
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const [showJoinForm, setShowJoinForm] = useState(false)
-  const [showCreateForm, setShowCreateForm] = useState(false)
-  const [teamCode, setTeamCode] = useState('')
-  const [createFormData, setCreateFormData] = useState(DEFAULT_FORM)
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(TEAM_DATA.team.members)
-  const [hasTeam, setHasTeam] = useState(false)
+export default function MyTeamPage() {
+  const [activeTab, setActiveTab] = useState('my-team')
+  const [hasTeam, setHasTeam] = useState(true) // Change to false to see empty state
+  const router = useRouter()
 
-  const handleFormChange = (key: string, value: string) => {
-    setCreateFormData(prev => ({ ...prev, [key]: value }))
+  // Mock team data
+  const teamData = {
+    name: "Team Name",
+    code: "TEAM CODE",
+    description: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores! Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.",
+    availableRoles: ["Role name", "Role name", "Role name"],
+    members: [
+      {
+        id: 1,
+        name: "John Smith",
+        role: "Role",
+        avatar: null
+      }
+    ]
   }
 
-  const renderFormField = (field: typeof FORM_FIELDS[0]) => {
-    const baseClass = "w-full text-white font-['Inter'] placeholder-white/40 focus:outline-none focus:border-green-300/50"
-    const value = createFormData[field.key]
-    
-    if (field.type === 'textarea') {
-      return (
-        <textarea
-          rows={4}
-          value={value}
-          onChange={(e) => handleFormChange(field.key, e.target.value)}
-          placeholder={field.placeholder}
-          className={`${baseClass} bg-white/5 border border-white/10 rounded px-3 py-2 resize-none`}
-        />
-      )
+  const handleBackToHome = () => {
+    router.push('/')
+  }
+
+  const handleAllChallenges = () => {
+    router.push('/challenges')
+  }
+
+  const handleTabNavigation = (tabId) => {
+    switch(tabId) {
+      case 'all-teams':
+        router.push('/teams')
+        break
+      case 'my-team':
+        router.push('/teams/my-team')
+        break
+      case 'team-candidates':
+        router.push('/teams/candidates')
+        break
+      default:
+        setActiveTab(tabId)
     }
-    
-    if (field.type === 'select') {
-      return (
-        <select 
-          value={value}
-          onChange={(e) => handleFormChange(field.key, e.target.value)}
-          className={`${baseClass} bg-white/5 border border-white/10 rounded px-3 py-2`}
-        >
-          <option>{field.placeholder}</option>
-        </select>
-      )
-    }
-    
-    return (
-      <input
-        type={field.type || 'text'}
-        value={value}
-        onChange={(e) => handleFormChange(field.key, e.target.value)}
-        placeholder={field.placeholder}
-        className={`${baseClass} bg-transparent border-b border-white/20 pb-2`}
-      />
-    )
   }
 
-  const handleCreateTeam = () => {
-    console.log('Creating team with data:', createFormData)
-    setShowCreateForm(false)
-    setHasTeam(true)
+  const handleEditTeam = () => {
+    console.log('Edit team')
   }
 
-  const handleJoinTeam = () => {
-    console.log('Joining team with code:', teamCode)
-    setShowJoinForm(false)
-    setTeamCode('')
+  const handleDeleteTeam = () => {
+    console.log('Delete team')
   }
 
-  const confirmDelete = () => {
-    setHasTeam(false)
-    setTeamMembers([])
-    setShowDeleteConfirm(false)
-    window.scrollTo({ top: 0, behavior: 'instant' })
+  const handleSeeMoreMember = (memberId) => {
+    console.log('See more for member:', memberId)
   }
 
   return (
-    <div className="min-h-screen bg-black text-white font-['Inter']">
-      {/* Header */}
-      <div className="bg-black">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <JunctionLogo />
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-5 bg-white/20 rounded-sm"></div>
-            <div className="w-8 h-8 bg-white/20 rounded-full"></div>
+    <div className="min-h-screen bg-black text-white flex">
+      <Sidebar
+        navigationSections={navigationSections}
+        userProfile={userProfile}
+        backToHomeLabel="Back To Home"
+        onBackToHome={handleBackToHome}
+        showImagePlaceholder={true}
+      />
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-72">
+        {/* Header */}
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-4xl font-bold text-white pt-[3%]" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+              Team Management
+            </h1>
           </div>
-        </div>
-      </div>
 
-      {/* Navigation */}
-      <div className="bg-black">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-12">
-            {(['all', 'my', 'candidates'] as const).map(tab => (
-              <button 
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`text-xs font-['Space_Mono'] font-medium tracking-wider transition-colors ${
-                  activeTab === tab ? 'text-white underline' : 'text-white/60 hover:text-white/80'
-                }`}
-              >
-                {TEAM_DATA.navigation.tabs[tab]}
-              </button>
-            ))}
-          </div>
-          <button className="text-xs font-['Space_Mono'] font-medium tracking-wider text-white/60 hover:text-white/80">
-            {TEAM_DATA.navigation.tabs.challenges}
-          </button>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-6 py-12 max-w-6xl">
-        {hasTeam ? (
-          /* Team View */
-          <>
-            <div className="mb-8 max-w-4xl">
-              <h1 className="text-4xl font-['Space_Grotesk'] font-bold text-white mb-4">{TEAM_DATA.team.name}</h1>
-              <h2 className="text-sm font-['Space_Mono'] font-medium tracking-wider text-white/60 mb-4">{TEAM_DATA.sections.teamCode}</h2>
-              <p className="text-white/60 text-sm leading-relaxed">{TEAM_DATA.team.description}</p>
-            </div>
-
-            <div className="mb-12 max-w-4xl">
-              <h2 className="text-xl font-['Space_Grotesk'] font-semibold text-white mb-6">{TEAM_DATA.sections.availableRoles}</h2>
-              <div className="flex flex-wrap gap-3">
-                {TEAM_DATA.team.roles.map((role, index) => (
-                  <button key={index} className="px-4 py-2 bg-transparent border border-green-600/40 text-green-300/80 text-sm font-['Space_Mono'] rounded-full hover:bg-green-600/10 transition-colors">
-                    {role}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="mb-12 max-w-4xl">
-              <h2 className="text-xl font-['Space_Grotesk'] font-semibold text-white mb-6">{TEAM_DATA.sections.teamMembers}</h2>
-              <div className="space-y-4">
-                {teamMembers.map((member) => (
-                  <div key={member.id} className="bg-white/5 border border-white/10 rounded-lg p-4 flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-white/15 rounded-full flex items-center justify-center">
-                        <span className="text-white/50 text-sm">JS</span>
-                      </div>
-                      <div>
-                        <h3 className="text-white font-['Space_Grotesk'] font-medium">{member.name}</h3>
-                        <p className="text-white/50 text-sm">{member.role}</p>
-                      </div>
-                    </div>
-                    <button className="text-white/50 hover:text-white/70 text-sm font-['Space_Mono'] transition-colors">
-                      {TEAM_DATA.actions.seeMore}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex gap-4 max-w-4xl">
-              <button className="px-6 py-2 bg-transparent border border-white/25 text-white/80 text-sm font-['Space_Mono'] rounded-full hover:bg-white/5 transition-colors">
-                {TEAM_DATA.actions.edit}
-              </button>
-              <button 
-                onClick={() => setShowDeleteConfirm(true)}
-                className="px-6 py-2 bg-transparent border border-red-600/40 text-red-300/80 text-sm font-['Space_Mono'] rounded-full hover:bg-red-600/10 transition-colors"
-              >
-                {TEAM_DATA.actions.delete}
-              </button>
-            </div>
-          </>
-        ) : showCreateForm ? (
-          /* Create Form */
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-8">
-              <button 
-                onClick={() => setShowCreateForm(false)}
-                className="px-6 py-2 bg-transparent border border-white/25 text-white/80 text-sm font-['Space_Mono'] rounded-full hover:bg-white/5 transition-colors mb-6"
-              >
-                Back
-              </button>
-              <h1 className="text-4xl font-['Space_Grotesk'] font-bold text-white mb-2">{TEAM_DATA.create.title}</h1>
-              <p className="text-white/60 text-sm">{TEAM_DATA.create.subtitle}</p>
-            </div>
-
-            <div className="space-y-8">
-              {FORM_FIELDS.map((field) => (
-                <div key={field.key}>
-                  <label className="block text-white font-medium mb-2">{field.label}</label>
-                  {field.description && (
-                    <p className="text-white/60 text-sm mb-3">{field.description}</p>
-                  )}
-                  {renderFormField(field)}
-                </div>
-              ))}
-              
-              <div className="pt-8">
-                <button 
-                  onClick={handleCreateTeam}
-                  className="px-8 py-3 bg-green-600 text-white text-sm font-['Space_Mono'] rounded-full hover:bg-green-700 transition-colors"
+          {/* Tab Navigation */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex space-x-1">
+              {[
+                { id: 'all-teams', label: 'All Teams' },
+                { id: 'my-team', label: 'My Team' },
+                { id: 'team-candidates', label: 'Team Candidates' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabNavigation(tab.id)}
+                  className={`w-40 py-2 rounded-lg text-sm transition-colors ${
+                    activeTab === tab.id
+                      ? 'bg-white text-black font-medium'
+                      : 'bg-zinc-800/90 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/90'
+                  }`}
                 >
-                  Create Team
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            
+            <button 
+              onClick={handleAllChallenges}
+              className="w-40 py-2 bg-zinc-800/90 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/90 transition-colors text-sm rounded-lg"
+            >
+              All Challenges
+            </button>
+          </div>
+
+          {/* Content */}
+          {hasTeam ? (
+            <div className="space-y-8">
+              {/* Team Name and Code */}
+              <div>
+                <h2 className="text-2xl font-bold text-green-400 mb-2" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                  {teamData.name}
+                </h2>
+                <p className="text-zinc-300 font-mono text-sm tracking-wider">
+                  {teamData.code}
+                </p>
+              </div>
+
+              {/* Team Description */}
+              <div>
+                <h3 className="text-xl font-semibold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                  Team Description
+                </h3>
+                <p className="text-zinc-400 text-sm leading-relaxed">
+                  {teamData.description}
+                </p>
+              </div>
+
+              {/* Available Roles */}
+              <div>
+                <h3 className="text-xl font-semibold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                  Available roles
+                </h3>
+                <div className="flex gap-3">
+                  {teamData.availableRoles.map((role, index) => (
+                    <span
+                      key={index}
+                      className="px-6 py-2 bg-transparent border border-green-600 text-white rounded-full font-mono text-sm"
+                    >
+                      {role}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Team Members */}
+              <div>
+                <h3 className="text-xl font-semibold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                  Team members
+                </h3>
+                <div className="space-y-3">
+                  {teamData.members.map((member) => (
+                    <div
+                      key={member.id}
+                      className="bg-zinc-800/60 rounded-xl p-4 flex items-center justify-between w-full max-w-3xl"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-zinc-600 rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className="text-white text-sm font-medium">
+                            {member.name.split(' ').map(n => n[0]).join('')}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="text-white font-medium text-base">{member.name}</p>
+                          <p className="text-zinc-400 text-sm">{member.role}</p>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => handleSeeMoreMember(member.id)}
+                        className="text-zinc-400 text-sm hover:text-white transition-colors flex-shrink-0"
+                      >
+                        See more
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <button 
+                  onClick={handleEditTeam}
+                  className="px-4 py-2 bg-transparent border border-zinc-600 text-zinc-300 rounded-full hover:bg-zinc-800 transition-colors text-sm font-mono"
+                >
+                  Edit
+                </button>
+                <button 
+                  onClick={handleDeleteTeam}
+                  className="px-4 py-2 bg-transparent border border-zinc-600 text-zinc-300 rounded-full hover:bg-zinc-800 transition-colors text-sm font-mono"
+                >
+                  Delete the team
                 </button>
               </div>
             </div>
-          </div>
-        ) : (
-          /* No Team State */
-          <div className="py-12 pb-32">
-            <p className="text-white/60 text-base mb-12 max-w-2xl">{TEAM_DATA.noTeam.message}</p>
-            
-            <div className="flex gap-4">
-              <button 
-                onClick={() => setShowJoinForm(!showJoinForm)}
-                className="px-6 py-2 bg-transparent border border-green-600/40 text-green-300/80 text-sm font-['Space_Mono'] rounded-full hover:bg-green-600/10 transition-colors"
-              >
-                {TEAM_DATA.noTeam.joinText}
-              </button>
-              <button 
-                onClick={() => setShowCreateForm(true)}
-                className="px-6 py-2 bg-green-600 text-white text-sm font-['Space_Mono'] rounded-full hover:bg-green-700 transition-colors"
-              >
-                {TEAM_DATA.noTeam.createText}
-              </button>
-            </div>
-
-            {showJoinForm && (
-              <div className="mt-8 bg-white/5 border border-white/10 rounded-lg p-6 w-full">
-                <h3 className="text-lg font-['Space_Grotesk'] font-semibold text-white mb-4">{TEAM_DATA.join.title}</h3>
-                <p className="text-white/60 text-sm mb-6">{TEAM_DATA.join.description}</p>
-                
-                <div className="flex gap-3 mb-4">
-                  <input
-                    type="text"
-                    value={teamCode}
-                    onChange={(e) => setTeamCode(e.target.value)}
-                    placeholder={TEAM_DATA.join.placeholder}
-                    className="flex-1 bg-white/5 border border-white/10 rounded px-4 py-2 text-white placeholder-white/40 focus:outline-none focus:border-green-300/50"
-                  />
-                  <button 
-                    onClick={handleJoinTeam}
-                    disabled={!teamCode.trim()}
-                    className="px-6 py-2 bg-green-600 text-white text-sm font-['Space_Mono'] rounded-full hover:bg-green-700 transition-colors disabled:bg-green-600/50"
-                  >
-                    Join team
-                  </button>
-                  <button 
-                    onClick={() => setShowJoinForm(false)}
-                    className="px-4 py-2 bg-transparent border border-white/25 text-white/80 text-sm font-['Space_Mono'] rounded-full hover:bg-white/5 transition-colors"
-                  >
-                    Close
-                  </button>
-                </div>
+          ) : (
+            /* Empty State Content */
+            <div className="flex items-center justify-center min-h-96">
+              <div className="text-center">
+                <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl">
+                  It seems like you don't have a team yet. Here you can create a new team or join already existing one.
+                </p>
               </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Delete Modal */}
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-zinc-900 border border-white/10 rounded-lg p-6 max-w-md mx-4">
-            <h3 className="text-xl font-['Space_Grotesk'] font-semibold text-white mb-4">{TEAM_DATA.deleteModal.title}</h3>
-            <p className="text-white/60 text-sm mb-6">{TEAM_DATA.deleteModal.message}</p>
-            <div className="flex gap-3 justify-end">
-              <button 
-                onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-2 bg-transparent border border-white/25 text-white/80 text-sm font-['Space_Mono'] rounded-full hover:bg-white/5 transition-colors"
-              >
-                {TEAM_DATA.deleteModal.cancel}
-              </button>
-              <button 
-                onClick={confirmDelete}
-                className="px-4 py-2 bg-red-600 text-white text-sm font-['Space_Mono'] rounded-full hover:bg-red-700 transition-colors"
-              >
-                {TEAM_DATA.deleteModal.confirm}
-              </button>
             </div>
-          </div>
+          )}
         </div>
-      )}
 
-      <Footer />
+        <Footer />
+      </div>
     </div>
   )
 }

@@ -61,6 +61,85 @@ export const useOrganization = (id) => useApi(id ? `organizations/${id}` : null)
 export const useTeam = (id) => useApi(id ? `teams/${id}` : null)
 export const useProject = (id) => useApi(id ? `projects/${id}` : null)
 
+// Challenge-specific hooks
+export const useEventChallenge = (challengeId) => useApi(challengeId ? `event-challenges/${challengeId}` : null)
+export const useEventChallenges = (eventId) => useApi(eventId ? `events/${eventId}/challenges` : null)
+
+// Hook for single challenge with full data (challenge + organization + event)
+export const useChallengeWithDetails = (challengeId) => {
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    const fetchChallengeWithDetails = async () => {
+      if (!challengeId) return
+
+      try {
+        setLoading(true)
+        setError(null)
+
+        // Fetch challenge details
+        const challengeResponse = await fetch(`/api/proxy/event-challenges/${challengeId}`, {
+          headers: { 'Content-Type': 'application/json' }
+        })
+
+        if (!challengeResponse.ok) {
+          throw new Error(`Failed to fetch challenge: ${challengeResponse.status}`)
+        }
+
+        const challenge = await challengeResponse.json()
+
+        // Fetch organization details if organization_id exists
+        let organization = null
+        if (challenge.organization_id) {
+          try {
+            const orgResponse = await fetch(`/api/proxy/organizations/${challenge.organization_id}`, {
+              headers: { 'Content-Type': 'application/json' }
+            })
+            if (orgResponse.ok) {
+              organization = await orgResponse.json()
+            }
+          } catch (err) {
+            console.warn('Failed to fetch organization details:', err)
+          }
+        }
+
+        // Fetch event details if event_id exists
+        let event = null
+        if (challenge.event_id) {
+          try {
+            const eventResponse = await fetch(`/api/proxy/events/${challenge.event_id}`, {
+              headers: { 'Content-Type': 'application/json' }
+            })
+            if (eventResponse.ok) {
+              event = await eventResponse.json()
+            }
+          } catch (err) {
+            console.warn('Failed to fetch event details:', err)
+          }
+        }
+
+        setData({
+          challenge,
+          organization: organization || { organization_id: 0, name: 'Unknown Organization', slug: '' },
+          event: event || { event_id: 0, name: 'Unknown Event' }
+        })
+
+      } catch (err) {
+        console.error('API Error:', err)
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchChallengeWithDetails()
+  }, [challengeId])
+
+  return { data, loading, error }
+}
+
 // POST/PUT/DELETE operations
 export const useApiMutation = () => {
   const [loading, setLoading] = useState(false)
@@ -116,6 +195,21 @@ export const useApiMutation = () => {
     body: JSON.stringify(projectData)
   })
 
+  // Challenge-related mutations
+  const createChallenge = (challengeData) => mutate('event-challenges', {
+    method: 'POST',
+    body: JSON.stringify(challengeData)
+  })
+
+  const updateChallenge = (id, challengeData) => mutate(`event-challenges/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(challengeData)
+  })
+
+  const deleteChallenge = (id) => mutate(`event-challenges/${id}`, {
+    method: 'DELETE'
+  })
+
   return {
     loading,
     error,
@@ -124,6 +218,9 @@ export const useApiMutation = () => {
     deleteEvent,
     createTeam,
     createProject,
+    createChallenge,
+    updateChallenge,
+    deleteChallenge,
     mutate // Generic mutate function
   }
 }
