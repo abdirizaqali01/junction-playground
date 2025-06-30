@@ -257,17 +257,17 @@ export default function EventsPage() {
         {/* Event Details - Stacked */}
         <div className="space-y-2 mb-4">
           <div className="pb-2">
-            <h3 className="text-white text-lg font-bold mb-2">{event.name || 'Event Name TBD'}</h3>
+            <h3 className="text-white [font-size:120%] font-space-grotesk font-semibold mb-2">{event.name || 'Event Name TBD'}</h3>
             
             {/* Tags Row - Real status + placeholders */}
             <div className="flex flex-wrap gap-1">
-              <span className={`px-2 py-1 text-xs rounded border ${getStatusColor(event.status)}`}>
+              <span className={`px-2 py-1 text-xs font-space-mono rounded border ${getStatusColor(event.status)}`}>
                 {event.status || 'Status TBD'}
               </span>
-              <span className="px-2 py-1 bg-neutral-800/80 text-gray-200 text-xs rounded border border-neutral-600/30">
+              <span className="px-2 py-1 bg-neutral-800/80 font-space-mono text-gray-200 text-xs rounded border border-neutral-600/30">
                 {event.is_public ? 'Public' : 'Private'}
               </span>
-              <span className="px-2 py-1 bg-neutral-800/80 text-gray-200 text-xs rounded border border-neutral-600/30">
+              <span className="px-2 py-1 bg-neutral-800/80 font-space-mono text-gray-200 text-xs rounded border border-neutral-600/30">
                 Category TBD
               </span>
             </div>
@@ -281,14 +281,14 @@ export default function EventsPage() {
                 <line x1="8" y1="2" x2="8" y2="6"/>
                 <line x1="3" y1="10" x2="21" y2="10"/>
               </svg>
-              <span className="text-gray-300 text-xs">{formatDate(event.start_date)}</span>
+              <span className="text-gray-300 text-xs font-space-mono">{formatDate(event.start_date)}</span>
             </div>
             <div className="flex items-center space-x-2 py-1">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                 <circle cx="12" cy="10" r="3"/>
               </svg>
-              <span className="text-gray-300 text-xs">{event.location || 'Location TBD'}</span>
+              <span className="text-gray-300 text-xs font-space-mono">{event.location || 'Location TBD'}</span>
             </div>
             <div className="flex items-center space-x-2 py-1">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400">
@@ -296,21 +296,21 @@ export default function EventsPage() {
                 <line x1="2" y1="12" x2="22" y2="12"/>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/>
               </svg>
-              <span className="text-gray-300 text-xs">Hackathon</span>
+              <span className="text-gray-300 text-xs font-space-mono">Hackathon</span>
             </div>
           </div>
         </div>
         
         {/* Buttons - Full Width Side by Side */}
         <div className="flex space-x-2 mb-3">
-          <button className="flex-1 px-3 py-2 bg-white text-black text-sm font-medium rounded hover:bg-gray-100 transition-colors">
+          <button className="flex-1 px-3 py-4 bg-white text-black [font-size:75%] font-space-mono rounded hover:bg-gray-100 transition-colors">
             View event
           </button>
           <button 
-            className={`flex-1 px-3 py-2 text-sm font-medium rounded transition-colors ${
+            className={`flex-1 px-3 py-4 text-white [font-size:75%] font-space-mono rounded transition-colors ${
               event.status === 'CANCELLED' 
                 ? 'bg-gray-500/50 text-gray-400 cursor-not-allowed' 
-                : 'bg-green-500 text-white hover:bg-green-600'
+                : 'bg-[#55D186] text-white hover:bg-green-600'
             }`}
             disabled={event.status === 'CANCELLED'}
           >
@@ -319,7 +319,7 @@ export default function EventsPage() {
         </div>
         
         {/* End Date */}
-        <div className="flex items-center justify-center space-x-1 text-gray-400 text-xs">
+        <div className="flex items-center justify-center space-x-1 text-gray-400 text-xs font-space-mono">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/>
             <polyline points="12,6 12,12 16,14"/>
@@ -332,7 +332,7 @@ export default function EventsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black text-white font-sans">
+      <div className="min-h-screen bg-black text-white ">
         <header className="border-b border-zinc-800 px-6 py-4 fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <JunctionLogo />
@@ -341,7 +341,7 @@ export default function EventsPage() {
                 Events
               </button>
             </div>
-            <div className="w-10 h-10 bg-emerald-400 rounded-full flex items-center justify-center text-black font-semibold text-sm">
+            <div className="w-10 h-10 bg-emerald-400 rounded-full flex items-center justify-center text-white font-semibold text-sm">
               JM
             </div>
           </div>
@@ -368,7 +368,7 @@ export default function EventsPage() {
                 Events
               </button>
             </div>
-            <div className="w-10 h-10 bg-emerald-400 rounded-full flex items-center justify-center text-black font-semibold text-sm">
+            <div className="w-10 h-10 bg-emerald-400 rounded-full flex items-center justify-center text-white font-semibold text-sm">
               JM
             </div>
           </div>
@@ -838,7 +838,7 @@ export default function EventsPage() {
             })}
           </div>
           
-          <div className="w-10 h-10 bg-emerald-400 rounded-full flex items-center justify-center text-black font-semibold text-sm">
+          <div className="w-10 h-10 bg-emerald-400 rounded-full flex items-center justify-center text-white font-semibold text-sm">
             JM
           </div>
         </div>
@@ -849,7 +849,7 @@ export default function EventsPage() {
         <div className="w-full max-w-6xl px-6 py-6">
           
           {/* Search Bar - Centered */}
-          <div className="mb-8 flex justify-center">
+          <div className="mb-8 flex font-space-mono justify-center">
             <div className="relative max-w-2xl w-full">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -858,10 +858,10 @@ export default function EventsPage() {
               </div>
               <input
                 type="text"
-                placeholder="Search Events"
+                placeholder="Search Hackathons"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-12 pr-4 py-4 border border-gray-700 rounded-xl bg-gray-900/50 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-center"
+                className="block w-full pl-12 pr-4 py-3 border border-gray-700 text-sm rounded-md bg-gray text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-left"
               />
             </div>
           </div>
