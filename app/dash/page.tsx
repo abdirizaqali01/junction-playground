@@ -50,6 +50,7 @@ export default function JunctionDashboard() {
                 </button>
               )
             })}
+            
           </div>
           
           {/* Profile Avatar */}
