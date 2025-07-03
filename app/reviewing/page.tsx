@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Footer } from "@/components/footer"
 
 export default function ReviewProjectsPage() {
   const [sidebarState, setSidebarState] = useState('expanded') // 'expanded', 'icons', 'collapsed'
@@ -310,8 +309,6 @@ export default function ReviewProjectsPage() {
             </div>
           </div>
         </div>
-
-        <Footer />
       </div>
     </div>
   )

@@ -1,5 +1,8 @@
 'use client'
 
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { useRouter, usePathname } from 'next/navigation'
 import { JunctionLogo } from '@/components/logo'
 
 // Profile Avatar Component
@@ -9,26 +12,53 @@ const ProfileAvatar = ({ name = "JM" }) => (
   </div>
 )
 
-export default function Navbar({ activeTab, setActiveTab, tabs = ['Dashboard', 'Events', 'Community'] }) {
+interface NavbarProps {
+  activeTab: string
+  setActiveTab: (tab: string) => void
+}
+
+export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const tabs = [
+    { name: 'Dashboard', path: '/dash' },
+    { name: 'Events', path: '/events' },
+    { name: 'Community', path: '/com' }
+  ]
+
+  // Update active tab based on current pathname
+  useEffect(() => {
+    const currentTab = tabs.find(tab => tab.path === pathname)
+    if (currentTab) {
+      setActiveTab(currentTab.name)
+    }
+  }, [pathname, setActiveTab])
+
+  const handleTabClick = (tab: { name: string; path: string }) => {
+    setActiveTab(tab.name)
+    router.push(tab.path)
+  }
+
   return (
     <header className="border-b border-zinc-800 px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
-        <JunctionLogo />
+        <Link href="/">
+          <JunctionLogo />
+        </Link>
         
-        {/* Navigation Tabs with regular rounded corners */}
-        <div className="flex items-center border border-zinc-700 rounded-xl p-1">
+        {/* Navigation Tabs */}
+        <div className="flex items-center border border-zinc-700 rounded-2xl p-1">
           {tabs.map((tab) => {
-            const isActive = activeTab === tab
+            const isActive = activeTab === tab.name
             return (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-8 py-3 text-sm rounded-lg transition-all duration-500 ease-in-out min-w-[120px] relative
+                key={tab.name}
+                onClick={() => handleTabClick(tab)}
+                className={`px-8 py-3 text-sm rounded-xl transition-all duration-500 ease-in-out min-w-[120px] relative
                   ${isActive
-                    ? 'text-white bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent border border-transparent'
-                    : tab === 'Events'
-                    ? 'text-emerald-400 hover:text-emerald-300'
+                    ? 'text-emerald-400'
                     : 'text-zinc-500 hover:text-zinc-300'}
                 `}
                 style={isActive ? {
@@ -38,7 +68,7 @@ export default function Navbar({ activeTab, setActiveTab, tabs = ['Dashboard', '
                   boxShadow: 'inset 0 0 0 1px rgba(16,185,129,0.8), inset 0 0 0 2px rgba(16,185,129,0.4), inset 0 0 0 3px rgba(16,185,129,0.1)'
                 } : {}}
               >
-                {tab}
+                {tab.name}
               </button>
             )
           })}

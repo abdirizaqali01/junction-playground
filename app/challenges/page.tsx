@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
-import { Footer } from "@/components/footer"
 
 interface Challenge {
   challenge_id: number
@@ -488,8 +487,6 @@ export default function ChallengesPage() {
             )}
           </div>
         </div>
-
-        <Footer />
       </div>
     </div>
   )

@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
-import { Footer } from "@/components/footer"
 
 // Define your navigation data for sidebar
 const navigationSections = [
@@ -198,9 +197,6 @@ export default function HackerpackPage() {
             ))}
           </div>
         </div>
-
-        {/* Footer */}
-        <Footer />
       </div>
     </div>
   )
