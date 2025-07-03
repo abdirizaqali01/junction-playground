@@ -83,32 +83,21 @@ export default function Sidebar({
   const router = useRouter()
 
   const handleSidebarToggle = () => {
-    const currentTime = Date.now()
-    const timeDiff = currentTime - lastClickTime
-    
-    if (timeDiff < 500) { // Double click within 500ms
-      setSidebarState('collapsed')
-    } else {
-      if (sidebarState === 'expanded') {
-        setSidebarState('icons')
-      } else {
-        setSidebarState('expanded')
-      }
-    }
-    setLastClickTime(currentTime)
+    const now = Date.now()
+    if (now - lastClickTime < 500) setSidebarState('collapsed')
+    else setSidebarState(s => (s === 'expanded' ? 'icons' : 'expanded'))
+    setLastClickTime(now)
   }
 
   const handleNavigation = (href: string, id: string) => {
     // Map specific navigation items to their routes
-    const routeMap: { [key: string]: string } = {
-      'dashboard': '/dash',
-      'challenges': '/challenges',
-      'team': '/teams',
-      'hackerpack': '/hackerpack'
+    const map: Record<string, string> = {
+      dashboard: '/dash',
+      challenges: '/challenges',
+      team: '/teams',
+      hackerpack: '/hackerpack',
     }
-
-    const route = routeMap[id.toLowerCase()] || href
-    router.push(route)
+    router.push(map[id.toLowerCase()] ?? href)
   }
 
   const handleProfileClick = () => {
@@ -168,7 +157,7 @@ export default function Sidebar({
   )
 
   const defaultImagePlaceholder = (
-    <div className="w-full h-32 bg-white/20 rounded-lg flex items-center justify-center">
+    <div className="w-full h-44 bg-white/20 rounded-lg flex items-center justify-center">
       <div className="text-center">
         <div className="w-12 h-12 bg-white/30 rounded-full mx-auto mb-2"></div>
         <div className="w-16 h-8 bg-white/30 rounded mx-auto"></div>
