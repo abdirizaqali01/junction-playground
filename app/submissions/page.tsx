@@ -433,11 +433,11 @@ export default function ProjectSubmissionPage() {
               </div>
 
               {/* Bottom Row - Video Upload and URL Links */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
                 
                 {/* Video Upload */}
-                <div className="space-y-2">
-                  <div className="bg-neutral-800 rounded-md p-4 border border-neutral-700">
+                <div className="space-y-2 flex flex-col h-full">
+                  <div className="bg-neutral-800 rounded-md p-4 border border-neutral-700 flex flex-col h-full">
                     <div className="aspect-video bg-neutral-900 rounded-md flex items-center justify-center mb-3">
                       {formData.videoFile ? (
                         <div className="text-center">
@@ -461,7 +461,7 @@ export default function ProjectSubmissionPage() {
                     />
                     <label
                       htmlFor="video-upload"
-                      className="block w-full text-center px-3 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded-md cursor-pointer transition-colors text-sm text-neutral-300"
+                      className="block w-full text-center px-3 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded-md cursor-pointer transition-colors text-sm text-neutral-300 mt-auto"
                     >
                       Upload Video
                     </label>
@@ -469,7 +469,7 @@ export default function ProjectSubmissionPage() {
                 </div>
 
                 {/* URL Links */}
-                <div className="space-y-4">
+                <div className="space-y-4 flex flex-col h-full">
                   
                   {/* Project Demo */}
                   <div className="space-y-2">
@@ -508,60 +508,78 @@ export default function ProjectSubmissionPage() {
                       placeholder="Source code url link..."
                     />
                   </div>
+
+                  {/* Action Buttons - Aligned with video upload bottom */}
+                  {activeField && (
+                    <div className="flex justify-end space-x-3 mt-auto pt-4">
+                     <button className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-xl text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg">
+                        Submit As Final
+                      </button>
+                      <button className="px-4 py-2 bg-white hover:bg-neutral-600 text-black rounded-xl text-sm font-medium transition-all duration-200">
+                        Save Draft
+                      </button>
+                      <button className="px-4 py-2 bg-red-400 hover:bg-neutral-800 text-white hover:text-neutral-300 rounded-xl text-sm font-medium transition-all duration-200">
+                        Cancel
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Right Sidebar - Next Steps with Enhanced Animation */}
-          <div className="w-[18rem] p-6">
-            <div className={`border rounded-lg p-4 sticky top-6 transition-colors ${
-              allFieldsCompleted 
-                ? 'border-green-500 bg-green-900/30' 
-                : 'border-red-600 bg-neutral-900'
-            }`}>
-              <h3 className="text-base font-medium text-white mb-4">
-                {allFieldsCompleted ? 'ALL DONE!' : 'Next Steps'}
-              </h3>
-              
+{/* Right Sidebar - Next Steps with Enhanced Animation */}
+<div className="w-[26rem] p-6">
+  <div className={`border rounded-lg sticky top-6 transition-colors shadow-md
+    ${allFieldsCompleted 
+      ? 'border-green-700 bg-[#0e1a14] px-8 py-6' 
+      : 'border-red-600 bg-neutral-900 px-6 py-4'
+    }`}
+  >
+    <h3 className="text-base font-medium text-white mb-4">
+      {allFieldsCompleted ? 'ALL DONE!' : 'Next Steps'}
+    </h3>
 
-              {allFieldsCompleted ? (
-                <div className="p-8">
-                  <h2 className="text-6xl font-bold text-white mb-8 tracking-wider leading-tight">ALL DONE!</h2>
-                  <p className="text-neutral-400 text-lg leading-relaxed">
-                    Now, just sit back and relax. Follow the <span className="underline text-neutral-400 cursor-pointer hover:text-neutral-300 transition-colors">announcements</span> closely and get some sleep!
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-0">
-                  {/* Animated Checklist Items */}
-                  {sortedChecklistItems.map((item) => (
-                    <NextStepItem
-                      key={item.key}
-                      item={item}
-                      index={getStepNumber(item) - 1}
-                      isCompleted={checklist[item.key]}
-                    />
-                  ))}
+    {allFieldsCompleted ? (
+      <div>
+        <p className="text-neutral-400 text-sm leading-relaxed">
+          Now, just sit back and relax. Follow the{" "}
+          <span className="underline cursor-pointer hover:text-neutral-300">
+            announcements
+          </span>{" "}
+          closely and get some sleep!
+        </p>
+      </div>
+    ) : (
+      <div className="space-y-0">
+        {sortedChecklistItems.map((item) => (
+          <NextStepItem
+            key={item.key}
+            item={item}
+            index={getStepNumber(item) - 1}
+            isCompleted={checklist[item.key]}
+          />
+        ))}
 
-                  {/* Static Next Steps */}
-                  {nextSteps.map((step) => {
-                    const incompleteCount = checklistItems.filter(item => !checklist[item.key]).length
-                    return (
-                      <div key={step.step} className="border border-red-600 rounded-lg p-3 mb-3">
-                        <div className="mb-2">
-                          <h4 className="text-white font-medium text-sm">
-                            {step.step + incompleteCount}. {step.title}
-                          </h4>
-                        </div>
-                        <p className="text-neutral-400 text-xs leading-relaxed">{step.description}</p>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
+        {/* Static Next Steps */}
+        {nextSteps.map((step) => {
+          const incompleteCount = checklistItems.filter(item => !checklist[item.key]).length
+          return (
+            <div key={step.step} className="border border-red-600 rounded-lg p-3 mb-3">
+              <div className="mb-2">
+                <h4 className="text-white font-medium text-sm">
+                  {step.step + incompleteCount}. {step.title}
+                </h4>
+              </div>
+              <p className="text-neutral-400 text-xs leading-relaxed">{step.description}</p>
             </div>
-          </div>
+          )
+        })}
+      </div>
+    )}
+  </div>
+</div>
+
         </div>
       </div>
     </div>
