@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
+import { Footer } from "@/components/footer"
 
 interface Challenge {
   challenge_id: number
@@ -416,9 +417,9 @@ export default function ChallengesPage() {
                                 
                                 {/* Tags */}
                                 <div className="flex items-center gap-3 mb-4">
-                                  <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-white/80 font-mono">AI</span>
-                                  <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-white/80 font-mono">Machine Learning</span>
-                                  <span className="px-2 py-1 bg-white/10 rounded-full text-xs text-white/80 font-mono">Data Science</span>
+                                  <span className="px-2 py-1 bg-black rounded text-xs text-white/80 font-mono">AI</span>
+                                  <span className="px-2 py-1 bg-black rounded text-xs text-white/80 font-mono">Machine Learning</span>
+                                  <span className="px-2 py-1 bg-black rounded text-xs text-white/80 font-mono">Data Science</span>
                                 </div>
                                 
                                 {/* Divider */}
@@ -426,11 +427,10 @@ export default function ChallengesPage() {
                                 
                                 {/* Event Info */}
                                 <div className="pb-1">
-                                  <div className="text-xs font-medium text-white mb-2 font-mono">Event</div>
-                                  <div className="flex items-center gap-4 text-xs text-white/60 font-mono">
-                                    <span>{challenge.event?.name || 'Unknown Event'}</span>
-                                    <span>Created: {new Date(challenge.created_at).toLocaleDateString()}</span>
-                                  </div>
+                                <div className="flex items-center gap-6 pb-1">
+                                  <span className="text-xs font-medium text-white font-mono">Prizes</span>
+                                  <span className="text-xs text-white/60 font-mono">TBD</span>
+                                </div>
                                 </div>
                               </div>
                             </div>
@@ -460,11 +460,11 @@ export default function ChallengesPage() {
                           <div className="flex-1">
                             <div className="text-xs text-green-400 mb-1">{challenge.organization?.name || 'General'}</div>
                             <h3 className="text-sm font-semibold text-green-400">{challenge.name}</h3>
-                            <div className="flex items-center space-x-3 text-xs text-white/60 mt-1">
-                              <span>AI</span>
-                              <span>Machine Learning</span>
-                              <span>Best Challenge</span>
-                            </div>
+                                <div className="flex items-center gap-3 mb-4">
+                                  <span className="px-2 py-1 bg-black rounded text-xs text-white/80 font-mono">AI</span>
+                                  <span className="px-2 py-1 bg-black rounded text-xs text-white/80 font-mono">Machine Learning</span>
+                                  <span className="px-2 py-1 bg-black rounded text-xs text-white/80 font-mono">Data Science</span>
+                                </div>
                           </div>
                         </div>
                       </div>
@@ -473,12 +473,10 @@ export default function ChallengesPage() {
                     {/* Challenge Footer */}
                     <div className="p-4 bg-white/5 border-t border-white/10">
                       <div className="flex items-center justify-between">
-                        <div className="text-xs text-white/60">
-                          <span className="font-medium">Event</span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            <span className="text-xs">{challenge.event?.name || 'Unknown Event'}</span>
+                          <div className="flex items-center gap-6 pb-1">
+                            <span className="text-xs font-medium text-white">Prizes</span>
+                            <span className="text-xs text-white/60">TBD</span>
                           </div>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -487,6 +485,8 @@ export default function ChallengesPage() {
             )}
           </div>
         </div>
+
+        <Footer />
       </div>
     </div>
   )
