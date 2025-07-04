@@ -31,7 +31,7 @@ interface SidebarProps {
   showImagePlaceholder?: boolean
   imagePlaceholder?: React.ReactNode
 }
-type SidebarState = 'expanded' | 'icons' | 'collapsed'
+type SidebarState = 'expanded' | 'icons'
 
 const IconHome = (
   <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -70,23 +70,19 @@ const IconCollapse = (
 export default function Sidebar({
   navigationSections,
   userProfile,
-  backToHomeLabel = 'Back To Home',
+  backToHomeLabel = 'Back To dashboard',
   onBackToHome,
   className = '',
   showImagePlaceholder = true,
   imagePlaceholder,
 }: SidebarProps) {
   const [sidebarState, setSidebarState] = useState<SidebarState>('expanded')
-  const [lastClickTime, setLastClickTime] = useState(0)
   const [showProfilePopup, setShowProfilePopup] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
   const handleSidebarToggle = () => {
-    const now = Date.now()
-    if (now - lastClickTime < 500) setSidebarState('collapsed')
-    else setSidebarState(s => (s === 'expanded' ? 'icons' : 'expanded'))
-    setLastClickTime(now)
+    setSidebarState(s => (s === 'expanded' ? 'icons' : 'expanded'))
   }
 
   const handleNavigation = (href: string, id: string) => {
@@ -168,10 +164,8 @@ export default function Sidebar({
   return (
     <div 
       className={`${
-        sidebarState === 'collapsed' ? 'w-0'
-        : sidebarState === 'icons'   ? 'w-[67px]'
-        : 'w-[250px]'}
-        bg-white/10 border-r border-white/15 flex flex-col fixed h-screen
+        sidebarState === 'icons' ? 'w-[67px]' : 'w-[250px]'
+        } bg-white/10 border-r border-white/15 flex flex-col fixed h-screen
         overflow-hidden transition-all duration-300 pt-[1%] ${className}`}
       style={{ 
         fontFamily: 'Space Grotesk, sans-serif'
@@ -179,7 +173,7 @@ export default function Sidebar({
     >
 
       {/* HEADER */}
-      <div className="p-4 border-b border-white/20 flex items-center justify-between">
+      <div className="p-4 flex items-center justify-between">
         {sidebarState === 'expanded' && onBackToHome && (
           <button
             onClick={onBackToHome}
@@ -191,8 +185,16 @@ export default function Sidebar({
           </button>
         )}
 
-        <button onClick={handleSidebarToggle} className="text-white/90 hover:text-white ml-auto" title="Toggle sidebar">
-          {IconCollapse}
+        <button 
+          onClick={handleSidebarToggle} 
+          className={`text-white/90 hover:text-white transition-colors ${
+            sidebarState === 'icons' ? 'mx-auto' : 'ml-auto'
+          }`} 
+          title="Toggle sidebar"
+        >
+          <div className="w-[15px] h-[15px] flex items-center justify-center">
+            {IconCollapse}
+          </div>
         </button>
       </div>
 
@@ -232,29 +234,43 @@ export default function Sidebar({
         ))}
       </nav>
 
-      {/* User Profile at Bottom - Fixed like old version */}
+      {/* User Profile Card at Bottom */}
       <div className="relative" ref={profileRef}>
-        <div className="p-4 border-t border-white/20 mt-auto">
-          <button 
-            onClick={handleProfileClick}
-            className="w-full flex items-center hover:bg-white/5 rounded-lg p-1 transition-colors"
-          >
-            <div 
-              className={`w-12 h-12 ${userProfile.avatarColor || 'bg-green-600'} rounded-lg flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}
-            >
-              {userProfile.avatar || userProfile.initials}
+        <div className="p-4 mt-auto">
+          {sidebarState === 'expanded' ? (
+            <div className="bg-white/5 border border-white/5 rounded-lg p-1">
+              <button 
+                onClick={handleProfileClick}
+                className="w-full flex items-center hover:bg-white/5 rounded-lg p-2 transition-colors"
+              >
+                <div 
+                  className={`w-12 h-12 ${userProfile.avatarColor || 'bg-green-600'} rounded-lg flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}
+                >
+                  {userProfile.avatar || userProfile.initials}
+                </div>
+                <div className="ml-3 min-w-0 flex-1">
+                  <div className="text-sm font-medium text-white truncate">
+                    {userProfile.name}
+                  </div>
+                  <div className="text-xs text-white/60 truncate">
+                    {userProfile.email}
+                  </div>
+                </div>
+              </button>
             </div>
-            {sidebarState === 'expanded' && (
-              <div className="ml-3 min-w-0 flex-1">
-                <div className="text-sm font-medium text-white truncate">
-                  {userProfile.name}
-                </div>
-                <div className="text-xs text-white/60 truncate">
-                  {userProfile.email}
-                </div>
+          ) : (
+            <button 
+              onClick={handleProfileClick}
+              className="w-full flex items-center justify-center px-3 py-2 text-sm rounded-[6px] transition-colors text-white/75 hover:text-white hover:bg-white/10"
+              title={userProfile.name}
+            >
+              <div 
+                className={`w-[15px] h-[15px] ${userProfile.avatarColor || 'bg-green-600'} rounded flex items-center justify-center text-white font-bold text-xs`}
+              >
+                {userProfile.avatar || userProfile.initials.charAt(0)}
               </div>
-            )}
-          </button>
+            </button>
+          )}
         </div>
 
         {/* Profile Popup */}
