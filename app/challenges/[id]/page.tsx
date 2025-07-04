@@ -135,7 +135,7 @@ const userProfile = {
   name: 'Junction Hack',
   email: 'ju@hackjunction.com',
   initials: 'JU',
-  avatarColor: 'bg-green-600'
+  avatarColor: 'bg-red-500'
 }
 
 export default function ChallengeDetailPage({ params }: { params: { id: string } }) {
