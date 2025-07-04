@@ -111,7 +111,12 @@ const userProfile = {
 }
 
 // Enhanced Next Steps Item Component with fade animation
-const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }) => {
+const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }: {
+  item: { key: string; label: string; required: boolean };
+  index: number;
+  isCompleted: boolean;
+  onTransitionEnd?: () => void;
+}) => {
   return (
     <div 
       className={`transition-all duration-500 ease-in-out transform ${
@@ -174,7 +179,7 @@ export default function ProjectSubmissionPage() {
     videoFile: null
   })
 
-  const [checklist, setChecklist] = useState({
+  const [checklist, setChecklist] = useState<{[key: string]: boolean}>({
     projectName: false,
     description: false,
     selectedChallenge: false,
@@ -184,6 +189,7 @@ export default function ProjectSubmissionPage() {
   })
 
   const [dragActive, setDragActive] = useState(false)
+  const [activeField, setActiveField] = useState(null)
 
   // Update checklist when form data changes
   useEffect(() => {
@@ -201,12 +207,20 @@ export default function ProjectSubmissionPage() {
     router.push('/')
   }
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleDragEvents = (e) => {
+  const handleFieldFocus = (fieldName: string) => {
+    setActiveField(fieldName)
+  }
+
+  const handleFieldBlur = () => {
+    setActiveField(null)
+  }
+
+  const handleDragEvents = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
     e.stopPropagation()
     if (e.type === "dragenter" || e.type === "dragover") {
@@ -216,7 +230,7 @@ export default function ProjectSubmissionPage() {
     }
   }
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
     e.stopPropagation()
     setDragActive(false)
@@ -227,13 +241,13 @@ export default function ProjectSubmissionPage() {
     }
   }
 
-  const handleVideoUpload = (e) => {
+  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFormData(prev => ({ ...prev, videoFile: e.target.files[0] }))
+      setFormData(prev => ({ ...prev, videoFile: e.target.files![0] }))
     }
   }
 
-  const nextSteps = [
+  const nextSteps: Array<{step: number; title: string; description: string}> = [
   ]
 
   const checklistItems = [
@@ -244,6 +258,14 @@ export default function ProjectSubmissionPage() {
     { key: 'sourceCode', label: 'Source Code', required: false },
     { key: 'videoFile', label: 'Video Upload', required: false }
   ]
+
+  // Check if all required fields are completed
+  const requiredFieldsCompleted = checklistItems
+    .filter(item => item.required)
+    .every(item => checklist[item.key])
+
+  // Check if ALL fields are completed (for the ultimate completion state)
+  const allFieldsCompleted = checklistItems.every(item => checklist[item.key])
 
   // Filter items to show incomplete ones first, then completed ones
   const sortedChecklistItems = [...checklistItems].sort((a, b) => {
@@ -287,9 +309,6 @@ export default function ProjectSubmissionPage() {
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <button className="px-4 py-2 bg-white hover:bg-neutral-100 text-black rounded-md text-sm font-medium transition-colors">
-                    Edit Submission
-                  </button>
                   <button className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-md text-sm font-medium transition-colors flex items-center space-x-2">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
                       <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
@@ -299,14 +318,26 @@ export default function ProjectSubmissionPage() {
                   </button>
                 </div>
 
-                <span className="px-3 py-1 bg-orange-500 text-white text-xs font-medium rounded-full">
-                  Draft
+                <span className={`px-3 py-1 text-xs font-medium rounded-full transition-all duration-200 ${
+                  activeField 
+                    ? 'bg-transparent border border-white/30 text-white' 
+                    : requiredFieldsCompleted
+                    ? 'bg-green-500 text-white'
+                    : 'bg-orange-500 text-white'
+                }`}>
+                  {activeField ? 'Editing' : requiredFieldsCompleted ? 'Final' : 'Draft'}
                 </span>
               </div>
             </div>
 
             {/* Form Content */}
-            <div className="bg-neutral-900 rounded-lg p-6 space-y-6 w-full">
+            <div className={`rounded-lg p-6 space-y-6 w-full transition-colors ${
+              allFieldsCompleted 
+                ? 'bg-green-900/30 border border-green-500/50' 
+                : activeField 
+                ? 'bg-neutral-800/80' 
+                : 'bg-neutral-900'
+            }`}>
               
               {/* Project Name */}
               <div className="space-y-2">
@@ -316,6 +347,8 @@ export default function ProjectSubmissionPage() {
                   name="projectName"
                   value={formData.projectName}
                   onChange={handleInputChange}
+                  onFocus={() => handleFieldFocus('projectName')}
+                  onBlur={handleFieldBlur}
                   className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-neutral-500 transition-colors text-sm"
                   placeholder="Enter project name"
                 />
@@ -331,6 +364,8 @@ export default function ProjectSubmissionPage() {
                   name="description"
                   value={formData.description}
                   onChange={handleInputChange}
+                  onFocus={() => handleFieldFocus('description')}
+                  onBlur={handleFieldBlur}
                   rows={5}
                   className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-neutral-500 transition-colors resize-none text-sm"
                   placeholder="Describe your project, the problem it solves, and the technology you used..."
@@ -348,6 +383,8 @@ export default function ProjectSubmissionPage() {
                     name="selectedChallenge"
                     value={formData.selectedChallenge}
                     onChange={handleInputChange}
+                    onFocus={() => handleFieldFocus('selectedChallenge')}
+                    onBlur={handleFieldBlur}
                     className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-neutral-500 transition-colors appearance-none text-sm"
                   >
                     <option value="">Select the challenge that your project is for...</option>
@@ -446,6 +483,8 @@ export default function ProjectSubmissionPage() {
                       name="demoUrl"
                       value={formData.demoUrl}
                       onChange={handleInputChange}
+                      onFocus={() => handleFieldFocus('demoUrl')}
+                      onBlur={handleFieldBlur}
                       className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-neutral-500 transition-colors text-sm"
                       placeholder="Project url link..."
                     />
@@ -463,6 +502,8 @@ export default function ProjectSubmissionPage() {
                       name="sourceCode"
                       value={formData.sourceCode}
                       onChange={handleInputChange}
+                      onFocus={() => handleFieldFocus('sourceCode')}
+                      onBlur={handleFieldBlur}
                       className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-neutral-500 transition-colors text-sm"
                       placeholder="Source code url link..."
                     />
@@ -474,35 +515,51 @@ export default function ProjectSubmissionPage() {
 
           {/* Right Sidebar - Next Steps with Enhanced Animation */}
           <div className="w-[18rem] p-6">
-            <div className="border border-red-600 bg-neutral-900 rounded-lg p-4 sticky top-6">
-              <h3 className="text-base font-medium text-white mb-4">Next Steps</h3>
+            <div className={`border rounded-lg p-4 sticky top-6 transition-colors ${
+              allFieldsCompleted 
+                ? 'border-green-500 bg-green-900/30' 
+                : 'border-red-600 bg-neutral-900'
+            }`}>
+              <h3 className="text-base font-medium text-white mb-4">
+                {allFieldsCompleted ? 'ALL DONE!' : 'Next Steps'}
+              </h3>
               
-              <div className="space-y-0">
-                {/* Animated Checklist Items */}
-                {sortedChecklistItems.map((item) => (
-                  <NextStepItem
-                    key={item.key}
-                    item={item}
-                    index={getStepNumber(item) - 1}
-                    isCompleted={checklist[item.key]}
-                  />
-                ))}
 
-                {/* Static Next Steps */}
-                {nextSteps.map((step) => {
-                  const incompleteCount = checklistItems.filter(item => !checklist[item.key]).length
-                  return (
-                    <div key={step.step} className="border border-red-600 rounded-lg p-3 mb-3">
-                      <div className="mb-2">
-                        <h4 className="text-white font-medium text-sm">
-                          {step.step + incompleteCount}. {step.title}
-                        </h4>
+              {allFieldsCompleted ? (
+                <div className="p-8">
+                  <h2 className="text-6xl font-bold text-white mb-8 tracking-wider leading-tight">ALL DONE!</h2>
+                  <p className="text-neutral-400 text-lg leading-relaxed">
+                    Now, just sit back and relax. Follow the <span className="underline text-neutral-400 cursor-pointer hover:text-neutral-300 transition-colors">announcements</span> closely and get some sleep!
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-0">
+                  {/* Animated Checklist Items */}
+                  {sortedChecklistItems.map((item) => (
+                    <NextStepItem
+                      key={item.key}
+                      item={item}
+                      index={getStepNumber(item) - 1}
+                      isCompleted={checklist[item.key]}
+                    />
+                  ))}
+
+                  {/* Static Next Steps */}
+                  {nextSteps.map((step) => {
+                    const incompleteCount = checklistItems.filter(item => !checklist[item.key]).length
+                    return (
+                      <div key={step.step} className="border border-red-600 rounded-lg p-3 mb-3">
+                        <div className="mb-2">
+                          <h4 className="text-white font-medium text-sm">
+                            {step.step + incompleteCount}. {step.title}
+                          </h4>
+                        </div>
+                        <p className="text-neutral-400 text-xs leading-relaxed">{step.description}</p>
                       </div>
-                      <p className="text-neutral-400 text-xs leading-relaxed">{step.description}</p>
-                    </div>
-                  )
-                })}
-              </div>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </div>
