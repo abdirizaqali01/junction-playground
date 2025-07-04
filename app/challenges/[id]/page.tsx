@@ -135,7 +135,7 @@ const userProfile = {
   name: 'Junction Hack',
   email: 'ju@hackjunction.com',
   initials: 'JU',
-  avatarColor: 'bg-green-600'
+  avatarColor: 'bg-red-500'
 }
 
 export default function ChallengeDetailPage({ params }: { params: { id: string } }) {
@@ -259,21 +259,32 @@ export default function ChallengeDetailPage({ params }: { params: { id: string }
                 </div>
               </div>
 
-              {/* Event Info Section */}
+              {/* Insight */}
               <div className="bg-white/10 border border-white/15 rounded-xl p-8">
                 <h2 className="text-2xl font-semibold text-white mb-6" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
-                  Event Information
+                  Insight
                 </h2>
                 
                 <div className="space-y-4 text-base text-white/80 leading-relaxed font-mono">
                   <p>
-                    <span className="text-green-400">Event:</span> {event.name}
+                    <span className="space-y-4 text-base text-white/80 leading-relaxed font-mono">TBD</span>
                   </p>
+                  {challenge.updated_at !== challenge.created_at && (
+                    <p>
+                      <span className="text-green-400">Last Updated:</span> {new Date(challenge.updated_at).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+              </div>
+              {/*  What We'll Bring */}
+              <div className="bg-white/10 border border-white/15 rounded-xl p-8">
+                <h2 className="text-2xl font-semibold text-white mb-6" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                  What We'll Bring
+                </h2>
+                
+                <div className="space-y-4 text-base text-white/80 leading-relaxed font-mono">
                   <p>
-                    <span className="text-green-400">Challenge ID:</span> {challenge.challenge_id}
-                  </p>
-                  <p>
-                    <span className="text-green-400">Created:</span> {new Date(challenge.created_at).toLocaleDateString()}
+                    <span className="space-y-4 text-base text-white/80 leading-relaxed font-mono">TBD</span>
                   </p>
                   {challenge.updated_at !== challenge.created_at && (
                     <p>
@@ -317,44 +328,33 @@ export default function ChallengeDetailPage({ params }: { params: { id: string }
                 </div>
               </div>
 
-              {/* Challenge Stats Card */}
+              {/* Ongoing Criteria*/}
               <div className="bg-white/10 border border-white/15 rounded-xl p-6">
                 <h3 className="text-xl font-semibold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
-                  Challenge Details
+                  Ongoing Criteria
                 </h3>
                 
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-white/60">Organization:</span>
-                    <span className="text-white">{organization.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-white/60">Event:</span>
-                    <span className="text-white">{event.name}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-white/60">Challenge ID:</span>
-                    <span className="text-white font-mono">#{challenge.challenge_id}</span>
+                    <span className="space-y-4 text-base text-white/80 leading-relaxed font-mono">TBD</span>
                   </div>
                 </div>
+
               </div>
 
-              {/* Participation Card */}
+              
+
+              {/* Prizes */}
               <div className="bg-white/10 border border-white/15 rounded-xl p-6">
                 <h3 className="text-xl font-semibold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
-                  Get Involved
+                  Prizes
                 </h3>
-                
-                <div className="space-y-4">
-                  <button className="w-full px-4 py-3 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors">
-                    Join Challenge
-                  </button>
-                  
-                  <button className="w-full px-4 py-3 bg-white/10 text-white font-medium rounded-lg hover:bg-white/20 transition-colors border border-white/20">
-                    View Requirements
-                  </button>
-                </div>
+                                  <div className="flex justify-between">
+                    <span className="space-y-4 text-base text-white/80 leading-relaxed font-mono">TBD</span>
+                  </div>
+              
               </div>
+
             </div>
           </div>
         </div>

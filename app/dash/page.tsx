@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { Footer } from "@/components/footer"
 import { JunctionLogo } from '@/components/logo'
+import Navbar from '@/components/navi'
+
 import { Globe, CalendarCheck, ChevronsLeftRight, Clock, Star, Users} from 'lucide-react';
 
 // Interface definitions
@@ -334,6 +336,7 @@ export default function JunctionDashboard() {
                 </button>
               )
             })}
+            
           </div>
           
           {/* Profile Avatar */}
