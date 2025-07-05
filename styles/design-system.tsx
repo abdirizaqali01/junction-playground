@@ -2,6 +2,23 @@
 // DESIGN SYSTEM
 //----------------------------------------------------------------//
 
+// FONTS //
+import { Space_Grotesk, Space_Mono } from 'next/font/google'
+
+export const spaceGrotesk = Space_Grotesk({
+    subsets: ['latin', 'latin-ext'],
+    display: 'swap',
+    variable: '--font-space-grotesk',
+})
+
+export const spaceMono = Space_Mono({
+    subsets: ['latin', 'latin-ext'],
+    display: 'swap',
+    weight: ['400', '700'],
+    variable: '--font-space-mono',
+})
+
+
 // COLORS //
 export const colors = {
     primary: {
@@ -70,12 +87,11 @@ export const border = {
 //----------------------------------------------------------------//
 // CSS VARIABLES SETUP
 //----------------------------------------------------------------//
-
 export const initializeCSSVariables = () => {
     if (typeof window !== 'undefined') {
         const root = document.documentElement;
         
-        // Set color variables
+        // SET COLOR VARIABLE
         Object.entries(colors).forEach(([colorName, shade]) => {
             Object.entries(shade).forEach(([shade, value]) => {
                 root.style.setProperty(`--color-${colorName}-${shade}`, value);
@@ -91,5 +107,5 @@ export const initializeCSSVariables = () => {
 
 // STATUS BADGE //
 export const status = {
-    greenLight: `bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] px-4 py-2 ${border.radius.full} text-sm font-medium`,
+    greenLight: `bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] px-4 py-2 ${border.radius.full} text-sm font-medium font-[var(--font-space-grotesk)]`,
 }

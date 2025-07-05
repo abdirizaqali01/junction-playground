@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { Footer } from "@/components/footer"
-import { JunctionLogo } from '@/components/logo'
 import Navbar from '@/components/navi'
 import * as style from '@/styles/design-system'
 import { initializeCSSVariables } from '@/styles/design-system';
@@ -25,21 +24,6 @@ interface Event {
   updated_at: string
   type: string
 }
-
-interface Challenge {
-  challenge_id: number
-  event_id: number
-  organization_id: number
-  name: string
-  description: string
-}
-
-// Profile Avatar Component
-const ProfileAvatar = ({ name = "JM" }) => (
-  <div className="w-10 h-10 bg-emerald-400 rounded-full flex items-center justify-center text-black font-semibold text-sm">
-    {name}
-  </div>
-)
 
 // Helper functions
 const formatDate = (dateString: string) => {
@@ -99,16 +83,11 @@ const sampleEvent: Event = {
 
 export default function JunctionDashboard() {
   useEffect(() => {
-  initializeCSSVariables();
-}, []);
+    initializeCSSVariables();
+  }, []);
+  
   const [activeTab, setActiveTab] = useState('Dashboard')
-  const [events, setEvents] = useState<Event[]>([])
-  const [challenges, setChallenges] = useState<Challenge[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [showChallengesPopup, setShowChallengesPopup] = useState(false)
 
   const tabs = ['Dashboard', 'Events', 'Community']
 
@@ -126,58 +105,7 @@ export default function JunctionDashboard() {
     }
   }
 
-  // Fetch events and challenges
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        // Fetch events
-        const eventsResponse = await fetch('/api/proxy/events', {
-          headers: { 'Content-Type': 'application/json' }
-        })
-        
-        if (!eventsResponse.ok) {
-          throw new Error(`Failed to fetch events: ${eventsResponse.status}`)
-        }
-        
-        const eventsData = await eventsResponse.json()
-        const eventsArray = Array.isArray(eventsData) ? eventsData : [eventsData]
-        setEvents(eventsArray)
-
-        // Fetch challenges for each event
-        const allChallenges: Challenge[] = []
-        for (const event of eventsArray) {
-          try {
-            const challengesResponse = await fetch(`/api/proxy/events/${event.event_id}/challenges`, {
-              headers: { 'Content-Type': 'application/json' }
-            })
-            
-            if (challengesResponse.ok) {
-              const challengesData = await challengesResponse.json()
-              const challengesArray = Array.isArray(challengesData) ? challengesData : [challengesData]
-              allChallenges.push(...challengesArray)
-            }
-          } catch (err) {
-            console.log(`No challenges found for event ${event.event_id}`)
-          }
-        }
-        setChallenges(allChallenges)
-
-      } catch (err) {
-        console.error('API Error:', err)
-        setError(err instanceof Error ? err.message : 'Failed to fetch data')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
-
   const EventCard = ({ event, index }: { event: Event; index: number }) => (
-    
     <div
       className="bg-neutral-900/60 border border-neutral-700/50 rounded-xl overflow-hidden group hover:border-neutral-600 transition-all cursor-pointer flex flex-col w-full"
       onClick={() => setSelectedEventId(event.event_id)}
@@ -309,46 +237,9 @@ export default function JunctionDashboard() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <header className="border-b border-zinc-800 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Logo */}
-          <JunctionLogo />
-          
-          {/* Navigation Tabs */}
-          <div className="flex items-center border border-zinc-700 rounded-2xl p-1">
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab
-              return (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-8 py-3 text-sm rounded-xl transition-all duration-500 ease-in-out min-w-[120px] relative
-                    ${isActive
-                      ? 'text-zinc-500 bg-gradient-to-r from-transparent via-emerald-400/20 to-transparent border border-transparent'
-                      : tab === 'Events'
-                      ? 'text-emerald-400 hover:text-emerald-300'
-                      : 'text-zinc-500 hover:text-zinc-300'}
-                  `}
-                  style={isActive ? {
-                    background: 'linear-gradient(90deg, rgba(16,185,129,0) 0%, rgba(16,185,129,0.1) 50%, rgba(16,185,129,0) 100%)',
-                    border: '1px solid transparent',
-                    backgroundClip: 'padding-box',
-                    boxShadow: 'inset 0 0 0 1px rgba(16,185,129,0.8), inset 0 0 0 2px rgba(16,185,129,0.4), inset 0 0 0 3px rgba(16,185,129,0.1)'
-                  } : {}}
-                >
-                  {tab}
-                </button>
-              )
-            })}
-            
-          </div>
-          
-          {/* Profile Avatar */}
-          <ProfileAvatar name="JM" />
-        </div>
-      </header>
-
+      {/* Use the imported Navbar component with required props */}
+      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
+      
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6">
         {/* Welcome Section */}
@@ -370,9 +261,9 @@ export default function JunctionDashboard() {
               <div className="lg:w-1/3 p-4">
                 <div className="h-32 lg:h-full bg-zinc-600 relative rounded-lg border border-zinc-600">
                   <img 
-                    src="/api/placeholder/400/300" 
+                    src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
                     alt="Junction Hackathon Venue" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover rounded-lg"
                   />
                   {/* Ongoing Badge */}
                   <div className="absolute top-4 left-4">
@@ -569,17 +460,12 @@ export default function JunctionDashboard() {
                 
                 {/* Right Image */}
                 <div className="lg:w-1/2">
-                  <div className="h-64 lg:h-full bg-zinc-600 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-16 h-12 mx-auto mb-4 bg-zinc-500 rounded flex items-center justify-center">
-                        <div className="grid grid-cols-4 gap-0.5">
-                          {[...Array(12)].map((_, i) => (
-                            <div key={i} className="w-0.5 h-1 bg-blue-300 rounded-sm"></div>
-                          ))}
-                        </div>
-                      </div>
-                      <p className="text-zinc-400 text-sm">Event venue image</p>
-                    </div>
+                  <div className="h-64 lg:h-full bg-zinc-600 flex items-center justify-center relative rounded-lg overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                      alt="Event venue" 
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
               </div>
@@ -588,14 +474,13 @@ export default function JunctionDashboard() {
 
           {/* Browse Events Section */}
           <div>
-            <h2 className="text-white text-xl font-medium mb-8  text-left">Events For You</h2>
+            <h2 className="text-white text-xl font-medium mb-8 text-left">Events For You</h2>
 
-            <div className="flex space-x-4 justify-left"> {/* Add spacing between cards if needed */}
+            <div className="flex space-x-4 justify-left">
               <EventCard event={sampleEvent} index={0} />
               <EventCard event={sampleEvent} index={1} />
               <EventCard event={sampleEvent} index={2} />
-              
-          </div>
+            </div>
           </div>
 
           {/* View All Events Button */}

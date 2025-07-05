@@ -44,10 +44,9 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
     <header className="border-b border-zinc-800 px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between mt-3">
         {/* Logo */}
-        <Link href="/dash">
-          <JunctionLogo />
-        </Link>
-        
+
+        <JunctionLogo />
+      
         {/* Navigation Tabs */}
         <div className="flex items-center border border-zinc-700 rounded-2xl p-1">
           {tabs.map((tab) => {
