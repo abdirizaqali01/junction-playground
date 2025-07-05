@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { Footer } from "@/components/footer"
 import { JunctionLogo } from '@/components/logo'
 import Navbar from '@/components/navi'
+import * as style from '@/styles/design-system'
+import { initializeCSSVariables } from '@/styles/design-system';
 
 import { Globe, CalendarCheck, ChevronsLeftRight, Clock, Star, Users} from 'lucide-react';
 
@@ -96,6 +98,9 @@ const sampleEvent: Event = {
 }
 
 export default function JunctionDashboard() {
+  useEffect(() => {
+  initializeCSSVariables();
+}, []);
   const [activeTab, setActiveTab] = useState('Dashboard')
   const [events, setEvents] = useState<Event[]>([])
   const [challenges, setChallenges] = useState<Challenge[]>([])
@@ -172,6 +177,7 @@ export default function JunctionDashboard() {
   }, [])
 
   const EventCard = ({ event, index }: { event: Event; index: number }) => (
+    
     <div
       className="bg-neutral-900/60 border border-neutral-700/50 rounded-xl overflow-hidden group hover:border-neutral-600 transition-all cursor-pointer flex flex-col w-full"
       onClick={() => setSelectedEventId(event.event_id)}
@@ -300,7 +306,6 @@ export default function JunctionDashboard() {
       </div>
     </div>
   );
-  
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -353,7 +358,7 @@ export default function JunctionDashboard() {
             <span className="text-white">Interract</span>
           </h1>
           <p className="text-zinc-400 text-lg font-space-mono">
-            Here's an overview of what's going on for you
+            Here's an overview of what's going on for you 
           </p>
         </div>
 
@@ -371,7 +376,7 @@ export default function JunctionDashboard() {
                   />
                   {/* Ongoing Badge */}
                   <div className="absolute top-4 left-4">
-                    <span className="bg-[#55D186] text-white px-4 py-2 rounded-full text-sm font-medium">
+                    <span className={style.status.greenLight}>
                       Ongoing
                     </span>
                   </div>
