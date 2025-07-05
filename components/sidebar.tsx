@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 interface NavigationItem {
   id: string
@@ -23,7 +23,7 @@ interface UserProfile {
   avatarColor?: string
 }
 interface SidebarProps {
-  navigationSections: NavigationSection[]
+  navigationSections?: NavigationSection[] // Made optional
   userProfile: UserProfile
   backToHomeLabel?: string
   onBackToHome?: () => void
@@ -67,8 +67,88 @@ const IconCollapse = (
   </svg>
 )
 
+// Default navigation data built into the sidebar
+const defaultNavigationSections: NavigationSection[] = [
+  {
+    id: 'general',
+    title: 'General',
+    items: [
+      {
+        id: 'dashboard',
+        label: 'Dashboard',
+        href: '#',
+        icon: IconHome
+      },
+      {
+        id: 'challenges',
+        label: 'Challenges',
+        href: '#',
+        icon: IconList
+      },
+      {
+        id: 'team',
+        label: 'Team',
+        href: '#',
+        icon: IconUsers
+      },
+      {
+        id: 'hackerpack',
+        label: 'Hackerpack',
+        href: '#',
+        icon: IconLayers
+      }
+    ]
+  },
+  {
+    id: 'during-hackathon',
+    title: 'During Hackathon',
+    items: [
+      {
+        id: 'project-submission',
+        label: 'Project Submission',
+        href: '#',
+        icon: (
+          <svg className="w-[15px] h-[15px]" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+          </svg>
+        )
+      },
+      {
+        id: 'mentor-meetings',
+        label: 'Mentor Meetings',
+        href: '#',
+        icon: (
+          <svg className="w-[15px] h-[15px]" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
+          </svg>
+        )
+      },
+      {
+        id: 'review-projects',
+        label: 'Review Projects',
+        href: '#',
+        icon: (
+          <svg className="w-[15px] h-[15px]" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
+          </svg>
+        )
+      },
+      {
+        id: 'finalist-voting',
+        label: 'Finalist Voting',
+        href: '#',
+        icon: (
+          <svg className="w-[15px] h-[15px]" fill="currentColor" viewBox="0 0 16 16">
+            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
+          </svg>
+        )
+      }
+    ]
+  }
+]
+
 export default function Sidebar({
-  navigationSections,
+  navigationSections = defaultNavigationSections, // Use default if not provided
   userProfile,
   backToHomeLabel = 'Back To dashboard',
   onBackToHome,
@@ -80,6 +160,34 @@ export default function Sidebar({
   const [showProfilePopup, setShowProfilePopup] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const pathname = usePathname()
+
+  // Map pathnames to navigation item IDs
+  const getActiveItemId = () => {
+    const pathToIdMap: Record<string, string> = {
+      '/eventdash': 'dashboard',
+      '/dashboard': 'dashboard',
+      '/challenges': 'challenges',
+      '/teams': 'team',
+      '/team': 'team',
+      '/hackerpack': 'hackerpack',
+      '/submissions': 'project-submission',
+      '/meetings': 'mentor-meetings',
+      '/reviewing': 'review-projects',
+      '/voting': 'finalist-voting',
+    }
+    return pathToIdMap[pathname] || 'dashboard'
+  }
+
+  // Update navigation sections to set active state dynamically
+  const activeItemId = getActiveItemId()
+  const updatedNavigationSections = navigationSections.map(section => ({
+    ...section,
+    items: section.items.map(item => ({
+      ...item,
+      isActive: item.id === activeItemId
+    }))
+  }))
 
   const handleSidebarToggle = () => {
     setSidebarState(s => (s === 'expanded' ? 'icons' : 'expanded'))
@@ -88,10 +196,14 @@ export default function Sidebar({
   const handleNavigation = (href: string, id: string) => {
     // Map specific navigation items to their routes
     const map: Record<string, string> = {
-      dashboard: '/dash',
+      dashboard: '/eventdash',
       challenges: '/challenges',
       team: '/teams',
       hackerpack: '/hackerpack',
+      'project-submission': '/submissions',
+      'mentor-meetings': '/meetings',
+      'review-projects': '/reviewing',
+      'finalist-voting': '/voting',
     }
     router.push(map[id.toLowerCase()] ?? href)
   }
@@ -133,24 +245,6 @@ export default function Sidebar({
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
-
-  /** replace icons in "general" section */
-  const patchedSections = navigationSections.map(sec =>
-    sec.id === 'general'
-      ? {
-          ...sec,
-          items: sec.items.map(it => {
-            switch (it.id) {
-              case 'dashboard':  return { ...it, icon: IconHome }
-              case 'challenges': return { ...it, icon: IconList }
-              case 'team':       return { ...it, icon: IconUsers }
-              case 'hackerpack': return { ...it, icon: IconLayers }
-              default:           return it
-            }
-          }),
-        }
-      : sec
-  )
 
   const defaultImagePlaceholder = (
     <div className="w-full h-44 bg-white/20 rounded-lg flex items-center justify-center">
@@ -205,7 +299,7 @@ export default function Sidebar({
 
       {/* Navigation */}
       <nav className="flex-1 px-4 overflow-y-auto">
-        {patchedSections.map(section => (
+        {updatedNavigationSections.map(section => (
           <div key={section.id} className="mb-6">
             {sidebarState === 'expanded' && (
               <div className="pl-[19px] text-xs font-semibold text-white/60 mb-3">
