@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Footer } from "@/components/footer"
 import Navbar from '@/components/navi'
 
@@ -28,6 +29,7 @@ interface Challenge {
 }
 
 export default function EventsPage() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState('Events')
   const [events, setEvents] = useState<Event[]>([])
   const [challenges, setChallenges] = useState<Challenge[]>([])
@@ -87,6 +89,13 @@ export default function EventsPage() {
 
     fetchData()
   }, [])
+
+  // Navigation handler for Event Dashboard
+  const handleEventDashboard = () => {
+    if (selectedEventId) {
+      router.push(`/events/${selectedEventId}/dash`)
+    }
+  }
 
   // Helper functions
   const formatDate = (dateString: string) => {
@@ -662,7 +671,10 @@ export default function EventsPage() {
                         <button className="w-full px-4 py-3 bg-white text-black text-sm font-medium rounded hover:bg-gray-100 transition-colors">
                           Event ID
                         </button>
-                        <button className="w-full px-4 py-3 border border-green-500 text-green-500 text-sm font-medium rounded hover:bg-green-500 hover:text-white transition-colors">
+                        <button 
+                          onClick={handleEventDashboard}
+                          className="w-full px-4 py-3 border border-green-500 text-green-500 text-sm font-medium rounded hover:bg-green-500 hover:text-white transition-colors"
+                        >
                           Event Dashboard
                         </button>
                       </div>

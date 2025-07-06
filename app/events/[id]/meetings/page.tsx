@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 
 const userProfile = {
   name: 'Junction Hack',
@@ -13,15 +14,43 @@ const userProfile = {
 
 export default function MentorMeetingsPage() {
   const [selectedChallenge, setSelectedChallenge] = useState('')
-  const [selectedMentor, setSelectedMentor] = useState('')
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null)
+  const [selectedMentor, setSelectedMentor] = useState('Mentor 1') // Pre-select for demo
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState('0-0') // Pre-select first slot
+  const [challenges, setChallenges] = useState([])
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
+
+  // Fetch challenges from API
+  useEffect(() => {
+    const fetchChallenges = async () => {
+      try {
+        setLoading(true)
+        // Replace 'eventId' with the actual event ID
+        const eventId = 'your-event-id' // You'll need to get this from props, params, or context
+        const response = await fetch(`/api/proxy/events/${eventId}/challenges`)
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch challenges')
+        }
+        
+        const data = await response.json()
+        setChallenges(data)
+      } catch (error) {
+        console.error('Error fetching challenges:', error)
+        // Fallback to hardcoded challenges for demo
+        setChallenges(['Challenge 1', 'Challenge 2', 'Challenge 3'])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchChallenges()
+  }, [])
 
   const handleBackToHome = () => {
     router.push('/')
   }
 
-  const challenges = ['Challenge 1', 'Challenge 2', 'Challenge 3']
   const mentors = ['Mentor 1', 'Mentor 2', 'Mentor 3']
 
   const timeSlots = [
@@ -58,38 +87,37 @@ export default function MentorMeetingsPage() {
       {/* Main Content */}
       <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
         {/* Main Content Area */}
-        <div className="flex-1 p-8 pt-[6%]">
+        <div className="flex-1 p-6 pt-[4%] max-w-3xl mx-auto w-full">
           {/* Page Title and Description */}
-          <div className="mb-8 text-center">
+          <div className="mb-8 text-center mt-16">
             <h1 className="text-4xl font-bold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
               Meetings
             </h1>
-            <p className="text-zinc-400 text-lg">
+            <p className="text-neutral-400 text-base">
               Book a meeting with partners to learn more about their challenge
             </p>
           </div>
 
           {/* Dropdowns */}
-          <div className="space-y-4 mb-8 max-w-2xl">
+          <div className="space-y-4 mb-8 max-w-xl mx-auto">
             {/* Challenge Dropdown */}
             <div className="relative">
               <select
                 value={selectedChallenge}
                 onChange={(e) => setSelectedChallenge(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-600 rounded-lg px-4 py-3 text-white appearance-none cursor-pointer focus:outline-none focus:border-green-400"
+                disabled={loading}
+                className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white text-base appearance-none cursor-pointer focus:outline-none focus:border-green-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <option value="">Challenge</option>
+                <option value="">
+                  {loading ? 'Loading challenges...' : 'Challenge'}
+                </option>
                 {challenges.map((challenge, index) => (
                   <option key={index} value={challenge}>
-                    {challenge}
+                    {typeof challenge === 'string' ? challenge : challenge.name || challenge.title}
                   </option>
                 ))}
               </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
-                <svg className="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
+              <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
             </div>
 
             {/* Mentor Dropdown */}
@@ -97,7 +125,7 @@ export default function MentorMeetingsPage() {
               <select
                 value={selectedMentor}
                 onChange={(e) => setSelectedMentor(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-600 rounded-lg px-4 py-3 text-white appearance-none cursor-pointer focus:outline-none focus:border-green-400"
+                className="w-full bg-neutral-800 border border-neutral-600 rounded-lg px-4 py-3 text-white text-base appearance-none cursor-pointer focus:outline-none focus:border-green-400 transition-colors"
               >
                 <option value="">Mentor</option>
                 {mentors.map((mentor, index) => (
@@ -106,38 +134,33 @@ export default function MentorMeetingsPage() {
                   </option>
                 ))}
               </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none">
-                <svg className="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
+              <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
             </div>
           </div>
 
           {/* Available Times Section */}
           {selectedMentor && (
-            <div className="mb-8">
+            <div className="mb-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h2 className="text-xl font-bold text-white" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
                   Available times
                 </h2>
                 <button 
                   onClick={handleMoreTimeSlots}
-                  className="text-green-400 text-sm hover:text-green-300 transition-colors flex items-center"
+                  className="text-green-400 text-sm hover:text-green-300 transition-colors flex items-center font-medium"
                 >
                   More time slots
-                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                  <ChevronLeft className="w-4 h-4 ml-2" />
+                  <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Time Slots Grid */}
-              <div className="bg-zinc-900/50 border border-zinc-700 rounded-xl p-6">
-                <div className="grid grid-cols-4 gap-4">
+              <div className="bg-neutral-900/50 border border-neutral-700 rounded-xl p-6">
+                <div className="grid grid-cols-4 gap-6">
                   {days.map((day, dayIndex) => (
                     <div key={dayIndex} className="space-y-3">
-                      <h3 className="text-white font-medium text-center text-sm">
+                      <h3 className="text-white font-bold text-center text-base" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
                         {day.name}
                       </h3>
                       <div className="space-y-2">
@@ -145,12 +168,10 @@ export default function MentorMeetingsPage() {
                           <button
                             key={slotIndex}
                             onClick={() => handleTimeSlotClick(dayIndex, slotIndex)}
-                            className={`w-full py-2 px-3 rounded-lg text-sm font-mono transition-colors ${
+                            className={`w-full py-2 px-3 rounded-lg text-xs font-mono transition-all duration-200 ${
                               selectedTimeSlot === `${dayIndex}-${slotIndex}`
-                                ? 'bg-green-600 text-white'
-                                : slotIndex === 0 && dayIndex === 0 // Make first slot selected by default for demo
-                                ? 'bg-zinc-600 text-white'
-                                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+                                ? 'bg-neutral-600 text-white border border-neutral-500'
+                                : 'bg-transparent text-neutral-300 hover:bg-neutral-800 border border-transparent'
                             }`}
                           >
                             {timeSlots[slotIndex]}
@@ -159,13 +180,6 @@ export default function MentorMeetingsPage() {
                       </div>
                     </div>
                   ))}
-                </div>
-
-                {/* Note */}
-                <div className="mt-6 text-right">
-                  <p className="text-zinc-500 text-xs">
-                    *This schedule pops up when you choose a mentor
-                  </p>
                 </div>
               </div>
             </div>

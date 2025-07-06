@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
-import { Upload, Play, ChevronDown, Check } from 'lucide-react'
+import { Upload, Play, ChevronDown, Check, X } from 'lucide-react'
 
 const userProfile = {
   name: 'Junction Hack',
@@ -11,6 +11,43 @@ const userProfile = {
   initials: 'JU',
   avatarColor: 'bg-neutral-600'
 }
+
+// Submit Confirmation Modal Component
+const SubmitModal = ({ isOpen, onClose, onConfirm }: {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+      <div className="bg-neutral-900 border-2 border-white rounded-2xl p-6 max-w-md w-full mx-4">
+        <div className="text-center mb-4">
+          <h3 className="text-lg font-semibold text-white mb-3">Final Submit your project?</h3>
+          <p className="text-neutral-400 leading-relaxed" style={{ fontSize: '10px' }}>
+            You won't be able to undo this, a final submission will be the final submission. If you'd like to keep editing, press cancel. Otherwise, SUBMIT!
+          </p>
+        </div>
+        
+        <div className="flex space-x-3 justify-center">
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-green-500 hover:bg-green-400 text-white rounded-md text-sm font-medium transition-colors"
+          >
+            Submit It!
+          </button>
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-red-500 hover:bg-red-400 text-white rounded-md text-sm font-medium transition-colors"
+          >
+            Keep Editing
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Enhanced Next Steps Item Component with fade animation
 const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }: {
@@ -63,6 +100,7 @@ const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }: {
           {item.key === 'demoUrl' && 'Share a link where your project can be experienced live.'}
           {item.key === 'sourceCode' && 'Provide access to your project\'s source code repository.'}
           {item.key === 'videoFile' && 'Upload a demo video showcasing your project in action.'}
+          {item.key === 'slackFiles' && 'Upload files related to your Slack challenge participation.'}
         </p>
       </div>
     </div>
@@ -81,17 +119,21 @@ export default function ProjectSubmissionPage() {
     videoFile: null
   })
 
+  const [slackFiles, setSlackFiles] = useState<File[]>([])
+
   const [checklist, setChecklist] = useState<{[key: string]: boolean}>({
     projectName: false,
     description: false,
     selectedChallenge: false,
     demoUrl: false,
     sourceCode: false,
-    videoFile: false
+    videoFile: false,
+    slackFiles: false
   })
 
   const [dragActive, setDragActive] = useState(false)
   const [activeField, setActiveField] = useState(null)
+  const [showSubmitModal, setShowSubmitModal] = useState(false)
 
   // Update checklist when form data changes
   useEffect(() => {
@@ -101,9 +143,10 @@ export default function ProjectSubmissionPage() {
       selectedChallenge: formData.selectedChallenge !== '',
       demoUrl: formData.demoUrl.trim() !== '',
       sourceCode: formData.sourceCode.trim() !== '',
-      videoFile: formData.videoFile !== null
+      videoFile: formData.videoFile !== null,
+      slackFiles: slackFiles.length > 0
     })
-  }, [formData])
+  }, [formData, slackFiles])
 
   const handleBackToHome = () => {
     router.push('/')
@@ -137,9 +180,17 @@ export default function ProjectSubmissionPage() {
     e.stopPropagation()
     setDragActive(false)
     
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      // Handle file upload
-      console.log('Files dropped:', e.dataTransfer.files)
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const files = Array.from(e.dataTransfer.files)
+      setSlackFiles(prev => [...prev, ...files])
+      console.log('Files dropped:', files)
+    }
+  }
+
+  const handleSlackFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const files = Array.from(e.target.files)
+      setSlackFiles(prev => [...prev, ...files])
     }
   }
 
@@ -149,6 +200,30 @@ export default function ProjectSubmissionPage() {
     }
   }
 
+  const handleRemoveVideo = () => {
+    setFormData(prev => ({ ...prev, videoFile: null }))
+  }
+
+  const handleClearSlackFiles = () => {
+    setSlackFiles([])
+  }
+
+  const handleSubmitClick = () => {
+    setShowSubmitModal(true)
+  }
+
+  const handleConfirmSubmit = () => {
+    // Handle the actual submission logic here
+    console.log('Project submitted!', formData)
+    setShowSubmitModal(false)
+    setActiveField(null)
+    // You could redirect to a success page or show a success message
+  }
+
+  const handleCancelSubmit = () => {
+    setShowSubmitModal(false)
+  }
+
   const nextSteps: Array<{step: number; title: string; description: string}> = [
   ]
 
@@ -156,9 +231,10 @@ export default function ProjectSubmissionPage() {
     { key: 'projectName', label: 'Project Name', required: true },
     { key: 'description', label: 'Project Description', required: true },
     { key: 'selectedChallenge', label: 'Challenge Selection', required: true },
-    { key: 'demoUrl', label: 'Demo URL', required: false },
-    { key: 'sourceCode', label: 'Source Code', required: false },
-    { key: 'videoFile', label: 'Video Upload', required: false }
+    { key: 'demoUrl', label: 'Demo URL', required: true },
+    { key: 'sourceCode', label: 'Source Code', required: true },
+    { key: 'videoFile', label: 'Video Upload', required: true },
+    { key: 'slackFiles', label: 'Slack Files', required: true }
   ]
 
   // Check if all required fields are completed
@@ -166,7 +242,7 @@ export default function ProjectSubmissionPage() {
     .filter(item => item.required)
     .every(item => checklist[item.key])
 
-  // Check if ALL fields are completed (for the ultimate completion state)
+  // Check if ALL fields are completed (for submission)
   const allFieldsCompleted = checklistItems.every(item => checklist[item.key])
 
   // Filter items to show incomplete ones first, then completed ones
@@ -222,11 +298,11 @@ export default function ProjectSubmissionPage() {
                 <span className={`px-3 py-1 text-xs font-medium rounded-full transition-all duration-200 ${
                   activeField 
                     ? 'bg-transparent border border-white/30 text-white' 
-                    : requiredFieldsCompleted
+                    : allFieldsCompleted
                     ? 'bg-green-500 text-white'
                     : 'bg-orange-500 text-white'
                 }`}>
-                  {activeField ? 'Editing' : requiredFieldsCompleted ? 'Final' : 'Draft'}
+                  {activeField ? 'Editing' : allFieldsCompleted ? 'Final' : 'Draft'}
                 </span>
               </div>
             </div>
@@ -307,7 +383,9 @@ export default function ProjectSubmissionPage() {
                 {/* File Upload Area */}
                 <div
                   className={`border-2 border-dashed rounded-md p-8 text-center transition-colors ${
-                    dragActive 
+                    slackFiles.length > 0
+                      ? 'border-green-500 bg-green-900/20' 
+                      : dragActive 
                       ? 'border-neutral-500 bg-neutral-800/50' 
                       : 'border-neutral-600 hover:border-neutral-500'
                   }`}
@@ -316,20 +394,44 @@ export default function ProjectSubmissionPage() {
                   onDragOver={handleDragEvents}
                   onDrop={handleDrop}
                 >
-                  <Upload className="w-6 h-6 mx-auto mb-3 text-neutral-400" />
-                  <p className="text-neutral-400 mb-2 text-sm">Drag and drop files here, or</p>
-                  <input
-                    type="file"
-                    multiple
-                    className="hidden"
-                    id="file-upload"
-                  />
-                  <label
-                    htmlFor="file-upload"
-                    className="inline-flex items-center px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-md cursor-pointer transition-colors text-sm text-white"
-                  >
-                    Browse files
-                  </label>
+                  <Upload className={`w-6 h-6 mx-auto mb-3 ${
+                    slackFiles.length > 0 ? 'text-green-400' : 'text-neutral-400'
+                  }`} />
+                  {slackFiles.length > 0 ? (
+                    <div>
+                      <p className="text-green-400 mb-2 text-sm font-medium">
+                        {slackFiles.length} file{slackFiles.length > 1 ? 's' : ''} uploaded
+                      </p>
+                      <div className="text-xs text-neutral-400 space-y-1 mb-3">
+                        {slackFiles.map((file, index) => (
+                          <div key={index}>{file.name}</div>
+                        ))}
+                      </div>
+                      <button
+                        onClick={handleClearSlackFiles}
+                        className="text-xs text-red-400 hover:text-red-300 underline"
+                      >
+                        Clear files
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-neutral-400 mb-2 text-sm">Drag and drop files here, or</p>
+                      <input
+                        type="file"
+                        multiple
+                        onChange={handleSlackFileUpload}
+                        className="hidden"
+                        id="file-upload"
+                      />
+                      <label
+                        htmlFor="file-upload"
+                        className="inline-flex items-center px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-md cursor-pointer transition-colors text-sm text-white"
+                      >
+                        Browse files
+                      </label>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -338,12 +440,25 @@ export default function ProjectSubmissionPage() {
                 
                 {/* Video Upload */}
                 <div className="space-y-2 flex flex-col h-full">
-                  <div className="bg-neutral-800 rounded-md p-4 border border-neutral-700 flex flex-col h-full">
-                    <div className="aspect-video bg-neutral-900 rounded-md flex items-center justify-center mb-3">
+                  <div className={`rounded-md p-4 border flex flex-col h-full transition-colors ${
+                    formData.videoFile 
+                      ? 'bg-green-900/20 border-green-500' 
+                      : 'bg-neutral-800 border-neutral-700'
+                  }`}>
+                    <div className={`aspect-video rounded-md flex items-center justify-center mb-3 transition-colors ${
+                      formData.videoFile ? 'bg-green-900/30' : 'bg-neutral-900'
+                    }`}>
                       {formData.videoFile ? (
                         <div className="text-center">
-                          <Play className="w-8 h-8 mx-auto mb-2 text-neutral-400" />
-                          <p className="text-xs text-neutral-400">{formData.videoFile.name}</p>
+                          <Play className="w-8 h-8 mx-auto mb-2 text-green-400" />
+                          <p className="text-xs text-green-400 font-medium">Video uploaded</p>
+                          <p className="text-xs text-neutral-400 mb-2">{formData.videoFile.name}</p>
+                          <button
+                            onClick={handleRemoveVideo}
+                            className="text-xs text-red-400 hover:text-red-300 underline"
+                          >
+                            Remove video
+                          </button>
                         </div>
                       ) : (
                         <div className="text-center">
@@ -362,9 +477,13 @@ export default function ProjectSubmissionPage() {
                     />
                     <label
                       htmlFor="video-upload"
-                      className="block w-full text-center px-3 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 rounded-md cursor-pointer transition-colors text-sm text-neutral-300 mt-auto"
+                      className={`block w-full text-center px-3 py-2 border rounded-md cursor-pointer transition-colors text-sm mt-auto ${
+                        formData.videoFile
+                          ? 'bg-green-900/30 hover:bg-green-900/50 border-green-600 text-green-300'
+                          : 'bg-neutral-900 hover:bg-neutral-800 border-neutral-700 text-neutral-300'
+                      }`}
                     >
-                      Upload Video
+                      {formData.videoFile ? 'Change Video' : 'Upload Video'}
                     </label>
                   </div>
                 </div>
@@ -410,20 +529,33 @@ export default function ProjectSubmissionPage() {
                     />
                   </div>
 
-                  {/* Action Buttons - Aligned with video upload bottom */}
-                  {activeField && (
-                    <div className="flex justify-end space-x-3 mt-auto pt-4">
-                     <button className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-xl text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg">
-                        Submit As Final
-                      </button>
-                      <button className="px-4 py-2 bg-white hover:bg-neutral-600 text-black rounded-xl text-sm font-medium transition-all duration-200">
-                        Save Draft
-                      </button>
-                      <button className="px-4 py-2 bg-red-400 hover:bg-neutral-800 text-white hover:text-neutral-300 rounded-xl text-sm font-medium transition-all duration-200">
-                        Cancel
-                      </button>
-                    </div>
-                  )}
+                  {/* Action Buttons */}
+                  <div className="flex justify-end space-x-3 mt-auto pt-4">
+                    {activeField ? (
+                      // When editing a field, show save/cancel buttons
+                      <>
+                        <button className="px-4 py-2 bg-white hover:bg-neutral-600 text-black rounded-xl text-sm font-medium transition-all duration-200">
+                          Save Draft
+                        </button>
+                        <button 
+                          onClick={() => setActiveField(null)}
+                          className="px-4 py-2 bg-red-400 hover:bg-neutral-800 text-white hover:text-neutral-300 rounded-xl text-sm font-medium transition-all duration-200"
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      // When not editing, show submit button only if ALL fields are completed
+                      allFieldsCompleted && (
+                        <button 
+                          onClick={handleSubmitClick}
+                          className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-xl text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+                        >
+                          Submit As Final
+                        </button>
+                      )
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -483,6 +615,13 @@ export default function ProjectSubmissionPage() {
 
         </div>
       </div>
+
+      {/* Submit Confirmation Modal */}
+      <SubmitModal
+        isOpen={showSubmitModal}
+        onClose={handleCancelSubmit}
+        onConfirm={handleConfirmSubmit}
+      />
     </div>
   )
 }

@@ -47,7 +47,7 @@ export default function ChallengesPage() {
   }
 
   const handleChallengeClick = (challenge: ChallengeWithDetails) => {
-    // Navigate to the correct route structure: /events/[eventId]/challenges/[challengeId]
+    // Navigate to the correct route structure: /events/[id]/challenges/[challengeId]
     if (challenge.event?.event_id && challenge.challenge_id) {
       router.push(`/events/${challenge.event.event_id}/challenges/${challenge.challenge_id}`)
     } else {

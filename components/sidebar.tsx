@@ -196,8 +196,8 @@ export default function Sidebar({
   const handleNavigation = (href: string, id: string) => {
     // Map specific navigation items to their routes
     const map: Record<string, string> = {
-      dashboard: '/eventdash',
-      challenges: '/challenges',
+      dashboard: '/events/[id]/dash',
+      challenges: '/events/[id]/challenges',
       team: '/teams',
       hackerpack: '/hackerpack',
       'project-submission': '/submissions',
