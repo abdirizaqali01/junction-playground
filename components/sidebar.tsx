@@ -30,6 +30,7 @@ interface SidebarProps {
   className?: string
   showImagePlaceholder?: boolean
   imagePlaceholder?: React.ReactNode
+  eventId?: string // Add eventId prop to handle dynamic routing
 }
 type SidebarState = 'expanded' | 'icons'
 
@@ -155,6 +156,7 @@ export default function Sidebar({
   className = '',
   showImagePlaceholder = true,
   imagePlaceholder,
+  eventId, // New prop for dynamic routing
 }: SidebarProps) {
   const [sidebarState, setSidebarState] = useState<SidebarState>('expanded')
   const [showProfilePopup, setShowProfilePopup] = useState(false)
@@ -162,21 +164,35 @@ export default function Sidebar({
   const router = useRouter()
   const pathname = usePathname()
 
+  // Extract eventId from pathname if not provided as prop
+  const getEventId = () => {
+    if (eventId) return eventId
+    
+    // Extract from pathname like /events/[id]/dash
+    const pathSegments = pathname.split('/')
+    const eventsIndex = pathSegments.findIndex(segment => segment === 'events')
+    if (eventsIndex !== -1 && pathSegments[eventsIndex + 1]) {
+      return pathSegments[eventsIndex + 1]
+    }
+    return null
+  }
+
   // Map pathnames to navigation item IDs
   const getActiveItemId = () => {
     const pathToIdMap: Record<string, string> = {
-      '/eventdash': 'dashboard',
-      '/dashboard': 'dashboard',
+      '/dash': 'dashboard',
       '/challenges': 'challenges',
       '/teams': 'team',
-      '/team': 'team',
       '/hackerpack': 'hackerpack',
       '/submissions': 'project-submission',
       '/meetings': 'mentor-meetings',
-      '/reviewing': 'review-projects',
+      '/reviews': 'review-projects',
       '/voting': 'finalist-voting',
     }
-    return pathToIdMap[pathname] || 'dashboard'
+    
+    // Get the last segment of the pathname
+    const lastSegment = pathname.split('/').pop() || ''
+    return pathToIdMap[`/${lastSegment}`] || 'dashboard'
   }
 
   // Update navigation sections to set active state dynamically
@@ -194,22 +210,45 @@ export default function Sidebar({
   }
 
   const handleNavigation = (href: string, id: string) => {
-    // Map specific navigation items to their routes
-    const map: Record<string, string> = {
-      dashboard: '/events/[id]/dash',
-      challenges: '/events/[id]/challenges',
-      team: '/teams',
-      hackerpack: '/hackerpack',
-      'project-submission': '/submissions',
-      'mentor-meetings': '/meetings',
-      'review-projects': '/reviewing',
-      'finalist-voting': '/voting',
+    const currentEventId = getEventId()
+    
+    if (!currentEventId) {
+      console.error('No event ID found for navigation')
+      return
     }
-    router.push(map[id.toLowerCase()] ?? href)
+
+    // Map specific navigation items to their routes
+    const routeMap: Record<string, string> = {
+      dashboard: 'dash',
+      challenges: 'challenges',
+      team: 'teams',
+      hackerpack: 'hackerpack',
+      'project-submission': 'submissions',
+      'mentor-meetings': 'meetings',
+      'review-projects': 'reviews',
+      'finalist-voting': 'voting',
+    }
+
+    const route = routeMap[id.toLowerCase()]
+    if (route) {
+      router.push(`/events/${currentEventId}/${route}`)
+    } else {
+      // Fallback to original href if no mapping found
+      router.push(href)
+    }
   }
 
   const handleProfileClick = () => {
     setShowProfilePopup(!showProfilePopup)
+  }
+
+  const handleBackToHome = () => {
+    if (onBackToHome) {
+      onBackToHome()
+    } else {
+      // Default behavior: navigate to /dash
+      router.push('/dash')
+    }
   }
 
   const handleProfileMenuClick = (action: string) => {
@@ -268,9 +307,9 @@ export default function Sidebar({
 
       {/* HEADER */}
       <div className="p-4 flex items-center justify-between">
-        {sidebarState === 'expanded' && onBackToHome && (
+        {sidebarState === 'expanded' && (
           <button
-            onClick={onBackToHome}
+            onClick={handleBackToHome}
             className="flex items-center gap-2 bg-white/10 hover:bg-white/20 rounded px-3 py-1
                        text-white/40 hover:text-white/60 text-sm font-medium"
           >

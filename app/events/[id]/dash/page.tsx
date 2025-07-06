@@ -57,23 +57,23 @@ export default function EventDashboard() {
   const router = useRouter()
 
   const handleBackToHome = () => {
-    router.push('/')
+    router.push('/dash')
   }
 
   const handleEditSubmission = () => {
-    router.push('/submissions')
+    router.push('/events/[id]/submissions')
   }
 
   const handleViewChallenges = () => {
-    router.push('/challenges')
+    router.push('/events/[id]/challenges')
   }
 
   const handleBookMeeting = () => {
-    router.push('/meetings')
+    router.push('/events/[id]/meetings')
   }
 
   const handleHackerpack = () => {
-    router.push('/hackerpack')
+    router.push('/events/[id]/hackerpack')
   }
 
   return (
@@ -251,10 +251,6 @@ export default function EventDashboard() {
                 </svg>
                 <span className="text-white font-medium text-sm">Hackerpack</span>
               </button>
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5z"/>
-                </svg>
-                <span className="text-white font-medium text-sm">Hackerpack</span>
             </div>
           </div>
         </div>
