@@ -16,7 +16,7 @@ export default function ReviewProjectsPage() {
   const router = useRouter()
   
   const handleBackToHome = () => {
-    router.push('/')
+    router.push('/dash')
   }
 
   return (

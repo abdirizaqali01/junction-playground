@@ -149,7 +149,7 @@ export default function ProjectSubmissionPage() {
   }, [formData, slackFiles])
 
   const handleBackToHome = () => {
-    router.push('/')
+    router.push('/dash')
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

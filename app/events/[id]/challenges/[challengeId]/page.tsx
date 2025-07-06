@@ -143,7 +143,7 @@ export default function ChallengeDetailPage({ params }: { params: { id: string }
   const { data: challengeData, loading, error } = useChallengeWithDetails(params.id)
 
   const handleBackToHome = () => {
-    router.push('/')
+    router.push('/dash')
   }
 
   const handleBackToChallenges = () => {

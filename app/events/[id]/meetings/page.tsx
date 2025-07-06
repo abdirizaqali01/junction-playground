@@ -48,7 +48,7 @@ export default function MentorMeetingsPage() {
   }, [])
 
   const handleBackToHome = () => {
-    router.push('/')
+    router.push('/dash')
   }
 
   const mentors = ['Mentor 1', 'Mentor 2', 'Mentor 3']

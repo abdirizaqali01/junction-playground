@@ -63,7 +63,7 @@ export default function HackerpackPage() {
   }, [eventId])
 
   const handleBackToHome = () => {
-    router.push('/')
+    router.push('/dash')
   }
 
   const handleRedeemOffer = (hackerpack: Hackerpack) => {

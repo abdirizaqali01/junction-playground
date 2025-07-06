@@ -81,7 +81,7 @@ export default function TeamManagementPage() {
   }, [eventId])
 
   const handleBackToHome = () => {
-    router.push(`/events/${eventId}/dash`)
+    router.push(`/dash`)
   }
 
   const handleTabChange = (tabId: string) => {
