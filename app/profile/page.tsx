@@ -1,21 +1,20 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import Sidebar from '@/components/sidebar'
+import { MainButton } from '@/components/attachables/main-button'
 import { Footer } from "@/components/footer"
-import { JunctionLogo } from '@/components/logo'
+import { colors, spaceGrotesk, initializeCSSVariables } from '@/styles/design-system'
+
+const userProfile = {
+  name: 'Junction Hack',
+  email: 'ju@hackjunction.com',
+  initials: 'JU',
+  avatarColor: 'bg-green-600'
+}
 
 interface ProfileData {
-  sidebar: {
-    navigation: {
-      events: {
-        title: string
-        yourEvents: string
-        organizeEvent: string
-      }
-      profile: string
-      logOut: string
-    }
-  }
   profile: {
     title: string
     personalInfo: {
@@ -82,22 +81,15 @@ interface ProfileData {
 }
 
 export default function ProfilePage() {
-  const [sidebarWidth, setSidebarWidth] = useState(256)
-  const [isResizing, setIsResizing] = useState(false)
+  const router = useRouter()
+  
+  // Initialize CSS variables on component mount
+  useEffect(() => {
+    initializeCSSVariables()
+  }, [])
   
   // Static data dictionary
   const profileData: ProfileData = {
-    sidebar: {
-      navigation: {
-        events: {
-          title: "Events",
-          yourEvents: "Your events",
-          organizeEvent: "Organize event"
-        },
-        profile: "Profile",
-        logOut: "Log Out"
-      }
-    },
     profile: {
       title: "Profile",
       personalInfo: {
@@ -188,415 +180,510 @@ export default function ProfilePage() {
     linkedin: ''
   })
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsResizing(true)
-    e.preventDefault()
+  const handleBackToHome = () => {
+    router.push('/dash')
   }
 
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isResizing) return
-    const newWidth = e.clientX
-    if (newWidth >= 200 && newWidth <= 400) {
-      setSidebarWidth(newWidth)
+  const handleSaveProfile = () => {
+    console.log('Saving profile:', formData)
+    // TODO: Implement save functionality
+    alert('Profile saved successfully!')
+  }
+
+  // Define styles using the design system colors
+  const styles = {
+    background: { backgroundColor: colors.dark.opacity100 },
+    text: { color: colors.light.opacity100 },
+    textSecondary: { color: colors.light.opacity60 },
+    textTertiary: { color: colors.light.opacity40 },
+    card: { 
+      backgroundColor: colors.white.opacity10,
+      borderColor: colors.white.opacity15
+    },
+    input: {
+      backgroundColor: colors.white.opacity5,
+      borderColor: colors.white.opacity15,
+      color: colors.light.opacity100
+    },
+    inputFocus: {
+      borderColor: colors.primary.opacity50
+    },
+    avatar: {
+      background: `linear-gradient(135deg, ${colors.primary.opacity100}, ${colors.primary.opacity60})`
     }
   }
-
-  const handleMouseUp = () => {
-    setIsResizing(false)
-  }
-
-  useEffect(() => {
-    if (isResizing) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove)
-        document.removeEventListener('mouseup', handleMouseUp)
-      }
-    }
-  }, [isResizing])
 
   return (
-    <div className="min-h-screen bg-black text-white font-['Inter']">
-      <div className="flex">
-        {/* Sidebar */}
-        <div 
-          className="bg-zinc-900 border-r border-white/5 flex-shrink-0 relative"
-          style={{ width: `${sidebarWidth}px` }}
-        >
-          <div className="p-6">
-            {/* Logo 1 in sidebar */}
-            <div className="mb-8">
-              <JunctionLogo />
-            </div>
-            
-            {/* Splitting line above Events */}
-            <div className="border-t border-white/10 mb-6"></div>
-            
-            {/* Navigation */}
-            <nav className="space-y-6">
-              <div>
-                <h3 className="text-white font-['Space_Grotesk'] font-medium mb-3">{profileData.sidebar.navigation.events.title}</h3>
-                <div className="space-y-2 ml-4">
-                  <a href="#" className="block text-white/60 hover:text-white text-sm font-['Inter'] transition-colors">{profileData.sidebar.navigation.events.yourEvents}</a>
-                  <a href="#" className="block text-white/60 hover:text-white text-sm font-['Inter'] transition-colors">{profileData.sidebar.navigation.events.organizeEvent}</a>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <a href="#" className="block text-white text-sm font-['Inter'] transition-colors">{profileData.sidebar.navigation.profile}</a>
-                <a href="#" className="block text-white/60 hover:text-white text-sm font-['Inter'] transition-colors">{profileData.sidebar.navigation.logOut}</a>
-              </div>
-            </nav>
-          </div>
-          
-          {/* Resize Handle */}
-          <div
-            className="absolute top-0 right-0 w-px h-full cursor-col-resize bg-white/5 hover:bg-white/10 transition-colors"
-            onMouseDown={handleMouseDown}
-          />
-        </div>
+    <div className={`min-h-screen ${spaceGrotesk.variable} flex`} style={styles.background}>
+      <Sidebar
+        userProfile={userProfile}
+        backToHomeLabel="Back To Home"
+        onBackToHome={handleBackToHome}
+        showImagePlaceholder={true}
+      />
 
+      {/* Main Content */}
+      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col">
-          {/* Top Bar with JunctionLogo */}
-          <div className="bg-black border-b border-white/10">
-            <div className="px-6 py-4 flex items-center justify-between">
-              <JunctionLogo />
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-5 bg-white/20 rounded-sm"></div>
-                <div className="w-8 h-8 bg-white/20 rounded-full"></div>
+        <div className="flex-1 p-8 pt-[6%]">
+          {/* Profile Header */}
+          <div className="mb-8 flex items-center space-x-8">
+            {/* Profile Picture */}
+            <div 
+              className="w-24 h-24 rounded-full flex items-center justify-center"
+              style={styles.avatar}
+            >
+              <span className="text-2xl font-bold font-[var(--font-space-grotesk)]" style={styles.text}>TE</span>
+            </div>
+            
+            <div>
+              <h1 className="text-4xl font-bold mb-2 font-[var(--font-space-grotesk)]" style={styles.text}>
+                {profileData.profile.title}
+              </h1>
+              <p className="text-lg" style={styles.textSecondary}>Manage your personal information and preferences</p>
+            </div>
+          </div>
+
+          {/* Personal Information Section */}
+          <div className="border rounded-xl p-6 mb-6" style={styles.card}>
+            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
+              Personal Information
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* First Name */}
+              <div>
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.personalInfo.firstName}</label>
+                <input
+                  type="text"
+                  value={formData.firstName}
+                  onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                  style={styles.input}
+                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                />
+              </div>
+
+              {/* Last Name */}
+              <div>
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.personalInfo.lastName}</label>
+                <input
+                  type="text"
+                  value={formData.lastName}
+                  onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                  style={styles.input}
+                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                />
+              </div>
+
+              {/* Email Address */}
+              <div className="md:col-span-2">
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.personalInfo.emailAddress}</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                  style={styles.input}
+                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                />
+                <p className="text-xs mt-1" style={styles.textTertiary}>{profileData.profile.personalInfo.emailDescription}</p>
+              </div>
+
+              {/* Phone Number */}
+              <div className="md:col-span-2">
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.personalInfo.phoneNumber}</label>
+                <div className="flex space-x-2">
+                  <select 
+                    className="border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                    style={styles.input}
+                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                  >
+                    <option>Select...</option>
+                  </select>
+                  <input
+                    type="tel"
+                    placeholder="Phone number"
+                    value={formData.phoneNumber}
+                    onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
+                    className="flex-1 border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                    style={styles.input}
+                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                  />
+                </div>
+                <p className="text-xs mt-1" style={styles.textTertiary}>{profileData.profile.personalInfo.phoneDescription}</p>
+              </div>
+
+              {/* Date of Birth */}
+              <div className="md:col-span-2">
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.personalInfo.dateOfBirth}</label>
+                <div className="grid grid-cols-12 gap-2">
+                  <div className="col-span-3">
+                    <select 
+                      className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                      style={styles.input}
+                      onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                      onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                    >
+                      <option>Day</option>
+                    </select>
+                  </div>
+                  <div className="col-span-6">
+                    <select 
+                      className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                      style={styles.input}
+                      onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                      onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                    >
+                      <option>Month</option>
+                    </select>
+                  </div>
+                  <div className="col-span-3">
+                    <select 
+                      className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                      style={styles.input}
+                      onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                      onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                    >
+                      <option>Year</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Gender */}
+              <div>
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.personalInfo.gender}</label>
+                <select 
+                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                  style={styles.input}
+                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                >
+                  <option>Select...</option>
+                </select>
               </div>
             </div>
           </div>
 
-          {/* Page Content */}
-          <div className="px-6 py-8 flex-1 max-w-4xl mx-auto w-full">
-            {/* Profile Header */}
-            <div className="mb-12 flex items-center space-x-8">
-              {/* Profile Picture */}
-              <div className="w-32 h-32 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full flex items-center justify-center">
-                <span className="text-white text-4xl font-['Space_Grotesk'] font-bold">TE</span>
-              </div>
-              
+          {/* Profile Details Section */}
+          <div className="border rounded-xl p-6 mb-6" style={styles.card}>
+            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
+              {profileData.profile.profileDetails.title}
+            </h2>
+            <p className="text-sm mb-6" style={styles.textSecondary}>{profileData.profile.profileDetails.description}</p>
+            
+            <div className="space-y-6">
+              {/* Headline */}
               <div>
-                <h1 className="text-4xl font-['Space_Grotesk'] font-bold text-white mb-2">{profileData.profile.title}</h1>
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.headline}</label>
+                <p className="text-xs mb-2" style={styles.textTertiary}>{profileData.profile.profileDetails.headlineDescription}</p>
+                <input
+                  type="text"
+                  value={formData.headline}
+                  onChange={(e) => setFormData({...formData, headline: e.target.value})}
+                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                  style={styles.input}
+                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                />
               </div>
-            </div>
 
-            {/* Personal Information Section */}
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6 mb-8">
+              {/* Biography */}
+              <div>
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.biography}</label>
+                <p className="text-xs mb-2" style={styles.textTertiary}>{profileData.profile.profileDetails.biographyDescription}</p>
+                <textarea
+                  rows={4}
+                  value={formData.biography}
+                  onChange={(e) => setFormData({...formData, biography: e.target.value})}
+                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors resize-none"
+                  style={styles.input}
+                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                />
+              </div>
+
+              {/* Location & Demographics */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* First Name */}
                 <div>
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.personalInfo.firstName}</label>
-                  <input
-                    type="text"
-                    value={formData.firstName}
-                    onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50"
-                  />
+                  <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.countryOfResidence}</label>
+                  <select 
+                    className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                    style={styles.input}
+                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                  >
+                    <option>Select...</option>
+                  </select>
                 </div>
-
-                {/* Last Name */}
+                
                 <div>
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.personalInfo.lastName}</label>
-                  <input
-                    type="text"
-                    value={formData.lastName}
-                    onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50"
-                  />
+                  <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.nationality}</label>
+                  <select 
+                    className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                    style={styles.input}
+                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                  >
+                    <option>Select...</option>
+                  </select>
                 </div>
+              </div>
 
-                {/* Email Address */}
-                <div className="md:col-span-2">
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.personalInfo.emailAddress}</label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50"
-                  />
-                  <p className="text-white/40 text-xs font-['Inter'] mt-1">{profileData.profile.personalInfo.emailDescription}</p>
-                </div>
-
-                {/* Phone Number */}
-                <div className="md:col-span-2">
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.personalInfo.phoneNumber}</label>
-                  <div className="flex space-x-2">
-                    <select className="bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50">
-                      <option>Select...</option>
-                    </select>
-                    <input
-                      type="tel"
-                      placeholder="Phone number"
-                      value={formData.phoneNumber}
-                      onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
-                      className="flex-1 bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50"
-                    />
-                  </div>
-                  <p className="text-white/40 text-xs font-['Inter'] mt-1">{profileData.profile.personalInfo.phoneDescription}</p>
-                </div>
-
-                {/* Date of Birth */}
-                <div className="md:col-span-2">
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.personalInfo.dateOfBirth}</label>
-                  <div className="grid grid-cols-12 gap-2">
-                    <div className="col-span-3">
-                      <select className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50">
-                        <option>Select...</option>
-                      </select>
-                    </div>
-                    <div className="col-span-6">
-                      <select className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50">
-                        <option>Select...</option>
-                      </select>
-                    </div>
-                    <div className="col-span-3">
-                      <select className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50">
-                        <option>Select...</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Gender */}
+              {/* Languages and Interests */}
+              <div className="grid grid-cols-1 gap-6">
                 <div>
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.personalInfo.gender}</label>
-                  <select className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50">
+                  <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.spokenLanguages}</label>
+                  <select 
+                    className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                    style={styles.input}
+                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                  >
+                    <option>Select...</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.themesOfInterest}</label>
+                  <select 
+                    className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                    style={styles.input}
+                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                  >
+                    <option>Select...</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.industriesOfInterest}</label>
+                  <select 
+                    className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                    style={styles.input}
+                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                  >
                     <option>Select...</option>
                   </select>
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Profile Details Section */}
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6 mb-8">
-              <h2 className="text-2xl font-['Space_Grotesk'] font-bold text-white mb-4">{profileData.profile.profileDetails.title}</h2>
-              <p className="text-white/60 text-sm font-['Inter'] mb-6">{profileData.profile.profileDetails.description}</p>
-              
-              <div className="space-y-6">
-                {/* Headline */}
-                <div>
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.profileDetails.headline}</label>
-                  <p className="text-white/40 text-xs font-['Inter'] mb-2">{profileData.profile.profileDetails.headlineDescription}</p>
-                  <input
-                    type="text"
-                    value={formData.headline}
-                    onChange={(e) => setFormData({...formData, headline: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50"
-                  />
-                </div>
-
-                {/* Biography */}
-                <div>
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.profileDetails.biography}</label>
-                  <p className="text-white/40 text-xs font-['Inter'] mb-2">{profileData.profile.profileDetails.biographyDescription}</p>
-                  <textarea
-                    rows={4}
-                    value={formData.biography}
-                    onChange={(e) => setFormData({...formData, biography: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50 resize-none"
-                  />
-                </div>
-
-                {/* Location & Demographics */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.profileDetails.countryOfResidence}</label>
-                    <select className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50">
-                      <option>Select...</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.profileDetails.nationality}</label>
-                    <select className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50">
-                      <option>Select...</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Interests */}
-                <div className="grid grid-cols-1 gap-6">
-                  <div>
-                    <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.profileDetails.spokenLanguages}</label>
-                    <select className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50">
-                      <option>Select...</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.profileDetails.themesOfInterest}</label>
-                    <select className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50">
-                      <option>Select...</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.profileDetails.industriesOfInterest}</label>
-                    <select className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50">
-                      <option>Select...</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Education Section */}
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6 mb-8">
-              <h2 className="text-2xl font-['Space_Grotesk'] font-bold text-white mb-4">{profileData.profile.education.title}</h2>
-              <p className="text-white/60 text-sm font-['Inter'] mb-6">{profileData.profile.education.description}</p>
-              
-              <div>
-                <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.education.levelOfEducation}</label>
-                <select className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50">
-                  <option>Choose one</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Skills Section */}
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6 mb-8">
-              <h2 className="text-2xl font-['Space_Grotesk'] font-bold text-white mb-4">{profileData.profile.skills.title}</h2>
-              <p className="text-white/60 text-sm font-['Inter'] mb-6">{profileData.profile.skills.description}</p>
-              
-              <div className="space-y-4">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Type to search for skills"
-                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.skills.levelOfExpertise}</label>
-                  <div className="flex flex-wrap gap-2">
-                    {profileData.profile.skills.levels.map((level, index) => (
-                      <label key={index} className="flex items-center space-x-2 text-white/60 text-sm font-['Inter']">
-                        <input type="radio" name="skillLevel" className="text-green-300" />
-                        <span>{level}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-                
-                <button className="bg-green-300/20 hover:bg-green-300/30 text-green-300 border border-green-300/30 rounded px-4 py-2 text-sm font-['Space_Mono'] transition-colors">
-                  ADD
-                </button>
-              </div>
-            </div>
-
-            {/* Professional Roles Section */}
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6 mb-8">
-              <h2 className="text-2xl font-['Space_Grotesk'] font-bold text-white mb-4">{profileData.profile.professionalRoles.title}</h2>
-              <p className="text-white/60 text-sm font-['Inter'] mb-6">{profileData.profile.professionalRoles.description}</p>
-              
-              <div className="space-y-4">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Type to search for roles"
-                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.professionalRoles.yearsOfExperience}</label>
-                  <div className="flex flex-wrap gap-2">
-                    {profileData.profile.professionalRoles.experienceRanges.map((range, index) => (
-                      <label key={index} className="flex items-center space-x-2 text-white/60 text-sm font-['Inter']">
-                        <input type="radio" name="experience" className="text-green-300" />
-                        <span>{range}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-                
-                <button className="bg-green-300/20 hover:bg-green-300/30 text-green-300 border border-green-300/30 rounded px-4 py-2 text-sm font-['Space_Mono'] transition-colors">
-                  ADD
-                </button>
-              </div>
-            </div>
-
-            {/* Recruitment Preferences Section */}
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6 mb-8">
-              <h2 className="text-2xl font-['Space_Grotesk'] font-bold text-white mb-4">{profileData.profile.recruitmentPreferences.title}</h2>
-              <p className="text-white/60 text-sm font-['Inter'] mb-6">{profileData.profile.recruitmentPreferences.description}</p>
-              
-              <select className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50">
+          {/* Education Section */}
+          <div className="border rounded-xl p-6 mb-6" style={styles.card}>
+            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
+              {profileData.profile.education.title}
+            </h2>
+            <p className="text-sm mb-6" style={styles.textSecondary}>{profileData.profile.education.description}</p>
+            
+            <div>
+              <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.education.levelOfEducation}</label>
+              <select 
+                className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                style={styles.input}
+                onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+              >
                 <option>Choose one</option>
               </select>
             </div>
+          </div>
 
-            {/* Additional Links Section */}
-            <div className="bg-white/5 border border-white/10 rounded-lg p-6 mb-8">
-              <h2 className="text-2xl font-['Space_Grotesk'] font-bold text-white mb-4">{profileData.profile.additionalLinks.title}</h2>
-              <p className="text-white/60 text-sm font-['Inter'] mb-6">{profileData.profile.additionalLinks.description}</p>
+          {/* Skills Section */}
+          <div className="border rounded-xl p-6 mb-6" style={styles.card}>
+            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
+              {profileData.profile.skills.title}
+            </h2>
+            <p className="text-sm mb-6" style={styles.textSecondary}>{profileData.profile.skills.description}</p>
+            
+            <div className="space-y-4">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Type to search for skills"
+                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                  style={styles.input}
+                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                />
+              </div>
               
-              <div className="space-y-6">
-                {/* CV */}
-                <div>
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.additionalLinks.cv}</label>
-                  <p className="text-white/40 text-xs font-['Inter'] mb-2">{profileData.profile.additionalLinks.cvDescription}</p>
-                  <input
-                    type="url"
-                    value={formData.cv}
-                    onChange={(e) => setFormData({...formData, cv: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50"
-                  />
-                </div>
-
-                {/* Portfolio */}
-                <div>
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.additionalLinks.portfolio}</label>
-                  <p className="text-white/40 text-xs font-['Inter'] mb-2">{profileData.profile.additionalLinks.portfolioDescription}</p>
-                  <input
-                    type="url"
-                    value={formData.portfolio}
-                    onChange={(e) => setFormData({...formData, portfolio: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50"
-                  />
-                </div>
-
-                {/* GitHub */}
-                <div>
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.additionalLinks.github}</label>
-                  <p className="text-white/40 text-xs font-['Inter'] mb-2">{profileData.profile.additionalLinks.githubDescription}</p>
-                  <input
-                    type="url"
-                    value={formData.github}
-                    onChange={(e) => setFormData({...formData, github: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50"
-                  />
-                </div>
-
-                {/* LinkedIn */}
-                <div>
-                  <label className="block text-white/60 text-sm font-['Inter'] mb-2">{profileData.profile.additionalLinks.linkedin}</label>
-                  <p className="text-white/40 text-xs font-['Inter'] mb-2">{profileData.profile.additionalLinks.linkedinDescription}</p>
-                  <input
-                    type="url"
-                    value={formData.linkedin}
-                    onChange={(e) => setFormData({...formData, linkedin: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white font-['Inter'] focus:outline-none focus:border-green-300/50"
-                  />
+              <div>
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.skills.levelOfExpertise}</label>
+                <div className="flex flex-wrap gap-2">
+                  {profileData.profile.skills.levels.map((level, index) => (
+                    <label key={index} className="flex items-center space-x-2 text-sm" style={styles.textSecondary}>
+                      <input 
+                        type="radio" 
+                        name="skillLevel" 
+                        className="focus:ring-2"
+                        style={{
+                          backgroundColor: colors.white.opacity5,
+                          borderColor: colors.white.opacity15,
+                          accentColor: colors.primary.opacity100
+                        }}
+                      />
+                      <span>{level}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
-            </div>
-
-            {/* Save Button */}
-            <div className="flex justify-end">
-              <button className="bg-green-300 hover:bg-green-400 text-black font-['Space_Mono'] font-medium px-8 py-3 rounded transition-colors">
-                Save Profile
-              </button>
+              
+              <MainButton variant="primary" size="sm" showIcon={false}>
+                ADD
+              </MainButton>
             </div>
           </div>
-          
-          <Footer />
+
+          {/* Professional Roles Section */}
+          <div className="border rounded-xl p-6 mb-6" style={styles.card}>
+            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
+              {profileData.profile.professionalRoles.title}
+            </h2>
+            <p className="text-sm mb-6" style={styles.textSecondary}>{profileData.profile.professionalRoles.description}</p>
+            
+            <div className="space-y-4">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Type to search for roles"
+                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                  style={styles.input}
+                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.professionalRoles.yearsOfExperience}</label>
+                <div className="flex flex-wrap gap-2">
+                  {profileData.profile.professionalRoles.experienceRanges.map((range, index) => (
+                    <label key={index} className="flex items-center space-x-2 text-sm" style={styles.textSecondary}>
+                      <input 
+                        type="radio" 
+                        name="experience" 
+                        className="focus:ring-2"
+                        style={{
+                          backgroundColor: colors.white.opacity5,
+                          borderColor: colors.white.opacity15,
+                          accentColor: colors.primary.opacity100
+                        }}
+                      />
+                      <span>{range}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              
+              <MainButton variant="primary" size="sm" showIcon={false}>
+                ADD
+              </MainButton>
+            </div>
+          </div>
+
+          {/* Recruitment Preferences Section */}
+          <div className="border rounded-xl p-6 mb-6" style={styles.card}>
+            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
+              {profileData.profile.recruitmentPreferences.title}
+            </h2>
+            <p className="text-sm mb-6" style={styles.textSecondary}>{profileData.profile.recruitmentPreferences.description}</p>
+            
+            <select 
+              className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+              style={styles.input}
+              onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+              onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+            >
+              <option>Choose one</option>
+            </select>
+          </div>
+
+          {/* Additional Links Section */}
+          <div className="border rounded-xl p-6 mb-8" style={styles.card}>
+            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
+              {profileData.profile.additionalLinks.title}
+            </h2>
+            <p className="text-sm mb-6" style={styles.textSecondary}>{profileData.profile.additionalLinks.description}</p>
+            
+            <div className="space-y-6">
+              {/* CV */}
+              <div>
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.additionalLinks.cv}</label>
+                <p className="text-xs mb-2" style={styles.textTertiary}>{profileData.profile.additionalLinks.cvDescription}</p>
+                <input
+                  type="url"
+                  value={formData.cv}
+                  onChange={(e) => setFormData({...formData, cv: e.target.value})}
+                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                  style={styles.input}
+                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                />
+              </div>
+
+              {/* Portfolio */}
+              <div>
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.additionalLinks.portfolio}</label>
+                <p className="text-xs mb-2" style={styles.textTertiary}>{profileData.profile.additionalLinks.portfolioDescription}</p>
+                <input
+                  type="url"
+                  value={formData.portfolio}
+                  onChange={(e) => setFormData({...formData, portfolio: e.target.value})}
+                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
+                  style={styles.input}
+                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
+                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
+                />
+              </div>
+
+              {/* GitHub */}
+              <div>
+                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.additionalLinks.github}</label>
+                <p className="text-xs mb-2" style={styles.textTertiary}>{profileData.profile.additionalLinks.githubDescription}</p>
+                <input
+                  type="url"
+                  value={formData.github}
+                  onChange={(e) => setFormData({...formData, github: e.target.value})}
+                  className="w-full bg-white/5 border border-white/15 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400/50 transition-colors"
+                />
+              </div>
+
+              {/* LinkedIn */}
+              <div>
+                <label className="block text-white/60 text-sm mb-2">{profileData.profile.additionalLinks.linkedin}</label>
+                <p className="text-white/40 text-xs mb-2">{profileData.profile.additionalLinks.linkedinDescription}</p>
+                <input
+                  type="url"
+                  value={formData.linkedin}
+                  onChange={(e) => setFormData({...formData, linkedin: e.target.value})}
+                  className="w-full bg-white/5 border border-white/15 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400/50 transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Save Button */}
+          <div className="flex justify-end">
+            <MainButton 
+              variant="primary" 
+              size="lg" 
+              showIcon={false}
+              onClick={handleSaveProfile}
+            >
+              Save Profile
+            </MainButton>
+          </div>
         </div>
+
+        <Footer />
       </div>
     </div>
   )

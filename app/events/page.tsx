@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { initializeCSSVariables } from '@/styles/design-system'
 import { MainButton } from '@/components/attachables/main-button'
 import React, { useState, useEffect } from 'react'
@@ -250,6 +251,7 @@ export default function EventsPage() {
   }
 
   const { activeEvents, pastEvents } = processEvents()
+  const router = useRouter()
 
   // Event card component
   const EventCard = ({ event, index }: { event: Event; index: number }) => (
@@ -685,12 +687,13 @@ export default function EventsPage() {
                           Event ID
                         </MainButton>
                         <MainButton 
-                          variant="outlineGreen"
-                          className="w-full justify-center"
-                          showIcon={false}
-                        >
-                          Event Dashboard
-                        </MainButton>
+  variant="outlineGreen"
+  className="w-full justify-center"
+  showIcon={false}
+  onClick={() => router.push(`/events/${selectedEventId}/dash`)}
+>
+  Event Dashboard
+</MainButton>
                       </div>
                     </>
                   )}
