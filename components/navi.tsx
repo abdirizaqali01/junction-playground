@@ -44,33 +44,34 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
     <header className="border-b border-zinc-800 px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between mt-3">
         {/* Logo */}
-
         <JunctionLogo />
       
-        {/* Navigation Tabs */}
-        <div className="flex items-center border border-zinc-700 rounded-2xl p-1">
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.name
-            return (
-              <button
-                key={tab.name}
-                onClick={() => handleTabClick(tab)}
-                className={`px-8 py-3 text-sm rounded-xl transition-all duration-500 ease-in-out min-w-[120px] relative
-                  ${isActive
-                    ? 'text-emerald-400'
-                    : 'text-zinc-500 hover:text-zinc-300'}
-                `}
-                style={isActive ? {
-                  background: 'linear-gradient(90deg, rgba(16,185,129,0) 0%, rgba(16,185,129,0.1) 50%, rgba(16,185,129,0) 100%)',
-                  border: '1px solid transparent',
-                  backgroundClip: 'padding-box',
-                  boxShadow: 'inset 0 0 0 1px rgba(16,185,129,0.8), inset 0 0 0 2px rgba(16,185,129,0.4), inset 0 0 0 3px rgba(16,185,129,0.1)'
-                } : {}}
-              >
-                {tab.name}
-              </button>
-            )
-          })}
+        {/* Navigation Tabs - Centered */}
+        <div className="absolute left-1/2 transform -translate-x-1/2">
+          <div className="flex items-center border border-zinc-700 rounded-2xl p-1">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.name
+              return (
+                <button
+                  key={tab.name}
+                  onClick={() => handleTabClick(tab)}
+                  className={`px-8 py-3 text-sm rounded-xl transition-all duration-500 ease-in-out min-w-[120px] relative
+                    ${isActive
+                      ? 'text-emerald-400'
+                      : 'text-zinc-500 hover:text-zinc-300'}
+                  `}
+                  style={isActive ? {
+                    background: 'linear-gradient(90deg, rgba(16,185,129,0) 0%, rgba(16,185,129,0.1) 50%, rgba(16,185,129,0) 100%)',
+                    border: '1px solid transparent',
+                    backgroundClip: 'padding-box',
+                    boxShadow: 'inset 0 0 0 1px rgba(16,185,129,0.8), inset 0 0 0 2px rgba(16,185,129,0.4), inset 0 0 0 3px rgba(16,185,129,0.1)'
+                  } : {}}
+                >
+                  {tab.name}
+                </button>
+              )
+            })}
+          </div>
         </div>
         
         {/* Profile Avatar */}

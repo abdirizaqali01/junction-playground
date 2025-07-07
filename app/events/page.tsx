@@ -1,5 +1,7 @@
 'use client'
 
+import { initializeCSSVariables } from '@/styles/design-system'
+import { MainButton } from '@/components/attachables/main-button'
 import React, { useState, useEffect } from 'react'
 import { Footer } from "@/components/footer"
 import Navbar from '@/components/navi'
@@ -27,6 +29,68 @@ interface Challenge {
   description: string
 }
 
+// ChallengeCard component moved outside and properly typed
+const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+  
+  return (
+    <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg overflow-hidden">
+      <div className="flex">
+        {/* Left side - CO badge - darker */}
+        <div className="w-48 h-48 bg-[var(--color-dark-opacity100)] flex items-center justify-center border-r border-[var(--color-white-opacity10)] flex-shrink-0 mt-6 mb-6">
+          <div className="text-[var(--color-light-opacity60)] text-6xl font-bold font-[family-name:var(--font-space-grotesk)]">CO</div>
+        </div>
+        
+        {/* Right side - Content */}
+        <div className="flex-1 p-6 flex flex-col justify-between">
+          <div>
+            <h3 className="text-[var(--color-primary-opacity100)] text-lg font-medium mb-3 font-[family-name:var(--font-space-grotesk)]">
+              {challenge.name || 'Sustainable Generative AI Assistant For Insights'}
+            </h3>
+            
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              <span className="px-2 py-1 bg-[var(--color-white-opacity5)] text-[var(--color-light-opacity60)] text-xs rounded border border-[var(--color-white-opacity10)] font-[family-name:var(--font-space-mono)]">AI</span>
+              <span className="px-2 py-1 bg-[var(--color-white-opacity5)] text-[var(--color-light-opacity60)] text-xs rounded border border-[var(--color-white-opacity10)] font-[family-name:var(--font-space-mono)]">Machine Learning</span>
+              <span className="px-2 py-1 bg-[var(--color-white-opacity5)] text-[var(--color-light-opacity60)] text-xs rounded border border-[var(--color-white-opacity10)] font-[family-name:var(--font-space-mono)]">Data Science</span>
+            </div>
+            
+            {/* Section Header */}
+            <h4 className="text-[var(--color-light-opacity100)] font-medium mb-3 font-[family-name:var(--font-space-grotesk)]">Insight</h4>
+            
+            {/* Description */}
+            <p className="text-[var(--color-light-opacity60)] text-sm leading-relaxed mb-4 font-[family-name:var(--font-space-mono)]">
+              {isExpanded 
+                ? (challenge.description || `Description of Challenge... at vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores! Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia...`)
+                : `${(challenge.description || 'Description of Challenge... at vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores...').slice(0, 120)}...`
+              }
+            </p>
+          </div>
+          
+          {/* Expand/Collapse Button */}
+          <MainButton 
+            variant="ghost" 
+            size="sm"
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="self-start justify-center text-[var(--color-primary-opacity100)] hover:text-[var(--color-primary-opacity60)]"
+            showIcon={false}
+          >
+            <svg 
+              className={`w-4 h-4 mr-2 transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+            {isExpanded ? 'Collapse' : 'Expand'}
+          </MainButton>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function EventsPage() {
   const [activeTab, setActiveTab] = useState('Events')
   const [events, setEvents] = useState<Event[]>([])
@@ -36,7 +100,12 @@ export default function EventsPage() {
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [showChallengesPopup, setShowChallengesPopup] = useState(false)
-  const [isRegistered, setIsRegistered] = useState(false) // New state for demo toggle
+  const [isRegistered, setIsRegistered] = useState(false)
+
+  // Initialize design system CSS variables
+  useEffect(() => {
+    initializeCSSVariables()
+  }, [])
 
   // Fetch events and challenges
   useEffect(() => {
@@ -132,17 +201,17 @@ export default function EventsPage() {
     }
   }
 
-  // Helper function to get status colors
+  // Helper function to get status colors using design system
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PUBLISHED':
-        return 'bg-green-500/20 text-green-400 border-green-500/30'
+        return 'bg-[var(--color-primary-opacity20)] text-[var(--color-primary-opacity100)] border-[var(--color-primary-opacity40)]'
       case 'ONGOING':
-        return 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+        return 'bg-[var(--color-secondary-opacity20)] text-[var(--color-secondary-opacity100)] border-[var(--color-secondary-opacity40)]'
       case 'CANCELLED':
-        return 'bg-red-500/20 text-red-400 border-red-500/30'
+        return 'bg-[var(--color-alerts-opacity20)] text-[var(--color-alerts-opacity100)] border-[var(--color-alerts-opacity40)]'
       default:
-        return 'bg-neutral-800/80 text-gray-200 border-neutral-600/30'
+        return 'bg-[var(--color-white-opacity10)] text-[var(--color-light-opacity100)] border-[var(--color-white-opacity20)]'
     }
   }
 
@@ -182,71 +251,12 @@ export default function EventsPage() {
 
   const { activeEvents, pastEvents } = processEvents()
 
-  // Challenge Card Component
-  const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
-    const [isExpanded, setIsExpanded] = useState(false)
-    
-    return (
-      <div className="bg-neutral-800/60 border border-neutral-600/40 rounded-lg overflow-hidden">
-        <div className="flex">
-          {/* Left side - CO badge - square reaching to expand text */}
-          <div className="w-48 h-48 bg-neutral-900/90 flex items-center justify-center border-r border-neutral-600/40 flex-shrink-0 mt-6 mb-6">
-            <div className="text-neutral-300 text-6xl font-bold">CO</div>
-          </div>
-          
-          {/* Right side - Content */}
-          <div className="flex-1 p-6 flex flex-col justify-between">
-            <div>
-              <h3 className="text-green-400 text-lg font-medium mb-3">
-                {challenge.name || 'Sustainable Generative AI Assistant For Insights'}
-              </h3>
-              
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-2 py-1 bg-neutral-700/60 text-neutral-300 text-xs rounded border border-neutral-600/40">AI</span>
-                <span className="px-2 py-1 bg-neutral-700/60 text-neutral-300 text-xs rounded border border-neutral-600/40">Machine Learning</span>
-                <span className="px-2 py-1 bg-neutral-700/60 text-neutral-300 text-xs rounded border border-neutral-600/40">Data Science</span>
-              </div>
-              
-              {/* Section Header */}
-              <h4 className="text-neutral-200 font-medium mb-3">Insight</h4>
-              
-              {/* Description */}
-              <p className="text-neutral-400 text-sm leading-relaxed mb-4">
-                {isExpanded 
-                  ? (challenge.description || `Description of Challenge... at vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores! Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia...`)
-                  : `${(challenge.description || 'Description of Challenge... at vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores...').slice(0, 120)}...`
-                }
-              </p>
-            </div>
-            
-            {/* Expand/Collapse Button - positioned at bottom */}
-            <button 
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="flex items-center space-x-2 text-green-400 text-sm hover:text-green-300 transition-colors self-start"
-            >
-              <svg 
-                className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
-              <span>{isExpanded ? 'Collapse' : 'Expand'}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   // Event card component
   const EventCard = ({ event, index }: { event: Event; index: number }) => (
-    <div className="bg-neutral-900/60 border border-neutral-700/50 rounded-lg overflow-hidden group hover:border-neutral-600 transition-all cursor-pointer flex-shrink-0 w-80"
+    <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg overflow-hidden group hover:border-[var(--color-white-opacity20)] transition-all cursor-pointer flex-shrink-0 w-80"
          onClick={() => setSelectedEventId(event.event_id)}>
       {/* Event Image */}
-      <div className="relative h-40 bg-neutral-800 overflow-hidden">
+      <div className="relative h-40 bg-[var(--color-white-opacity10)] overflow-hidden">
         <img 
           src={event.cover_image_url || getPlaceholderImage(index)}
           alt={event.name || "Event"}
@@ -259,17 +269,19 @@ export default function EventsPage() {
         {/* Event Details - Stacked */}
         <div className="space-y-2 mb-4">
           <div className="pb-2">
-            <h3 className="text-white [font-size:120%] font-space-grotesk font-semibold mb-2">{event.name || 'Event Name TBD'}</h3>
+            <h3 className="text-[var(--color-light-opacity100)] text-lg font-semibold font-[family-name:var(--font-space-grotesk)] mb-2">
+              {event.name || 'Event Name TBD'}
+            </h3>
             
             {/* Tags Row - Real status + placeholders */}
             <div className="flex flex-wrap gap-1">
-              <span className={`px-2 py-1 text-xs font-space-mono rounded border ${getStatusColor(event.status)}`}>
+              <span className={`px-2 py-1 text-xs font-medium rounded border font-[family-name:var(--font-space-mono)] ${getStatusColor(event.status)}`}>
                 {event.status || 'Status TBD'}
               </span>
-              <span className="px-2 py-1 bg-neutral-800/80 font-space-mono text-gray-200 text-xs rounded border border-neutral-600/30">
+              <span className="px-2 py-1 bg-[var(--color-white-opacity10)] text-[var(--color-light-opacity100)] text-xs rounded border border-[var(--color-white-opacity20)] font-[family-name:var(--font-space-mono)]">
                 {event.is_public ? 'Public' : 'Private'}
               </span>
-              <span className="px-2 py-1 bg-neutral-800/80 font-space-mono text-gray-200 text-xs rounded border border-neutral-600/30">
+              <span className="px-2 py-1 bg-[var(--color-white-opacity10)] text-[var(--color-light-opacity100)] text-xs rounded border border-[var(--color-white-opacity20)] font-[family-name:var(--font-space-mono)]">
                 Category TBD
               </span>
             </div>
@@ -277,51 +289,55 @@ export default function EventsPage() {
 
           <div className="py-2">
             <div className="flex items-center space-x-2 py-1">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[var(--color-light-opacity60)]">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                 <line x1="16" y1="2" x2="16" y2="6"/>
                 <line x1="8" y1="2" x2="8" y2="6"/>
                 <line x1="3" y1="10" x2="21" y2="10"/>
               </svg>
-              <span className="text-gray-300 text-xs font-space-mono">{formatDate(event.start_date)}</span>
+              <span className="text-[var(--color-light-opacity100)] text-xs font-[family-name:var(--font-space-mono)]">{formatDate(event.start_date)}</span>
             </div>
             <div className="flex items-center space-x-2 py-1">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[var(--color-light-opacity60)]">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                 <circle cx="12" cy="10" r="3"/>
               </svg>
-              <span className="text-gray-300 text-xs font-space-mono">{event.location || 'Location TBD'}</span>
+              <span className="text-[var(--color-light-opacity100)] text-xs font-[family-name:var(--font-space-mono)]">{event.location || 'Location TBD'}</span>
             </div>
             <div className="flex items-center space-x-2 py-1">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[var(--color-light-opacity60)]">
                 <circle cx="12" cy="12" r="10"/>
                 <line x1="2" y1="12" x2="22" y2="12"/>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"/>
               </svg>
-              <span className="text-gray-300 text-xs font-space-mono">Hackathon</span>
+              <span className="text-[var(--color-light-opacity100)] text-xs font-[family-name:var(--font-space-mono)]">Hackathon</span>
             </div>
           </div>
         </div>
         
         {/* Buttons - Full Width Side by Side */}
         <div className="flex space-x-2 mb-3">
-          <button className="flex-1 px-3 py-4 bg-white text-black [font-size:75%] font-space-mono rounded hover:bg-gray-100 transition-colors">
+          <MainButton 
+            variant="default" 
+            size="sm" 
+            className="flex-1 justify-center"
+            showIcon={false}
+          >
             View event
-          </button>
-          <button 
-            className={`flex-1 px-3 py-4 text-white [font-size:75%] font-space-mono rounded transition-colors ${
-              event.status === 'CANCELLED' 
-                ? 'bg-gray-500/50 text-gray-400 cursor-not-allowed' 
-                : 'bg-[#55D186] text-white hover:bg-green-600'
-            }`}
+          </MainButton>
+          <MainButton 
+            variant={event.status === 'CANCELLED' ? 'gray' : 'primary'} 
+            size="sm" 
+            className="flex-1 justify-center"
             disabled={event.status === 'CANCELLED'}
+            showIcon={false}
           >
             {event.status === 'CANCELLED' ? 'Cancelled' : 'Register now'}
-          </button>
+          </MainButton>
         </div>
         
         {/* End Date */}
-        <div className="flex items-center justify-center space-x-1 text-gray-400 text-xs font-space-mono">
+        <div className="flex items-center justify-center space-x-1 text-[var(--color-light-opacity60)] text-xs font-[family-name:var(--font-space-mono)]">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10"/>
             <polyline points="12,6 12,12 16,14"/>
@@ -334,12 +350,12 @@ export default function EventsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black text-white font-sans">
+      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-[family-name:var(--font-space-grotesk)]">
         <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
         <div className="pt-20 flex justify-center items-center h-64">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400 mx-auto mb-4"></div>
-            <p className="text-gray-400">Loading events...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary-opacity100)] mx-auto mb-4"></div>
+            <p className="text-[var(--color-light-opacity60)]">Loading events...</p>
           </div>
         </div>
         <Footer />
@@ -349,17 +365,19 @@ export default function EventsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-black text-white font-sans">
+      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-[family-name:var(--font-space-grotesk)]">
         <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
         <div className="pt-20 flex justify-center items-center h-64">
           <div className="text-center">
-            <p className="text-red-500 mb-4">Error loading events: {error}</p>
-            <button 
+            <p className="text-[var(--color-alerts-opacity100)] mb-4">Error loading events: {error}</p>
+            <MainButton 
+              variant="primary"
               onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-emerald-500 text-black rounded hover:bg-emerald-400 transition-colors"
+              className="justify-center"
+              showIcon={false}
             >
               Retry
-            </button>
+            </MainButton>
           </div>
         </div>
         <Footer />
@@ -370,34 +388,33 @@ export default function EventsPage() {
   // If viewing specific event details
   if (selectedEventId) {
     const selectedEvent = events.find(e => e.event_id === selectedEventId)
-    const eventChallenges = getEventChallenges(selectedEventId)
+    const eventChallenges = getEventChallenges(selectedEventId) // Fixed: using the function properly
 
     if (!selectedEvent) {
-      return <div>Event not found</div>
+      return <div className="bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)]">Event not found</div>
     }
 
     return (
-      <div className="min-h-screen bg-black text-white font-sans">
+      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-[family-name:var(--font-space-grotesk)]">
         {/* Header */}
-        <div className={`fixed top-0 left-0 right-0 z-50 ${showChallengesPopup ? 'bg-neutral-800' : 'bg-black/80'} backdrop-blur-md`}>
+        <div className={`fixed top-0 left-0 right-0 z-50 ${showChallengesPopup ? 'bg-[var(--color-white-opacity10)]' : 'bg-[var(--color-dark-opacity100)]/80'} backdrop-blur-md`}>
           <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
 
         {/* Demo Toggle - Fixed at top right */}
         <div className="fixed top-20 right-6 z-40">
-          <div className="bg-neutral-900 border border-neutral-700 rounded-lg p-3">
+          <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity20)] rounded-lg p-3">
             <div className="flex items-center space-x-3">
-              <span className="text-sm text-gray-300">Demo:</span>
-              <button
+              <span className="text-sm text-[var(--color-light-opacity60)]">Demo:</span>
+              <MainButton
+                variant={isRegistered ? 'primary' : 'outlineGray'}
+                size="sm"
                 onClick={() => setIsRegistered(!isRegistered)}
-                className={`px-3 py-1 text-xs rounded transition-colors ${
-                  isRegistered 
-                    ? 'bg-green-500 text-white' 
-                    : 'bg-neutral-700 text-gray-300 hover:bg-neutral-600'
-                }`}
+                className="justify-center"
+                showIcon={false}
               >
                 {isRegistered ? 'Registered' : 'Not Registered'}
-              </button>
+              </MainButton>
             </div>
           </div>
         </div>
@@ -407,16 +424,18 @@ export default function EventsPage() {
           <div className="container mx-auto px-6 py-6 max-w-7xl">
             {/* Back to Events Button */}
             <div className="mb-6">
-              <button 
+              <MainButton 
+                variant="ghost"
                 onClick={() => setSelectedEventId(null)}
-                className="flex items-center space-x-2 text-gray-400 hover:text-white text-sm transition-colors"
+                showIcon={false}
+                className="text-[var(--color-light-opacity60)] hover:text-[var(--color-light-opacity100)] justify-center"
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                   <path d="M19 12H5"/>
                   <path d="M12 19l-7-7 7-7"/>
                 </svg>
-                <span>Back to Events</span>
-              </button>
+                Back to Events
+              </MainButton>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -424,7 +443,7 @@ export default function EventsPage() {
               <div className="lg:col-span-2 space-y-6">
                 
                 {/* Hero Section */}
-                <div className="relative h-72 bg-neutral-800 rounded-lg overflow-hidden">
+                <div className="relative h-72 bg-[var(--color-white-opacity10)] rounded-lg overflow-hidden">
                   <div className="absolute inset-0">
                     <img 
                       src={selectedEvent.cover_image_url || getPlaceholderImage(0)}
@@ -433,14 +452,14 @@ export default function EventsPage() {
                     />
                   </div>
                   
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--color-dark-opacity100)]/80 to-transparent p-6">
                     <div className="flex items-center space-x-3 mb-2">
-                      <h1 className="text-3xl font-bold text-white">{selectedEvent.name}</h1>
-                      <span className="px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-full">
+                      <h1 className="text-3xl font-bold text-[var(--color-light-opacity100)] font-[family-name:var(--font-space-grotesk)]">{selectedEvent.name}</h1>
+                      <span className={`px-3 py-1 text-xs font-medium rounded-full ${getStatusColor(selectedEvent.status)}`}>
                         {selectedEvent.status || 'LIVE'}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-6 text-gray-300 text-sm">
+                    <div className="flex items-center space-x-6 text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">
                       <span className="flex items-center space-x-1">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -470,116 +489,111 @@ export default function EventsPage() {
                 </div>
 
                 {/* About Section */}
-                <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
-                  <h2 className="text-xl font-semibold text-white mb-4">About</h2>
-                  <p className="text-gray-300 text-sm leading-relaxed">
+                <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
+                  <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] mb-4 font-[family-name:var(--font-space-grotesk)]">About</h2>
+                  <p className="text-[var(--color-light-opacity60)] text-sm leading-relaxed font-[family-name:var(--font-space-mono)]">
                     {selectedEvent.description || 'Join us for one of the most anticipated hackathon adventures where epic talents convene and brilliant minds unite. Experience the ultimate hackathon where innovation meets creativity and where great ideas come to life. Our event brings together the brightest minds in technology, design, and entrepreneurship for an unforgettable experience.'}
                   </p>
                 </div>
 
                 {/* Schedule Section */}
-                <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
-                  <h2 className="text-xl font-semibold text-white mb-6">Schedule</h2>
+                <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
+                  <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] mb-6 font-[family-name:var(--font-space-grotesk)]">Schedule</h2>
                   
                   <div className="space-y-1">
-                    <div className="flex items-center justify-between py-4 border-b border-neutral-800 last:border-b-0">
+                    <div className="flex items-center justify-between py-4 border-b border-[var(--color-white-opacity10)] last:border-b-0">
                       <div className="flex items-center space-x-4">
-                        <span className="text-gray-400 text-sm w-12">Day 1</span>
-                        <span className="text-white text-sm font-medium">Event Kick-off & Networking</span>
+                        <span className="text-[var(--color-light-opacity60)] text-sm w-12 font-[family-name:var(--font-space-mono)]">Day 1</span>
+                        <span className="text-[var(--color-light-opacity100)] text-sm font-medium font-[family-name:var(--font-space-grotesk)]">Hackathon Announcement & Building</span>
                       </div>
-                      <span className="text-gray-400 text-sm">10:00 - 18:00</span>
-                    </div>
-                    
-                    <div className="flex items-center justify-between py-4 border-b border-neutral-800 last:border-b-0">
-                      <div className="flex items-center space-x-4">
-                        <span className="text-gray-400 text-sm w-12">Day 2</span>
-                        <span className="text-white text-sm font-medium">Hackathon Announcement & Building</span>
-                      </div>
-                      <span className="text-gray-400 text-sm">10:00 - 18:00</span>
+                      <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">10:00 - 18:00</span>
                     </div>
                     
                     <div className="flex items-center justify-between py-4">
                       <div className="flex items-center space-x-4">
-                        <span className="text-gray-400 text-sm w-12">Day 3</span>
-                        <span className="text-white text-sm font-medium">Final Submissions & Pitches</span>
+                        <span className="text-[var(--color-light-opacity60)] text-sm w-12 font-[family-name:var(--font-space-mono)]">Day 3</span>
+                        <span className="text-[var(--color-light-opacity100)] text-sm font-medium font-[family-name:var(--font-space-grotesk)]">Final Submissions & Pitches</span>
                       </div>
-                      <span className="text-gray-400 text-sm">10:00 - 18:00</span>
+                      <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">10:00 - 18:00</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Challenges Section - Preview one challenge with button */}
-                <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
+                <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-white">Challenges</h2>
+                    <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] font-[family-name:var(--font-space-grotesk)]">Challenges</h2>
                   </div>
                   
                   {eventChallenges.length > 0 ? (
                     <div className="space-y-4">
                       {/* Preview one challenge - simple card with just image and title */}
-                      <div className="bg-neutral-800/60 border border-neutral-600/40 rounded-lg overflow-hidden">
+                      <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg overflow-hidden">
                         <div className="flex items-center">
                           {/* Left side - CO badge */}
-                          <div className="w-16 h-16 bg-neutral-900/90 flex items-center justify-center border-r border-neutral-600/40 flex-shrink-0 m-4">
-                            <div className="text-neutral-300 text-xl font-bold">CO</div>
+                          <div className="w-16 h-16 bg-[var(--color-white-opacity10)] flex items-center justify-center border-r border-[var(--color-white-opacity10)] flex-shrink-0 m-4">
+                            <div className="text-[var(--color-light-opacity60)] text-xl font-bold font-[family-name:var(--font-space-grotesk)]">CO</div>
                           </div>
                           
                           {/* Right side - Just title */}
                           <div className="flex-1 p-4">
-                            <h3 className="text-white text-lg font-medium">
+                            <h3 className="text-[var(--color-light-opacity100)] text-lg font-medium font-[family-name:var(--font-space-grotesk)]">
                               {eventChallenges[0].name || 'Sustainable Generative AI Assistant For Insights'}
                             </h3>
                           </div>
                         </div>
                       </div>
                       
-                      {/* See All Challenges Button - smaller */}
-                      <button 
+                      {/* See All Challenges Button */}
+                      <MainButton 
+                        variant="default"
+                        size="sm"
                         onClick={() => setShowChallengesPopup(true)}
-                        className="px-4 py-2 bg-white text-black text-sm font-medium rounded hover:bg-gray-100 transition-colors"
+                        className="justify-center"
+                        showIcon={false}
                       >
                         See All Challenges
-                      </button>
+                      </MainButton>
                     </div>
                   ) : (
                     <div className="text-center py-8">
-                      <p className="text-gray-400">No challenges available for this event</p>
+                      <p className="text-[var(--color-light-opacity60)]">No challenges available for this event</p>
                     </div>
                   )}
                 </div>
 
                 {/* Prizes Section */}
-                <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
-                  <h2 className="text-xl font-semibold text-white mb-6">Prizes</h2>
+                <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
+                  <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] mb-6 font-[family-name:var(--font-space-grotesk)]">Prizes</h2>
                   
                   <div className="space-y-3">
-                    <div className="flex items-center space-x-4 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
-                      <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-bold">1</span>
+                    <div className="flex items-center space-x-4 p-4 bg-[var(--color-primary-opacity20)] border border-[var(--color-primary-opacity40)] rounded-lg">
+                      <div className="w-8 h-8 bg-[var(--color-primary-opacity100)] rounded-full flex items-center justify-center">
+                        <span className="text-[var(--color-light-opacity100)] text-sm font-bold">1</span>
                       </div>
                       <div>
-                        <div className="text-white font-medium text-sm">1st Place</div>
-                        <div className="text-gray-400 text-sm">Prize information pending</div>
+                        <div className="text-[var(--color-light-opacity100)] font-medium text-sm font-[family-name:var(--font-space-grotesk)]">1st Place</div>
+                        <div className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Prize information pending</div>
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-4 p-4 bg-neutral-800 border border-neutral-700 rounded-lg">
-                      <div className="w-8 h-8 bg-neutral-600 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-bold">2</span>
+                    <div className="flex items-center space-x-4 p-4 bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity20)] rounded-lg">
+                      <div className="w-8 h-8 bg-[var(--color-white-opacity30)] rounded-full flex items-center justify-center">
+                        <span className="text-[var(--color-light-opacity100)] text-sm font-bold">2</span>
                       </div>
                       <div>
-                        <div className="text-white font-medium text-sm">2nd Place</div>
-                        <div className="text-gray-400 text-sm">Prize information pending</div>
+                        <div className="text-[var(--color-light-opacity100)] font-medium text-sm font-[family-name:var(--font-space-grotesk)]">2nd Place</div>
+                        <div className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Prize information pending</div>
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-4 p-4 bg-neutral-800 border border-neutral-700 rounded-lg">
-                      <div className="w-8 h-8 bg-neutral-600 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-bold">3</span>
+                    <div className="flex items-center space-x-4 p-4 bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity20)] rounded-lg">
+                      <div className="w-8 h-8 bg-[var(--color-white-opacity30)] rounded-full flex items-center justify-center">
+                        <span className="text-[var(--color-light-opacity100)] text-sm font-bold">3</span>
                       </div>
                       <div>
-                        <div className="text-white font-medium text-sm">3rd Place</div>
-                        <div className="text-gray-400 text-sm">Prize information pending</div>
+                        <div className="text-[var(--color-light-opacity100)] font-medium text-sm font-[family-name:var(--font-space-grotesk)]">3rd Place</div>
+                        <div className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Prize information pending</div>
                       </div>
                     </div>
                   </div>
@@ -591,65 +605,69 @@ export default function EventsPage() {
               <div className="space-y-6">
                 
                 {/* Registration Card */}
-                <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-white mb-6">Registration</h3>
+                <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-[var(--color-light-opacity100)] mb-6 font-[family-name:var(--font-space-grotesk)]">Registration</h3>
                   
                   {!isRegistered ? (
                     // Unregistered State
                     <>
                       <div className="space-y-4 mb-6">
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-400 text-sm">Status</span>
-                          <span className="px-2 py-1 bg-green-500 text-white text-xs font-medium rounded">Open</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Status</span>
+                          <span className={`px-2 py-1 text-xs font-medium rounded ${getStatusColor('PUBLISHED')}`}>Open</span>
                         </div>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-400 text-sm">Deadline</span>
-                          <span className="text-white text-sm">{formatDate(selectedEvent.end_date) || 'Information pending'}</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Deadline</span>
+                          <span className="text-[var(--color-light-opacity100)] text-sm font-[family-name:var(--font-space-mono)]">{formatDate(selectedEvent.end_date) || 'Information pending'}</span>
                         </div>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-400 text-sm">Participants</span>
-                          <span className="text-white text-sm">Information pending</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Participants</span>
+                          <span className="text-[var(--color-light-opacity100)] text-sm font-[family-name:var(--font-space-mono)]">Information pending</span>
                         </div>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-400 text-sm">Team Size</span>
-                          <span className="text-white text-sm">1-4 People</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Team Size</span>
+                          <span className="text-[var(--color-light-opacity100)] text-sm font-[family-name:var(--font-space-mono)]">1-4 People</span>
                         </div>
                       </div>
                       
-                      <button className="w-full px-4 py-3 bg-green-500 text-white text-sm font-medium rounded hover:bg-green-600 transition-colors">
+                      <MainButton 
+                        variant="primary"
+                        className="w-full justify-center"
+                        showIcon={false}
+                      >
                         Register now
-                      </button>
+                      </MainButton>
                     </>
                   ) : (
-                    // Registered State - Matching the mockup
+                    // Registered State
                     <>
                       <div className="space-y-4 mb-6">
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-400 text-sm">Status</span>
-                          <span className="px-2 py-1 bg-green-500 text-white text-xs font-medium rounded">Open</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Status</span>
+                          <span className={`px-2 py-1 text-xs font-medium rounded ${getStatusColor('PUBLISHED')}`}>Open</span>
                         </div>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-400 text-sm">Deadline</span>
-                          <span className="text-white text-sm">May 30, 2025</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Deadline</span>
+                          <span className="text-[var(--color-light-opacity100)] text-sm font-[family-name:var(--font-space-mono)]">May 30, 2025</span>
                         </div>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-400 text-sm">Participants</span>
-                          <span className="text-white text-sm">1,478 Registered</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Participants</span>
+                          <span className="text-[var(--color-light-opacity100)] text-sm font-[family-name:var(--font-space-mono)]">1,478 Registered</span>
                         </div>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-400 text-sm">Team Size</span>
-                          <span className="text-white text-sm">1-4 People</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Team Size</span>
+                          <span className="text-[var(--color-light-opacity100)] text-sm font-[family-name:var(--font-space-mono)]">1-4 People</span>
                         </div>
                       </div>
 
                       {/* Registration ends info with clock icon */}
-                      <div className="flex items-center justify-center space-x-2 text-gray-400 text-sm mb-4">
+                      <div className="flex items-center justify-center space-x-2 text-[var(--color-light-opacity60)] text-sm mb-4 font-[family-name:var(--font-space-mono)]">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <circle cx="12" cy="12" r="10"/>
                           <polyline points="12,6 12,12 16,14"/>
@@ -657,44 +675,52 @@ export default function EventsPage() {
                         <span>Registration ends May 30, 2025</span>
                       </div>
                       
-                      {/* Buttons - Event ID and Event Dashboard */}
+                      {/* Buttons */}
                       <div className="space-y-3">
-                        <button className="w-full px-4 py-3 bg-white text-black text-sm font-medium rounded hover:bg-gray-100 transition-colors">
+                        <MainButton 
+                          variant="default"
+                          className="w-full justify-center"
+                          showIcon={false}
+                        >
                           Event ID
-                        </button>
-                        <button className="w-full px-4 py-3 border border-green-500 text-green-500 text-sm font-medium rounded hover:bg-green-500 hover:text-white transition-colors">
+                        </MainButton>
+                        <MainButton 
+                          variant="outlineGreen"
+                          className="w-full justify-center"
+                          showIcon={false}
+                        >
                           Event Dashboard
-                        </button>
+                        </MainButton>
                       </div>
                     </>
                   )}
                 </div>
 
                 {/* Sponsors Card */}
-                <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-white mb-6">Sponsors</h3>
+                <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-[var(--color-light-opacity100)] mb-6 font-[family-name:var(--font-space-grotesk)]">Sponsors</h3>
                   
                   <div className="grid grid-cols-2 gap-3">
                     {[1,2,3,4,5,6].map((i) => (
-                      <div key={i} className="h-14 bg-neutral-800 border border-neutral-700 rounded-lg flex items-center justify-center">
-                        <span className="text-gray-400 text-xs">Company {i}</span>
+                      <div key={i} className="h-14 bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity20)] rounded-lg flex items-center justify-center">
+                        <span className="text-[var(--color-light-opacity60)] text-xs font-[family-name:var(--font-space-mono)]">Company {i}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Organizers Card */}
-                <div className="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-white mb-6">Organizers</h3>
+                <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-[var(--color-light-opacity100)] mb-6 font-[family-name:var(--font-space-grotesk)]">Organizers</h3>
                   
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-bold">A</span>
+                      <div className="w-10 h-10 bg-[var(--color-primary-opacity100)] rounded-full flex items-center justify-center">
+                        <span className="text-[var(--color-light-opacity100)] text-sm font-bold">A</span>
                       </div>
                       <div>
-                        <div className="text-white text-sm font-medium">Junction Organizing</div>
-                        <div className="text-gray-400 text-xs">Team Organizer</div>
+                        <div className="text-[var(--color-light-opacity100)] text-sm font-medium font-[family-name:var(--font-space-grotesk)]">Junction Organizing</div>
+                        <div className="text-[var(--color-light-opacity60)] text-xs font-[family-name:var(--font-space-mono)]">Team Organizer</div>
                       </div>
                     </div>
                   </div>
@@ -704,21 +730,21 @@ export default function EventsPage() {
 
             {/* Similar Events Section - Full Width */}
             <div className="mt-8">
-              <h2 className="text-2xl font-bold text-white mb-6">Similar Events</h2>
+              <h2 className="text-2xl font-bold text-[var(--color-light-opacity100)] mb-6 font-[family-name:var(--font-space-grotesk)]">Similar Events</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {events.filter(e => e.event_id !== selectedEventId).slice(0, 2).map((event, index) => (
-                  <div key={event.event_id} className="bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden group hover:border-neutral-700 transition-all cursor-pointer"
+                  <div key={event.event_id} className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg overflow-hidden group hover:border-[var(--color-white-opacity20)] transition-all cursor-pointer"
                        onClick={() => setSelectedEventId(event.event_id)}>
-                    <div className="relative h-48 bg-neutral-800 overflow-hidden">
+                    <div className="relative h-48 bg-[var(--color-white-opacity10)] overflow-hidden">
                       <img 
                         src={event.cover_image_url || getPlaceholderImage(index)}
                         alt={event.name}
                         className="w-full h-full object-cover grayscale"
                       />
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
-                        <h3 className="text-white text-lg font-bold mb-2">{event.name}</h3>
-                        <div className="flex items-center space-x-4 text-gray-300 text-xs mb-3">
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--color-dark-opacity100)]/90 to-transparent p-4">
+                        <h3 className="text-[var(--color-light-opacity100)] text-lg font-bold mb-2 font-[family-name:var(--font-space-grotesk)]">{event.name}</h3>
+                        <div className="flex items-center space-x-4 text-[var(--color-light-opacity60)] text-xs mb-3 font-[family-name:var(--font-space-mono)]">
                           <span className="flex items-center space-x-1">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -745,18 +771,23 @@ export default function EventsPage() {
                           </span>
                         </div>
                         <div className="flex flex-wrap gap-1 mb-3">
-                          <span className="px-2 py-1 bg-neutral-700 text-gray-300 text-xs rounded-full">AI</span>
-                          <span className="px-2 py-1 bg-neutral-700 text-gray-300 text-xs rounded-full">Machine Learning</span>
-                          <span className="px-2 py-1 bg-neutral-700 text-gray-300 text-xs rounded-full">Innovation</span>
+                          <span className="px-2 py-1 bg-[var(--color-white-opacity20)] text-[var(--color-light-opacity60)] text-xs rounded-full font-[family-name:var(--font-space-mono)]">AI</span>
+                          <span className="px-2 py-1 bg-[var(--color-white-opacity20)] text-[var(--color-light-opacity60)] text-xs rounded-full font-[family-name:var(--font-space-mono)]">Machine Learning</span>
+                          <span className="px-2 py-1 bg-[var(--color-white-opacity20)] text-[var(--color-light-opacity60)] text-xs rounded-full font-[family-name:var(--font-space-mono)]">Innovation</span>
                         </div>
                       </div>
                     </div>
                     <div className="p-4">
                       <div className="flex items-center justify-between">
-                        <button className="px-4 py-2 bg-green-500 text-white text-sm font-medium rounded hover:bg-green-600 transition-colors">
+                        <MainButton 
+                          variant="primary"
+                          size="sm"
+                          className="justify-center"
+                          showIcon={false}
+                        >
                           Register now
-                        </button>
-                        <div className="flex items-center space-x-1 text-gray-400 text-xs">
+                        </MainButton>
+                        <div className="flex items-center space-x-1 text-[var(--color-light-opacity60)] text-xs font-[family-name:var(--font-space-mono)]">
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="12" cy="12" r="10"/>
                             <polyline points="12,6 12,12 16,14"/>
@@ -824,21 +855,21 @@ export default function EventsPage() {
     )
   }
 
-  // Main events listing view - Now using the events page design
+  // Main events listing view
   return (
-    <div className="min-h-screen bg-black text-white font-sans">
+    <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-[family-name:var(--font-space-grotesk)]">
       {/* Header using Navbar component */}
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Content */}
-      <div className="flex justify-center pt-20">
+      <div className="flex justify-center pt-0">
         <div className="w-full max-w-6xl px-6 py-6">
           
           {/* Search Bar - Centered */}
-          <div className="mb-8 flex font-space-mono justify-center">
+          <div className="mb-8 flex font-[family-name:var(--font-space-mono)] justify-center">
             <div className="relative max-w-2xl w-full">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="h-5 w-5 text-[var(--color-light-opacity60)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
@@ -847,7 +878,7 @@ export default function EventsPage() {
                 placeholder="Search Hackathons"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-12 pr-4 py-3 border border-gray-700 text-sm rounded-md bg-gray text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-left"
+                className="block w-full pl-12 pr-4 py-3 border border-[var(--color-white-opacity20)] text-sm rounded-md bg-[var(--color-white-opacity5)] text-[var(--color-light-opacity100)] placeholder-[var(--color-light-opacity60)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-opacity100)] focus:border-transparent text-left"
               />
             </div>
           </div>
@@ -856,12 +887,12 @@ export default function EventsPage() {
           {activeEvents.length > 0 && (
             <div className="mb-12">
               <div className="relative mb-6 overflow-hidden">
-                <h2 className="text-2xl font-semibold bg-gradient-to-r from-green-400 from-20% via-green-400 via-40% to-transparent to-80% bg-clip-text text-transparent">
+                <h2 className="text-2xl font-semibold bg-gradient-to-r from-[var(--color-primary-opacity100)] from-20% via-[var(--color-primary-opacity100)] via-40% to-transparent to-80% bg-clip-text text-transparent">
                   Upcoming Events ({activeEvents.length})
                 </h2>
               </div>
               
-              <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800" style={{scrollbarWidth: 'thin'}}>
+              <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-[var(--color-light-opacity20)] scrollbar-track-[var(--color-white-opacity10)]" style={{scrollbarWidth: 'thin'}}>
                 <div className="flex space-x-6 w-max">
                   {activeEvents.map((event, index) => (
                     <EventCard key={event.event_id || index} event={event} index={index} />
@@ -875,12 +906,12 @@ export default function EventsPage() {
           {pastEvents.length > 0 && (
             <div className="mb-12">
               <div className="relative mb-6 overflow-hidden">
-                <h2 className="text-2xl font-semibold bg-gradient-to-r from-gray-400 from-20% via-gray-400 via-40% to-transparent to-80% bg-clip-text text-transparent">
+                <h2 className="text-2xl font-semibold bg-gradient-to-r from-[var(--color-light-opacity60)] from-20% via-[var(--color-light-opacity60)] via-40% to-transparent to-80% bg-clip-text text-transparent">
                   Past Events ({pastEvents.length})
                 </h2>
               </div>
               
-              <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800" style={{scrollbarWidth: 'thin'}}>
+              <div className="overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-[var(--color-light-opacity20)] scrollbar-track-[var(--color-white-opacity10)]" style={{scrollbarWidth: 'thin'}}>
                 <div className="flex space-x-6 w-max">
                   {pastEvents.map((event, index) => (
                     <EventCard key={event.event_id || index} event={event} index={index + activeEvents.length} />
@@ -893,20 +924,22 @@ export default function EventsPage() {
           {/* No Events Message */}
           {events.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-400 text-lg">No events found.</p>
+              <p className="text-[var(--color-light-opacity60)] text-lg">No events found.</p>
             </div>
           )}
 
           {/* No Search Results Message */}
           {events.length > 0 && activeEvents.length === 0 && pastEvents.length === 0 && searchQuery && (
             <div className="text-center py-12">
-              <p className="text-gray-400 text-lg">No events match your search criteria.</p>
-              <button 
+              <p className="text-[var(--color-light-opacity60)] text-lg">No events match your search criteria.</p>
+              <MainButton 
+                variant="primary"
                 onClick={() => setSearchQuery('')}
-                className="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+                className="mt-4 justify-center"
+                showIcon={false}
               >
                 Clear Search
-              </button>
+              </MainButton>
             </div>
           )}
         </div>
