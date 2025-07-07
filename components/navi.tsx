@@ -41,7 +41,7 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   }
 
   return (
-    <header className="border-b border-zinc-800 px-6 py-4">
+    <header className="px-6 py-4">
       <div className="max-w-7xl mx-auto flex items-center justify-between mt-3">
         {/* Logo */}
         <JunctionLogo />
