@@ -146,7 +146,7 @@ export default function HackerpackPage() {
         <div className="flex-1 p-8 pt-[6%]">
           {/* Page Title and Description */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-white mb-6" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+            <h1 className="text-4xl font-bold text-white mb-6 ${spaceGrotesk.variable}">
               Hackerpack
             </h1>
             <p className="text-white/60 text-lg leading-relaxed max-w-4xl">
@@ -181,7 +181,7 @@ export default function HackerpackPage() {
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-3 mb-4">
-                        <h3 className="text-xl font-semibold text-white" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                        <h3 className="text-xl font-semibold text-white ${spaceGrotesk.variable}">
                           {hackerpack.title}
                         </h3>
                       </div>

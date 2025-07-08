@@ -37,7 +37,7 @@ export default function ReviewProjectsPage() {
             <div className="bg-white/10 rounded-xl p-7">
               {/* Header */}
               <div className="text-center mb-7">
-                <h1 className="text-4xl font-bold text-white mb-3" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h1 className="text-4xl font-bold text-white mb-3 ${spaceGrotesk.variable}">
                   Reviewing Projects
                 </h1>
                 <div className="flex items-center justify-center gap-2">
@@ -47,7 +47,7 @@ export default function ReviewProjectsPage() {
                         <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
                         <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
                       </svg>
-                      <span className="text-lg font-mono">23 hours 17 minutes left!</span>
+                      <span className="text-lg '${spaceMono.variable}' ">23 hours 17 minutes left!</span>
                     </div>
                   ) : reviewStatus === 'open' ? (
                     <div className="text-green-400">
@@ -105,7 +105,7 @@ export default function ReviewProjectsPage() {
                   
                   {/* Voting Section - Now inside the card */}
                   <div className="p-6">
-                    <h2 className="text-xl font-semibold text-white mb-3" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                    <h2 className="text-xl font-semibold text-white mb-3 ${spaceGrotesk.variable}">
                       We Use Gravel To Vote
                     </h2>
                     <p className="text-white/70 text-sm leading-relaxed">
@@ -118,7 +118,7 @@ export default function ReviewProjectsPage() {
               {/* Closed State Content */}
               {reviewStatus === 'closed' && (
                 <div className="bg-red-900/20 border border-red-500 rounded-xl p-7 mb-7">
-                  <h2 className="text-xl font-semibold text-white mb-3" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                  <h2 className="text-xl font-semibold text-white mb-3 ${spaceGrotesk.variable}">
                     The Review Period Is No Over
                   </h2>
                   <p className="text-white/70 text-sm leading-relaxed">
@@ -131,10 +131,10 @@ export default function ReviewProjectsPage() {
               <div className="text-center">
                 {reviewStatus !== 'closed' && reviewStatus !== 'open' && (
                   <>
-                    <h2 className="text-xl font-semibold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                    <h2 className="text-xl font-semibold text-white mb-4 ${spaceGrotesk.variable}">
                       We Use Gravel To Vote
                     </h2>
-                    <p className="text-white/70 mb-5 font-mono">
+                    <p className="text-white/70 mb-5 '${spaceMono.variable}' ">
                       Once you click "Start reviewing", a new tab will open on your browser where you can start reviewing the projects.
                     </p>
                   </>

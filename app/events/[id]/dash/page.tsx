@@ -89,7 +89,7 @@ export default function EventDashboard() {
       <div className="flex-1 overflow-auto transition-all duration-300 ml-[250px]">
         <div className="p-4 lg:p-6 pt-[3vh]">
           {/* Header */}
-          <h1 className="text-3xl lg:text-4xl font-bold text-white mb-4 lg:mb-6" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+          <h1 className="text-3xl lg:text-4xl font-bold text-white mb-4 lg:mb-6 ${spaceGrotesk.variable} ">
             Dashboard
           </h1>
 
@@ -117,7 +117,7 @@ export default function EventDashboard() {
                     {/* Top row - Title and Edit button aligned */}
                     <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-4 lg:mb-6">
                       <div className="mb-4 lg:mb-0">
-                        <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                        <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2 ${spaceGrotesk.variable} ">
                           Your Submission
                         </h2>
                         <p className="text-white/70 text-base lg:text-lg">
@@ -155,7 +155,7 @@ export default function EventDashboard() {
 
               {/* Schedule Section - Fixed height with scrolling */}
               <div className="bg-white/10 border border-white/10 rounded-xl p-4 lg:p-5 h-64 flex flex-col">
-                <h2 className="text-lg lg:text-xl font-bold text-white mb-3 lg:mb-4 flex-shrink-0" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h2 className="text-lg lg:text-xl font-bold text-white mb-3 lg:mb-4 flex-shrink-0 ${spaceGrotesk.variable} ">
                   Schedule
                 </h2>
                 <div className="space-y-2 lg:space-y-3 flex-1 overflow-y-auto">
@@ -175,7 +175,7 @@ export default function EventDashboard() {
             {/* Right Column - Announcements (constrained height to match left column) */}
             <div className="lg:col-span-3">
               <div className="bg-white/10 border border-white/10 rounded-xl p-4 lg:p-5 flex flex-col max-h-[calc(16rem+20rem+1rem)]">
-                <h2 className="text-lg lg:text-xl font-bold text-white mb-3 lg:mb-4 flex-shrink-0" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h2 className="text-lg lg:text-xl font-bold text-white mb-3 lg:mb-4 flex-shrink-0 ${spaceGrotesk.variable} ">
                   Announcements
                 </h2>
                 
@@ -217,7 +217,7 @@ export default function EventDashboard() {
 
           {/* Quick Actions - Responsive layout */}
           <div className="mb-4 lg:mb-6">
-            <h2 className="text-lg lg:text-xl font-bold text-white mb-3 lg:mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+            <h2 className="text-lg lg:text-xl font-bold text-white mb-3 lg:mb-4 ${spaceGrotesk.variable} ">
               Quick Actions
             </h2>
             

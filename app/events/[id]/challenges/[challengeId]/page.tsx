@@ -233,8 +233,8 @@ export default function ChallengeDetailPage({ params }: { params: { id: string }
             
             {/* Text Content - Bottom Left */}
             <div className="relative z-10 p-6 pb-6">
-              <div className="text-sm text-white/90 mb-2 font-mono">{organization.name}</div>
-              <h1 className="text-3xl font-bold text-white" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+              <div className="text-sm text-white/90 mb-2 '${spaceMono.variable}' ">{organization.name}</div>
+              <h1 className="text-3xl font-bold text-white ${spaceGrotesk.variable}">
                 {challenge.name}
               </h1>
             </div>
@@ -248,11 +248,11 @@ export default function ChallengeDetailPage({ params }: { params: { id: string }
             <div className="lg:col-span-2 space-y-8">
               {/* The Challenge Section */}
               <div className="bg-white/10 border border-white/15 rounded-xl p-8">
-                <h2 className="text-2xl font-semibold text-white mb-6" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h2 className="text-2xl font-semibold text-white mb-6 ${spaceGrotesk.variable}">
                   The Challenge
                 </h2>
                 
-                <div className="space-y-4 text-base text-white/80 leading-relaxed font-mono">
+                <div className="space-y-4 text-base text-white/80 leading-relaxed'${spaceMono.variable}'">
                   <p>
                     {challenge.description || 'No description available for this challenge.'}
                   </p>
@@ -261,13 +261,13 @@ export default function ChallengeDetailPage({ params }: { params: { id: string }
 
               {/* Insight */}
               <div className="bg-white/10 border border-white/15 rounded-xl p-8">
-                <h2 className="text-2xl font-semibold text-white mb-6" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h2 className="text-2xl font-semibold text-white mb-6 ${spaceGrotesk.variable}">
                   Insight
                 </h2>
                 
-                <div className="space-y-4 text-base text-white/80 leading-relaxed font-mono">
+                <div className="space-y-4 text-base text-white/80 leading-relaxed'${spaceMono.variable}'">
                   <p>
-                    <span className="space-y-4 text-base text-white/80 leading-relaxed font-mono">TBD</span>
+                    <span className="space-y-4 text-base text-white/80 leading-relaxed'${spaceMono.variable}'">TBD</span>
                   </p>
                   {challenge.updated_at !== challenge.created_at && (
                     <p>
@@ -278,13 +278,13 @@ export default function ChallengeDetailPage({ params }: { params: { id: string }
               </div>
               {/*  What We'll Bring */}
               <div className="bg-white/10 border border-white/15 rounded-xl p-8">
-                <h2 className="text-2xl font-semibold text-white mb-6" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h2 className="text-2xl font-semibold text-white mb-6 ${spaceGrotesk.variable}">
                   What We'll Bring
                 </h2>
                 
-                <div className="space-y-4 text-base text-white/80 leading-relaxed font-mono">
+                <div className="space-y-4 text-base text-white/80 leading-relaxed'${spaceMono.variable}'">
                   <p>
-                    <span className="space-y-4 text-base text-white/80 leading-relaxed font-mono">TBD</span>
+                    <span className="space-y-4 text-base text-white/80 leading-relaxed'${spaceMono.variable}'">TBD</span>
                   </p>
                   {challenge.updated_at !== challenge.created_at && (
                     <p>
@@ -299,11 +299,11 @@ export default function ChallengeDetailPage({ params }: { params: { id: string }
             <div className="space-y-6">
               {/* Organization Info Card */}
               <div className="bg-white/10 border border-white/15 rounded-xl p-6">
-                <h3 className="text-xl font-semibold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h3 className="text-xl font-semibold text-white mb-4 ${spaceGrotesk.variable}">
                   {organization.name}
                 </h3>
                 
-                <div className="text-sm text-white/80 leading-relaxed font-mono">
+                <div className="text-sm text-white/80 leading-relaxed'${spaceMono.variable}'">
                   {organization.description ? (
                     <p className="mb-4">{organization.description}</p>
                   ) : (
@@ -330,13 +330,13 @@ export default function ChallengeDetailPage({ params }: { params: { id: string }
 
               {/* Ongoing Criteria*/}
               <div className="bg-white/10 border border-white/15 rounded-xl p-6">
-                <h3 className="text-xl font-semibold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h3 className="text-xl font-semibold text-white mb-4 ${spaceGrotesk.variable}">
                   Ongoing Criteria
                 </h3>
                 
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="space-y-4 text-base text-white/80 leading-relaxed font-mono">TBD</span>
+                    <span className="space-y-4 text-base text-white/80 leading-relaxed'${spaceMono.variable}'">TBD</span>
                   </div>
                 </div>
 
@@ -346,11 +346,11 @@ export default function ChallengeDetailPage({ params }: { params: { id: string }
 
               {/* Prizes */}
               <div className="bg-white/10 border border-white/15 rounded-xl p-6">
-                <h3 className="text-xl font-semibold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h3 className="text-xl font-semibold text-white mb-4 ${spaceGrotesk.variable}">
                   Prizes
                 </h3>
                                   <div className="flex justify-between">
-                    <span className="space-y-4 text-base text-white/80 leading-relaxed font-mono">TBD</span>
+                    <span className="space-y-4 text-base text-white/80 leading-relaxed'${spaceMono.variable}'">TBD</span>
                   </div>
               
               </div>

@@ -255,7 +255,7 @@ export default function EventsPage() {
 
   // Event card component
   const EventCard = ({ event, index }: { event: Event; index: number }) => (
-    <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg overflow-hidden group hover:border-[var(--color-white-opacity20)] transition-all cursor-pointer flex-shrink-0 w-80"
+    <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg overflow-hidden group hover:border-[var(--color-white-opacity20)] transition-all cursor-pointer flex-shrink-0 w-80 flex flex-col "
          onClick={() => setSelectedEventId(event.event_id)}>
       {/* Event Image */}
       <div className="relative h-40 bg-[var(--color-white-opacity10)] overflow-hidden">
@@ -267,7 +267,7 @@ export default function EventsPage() {
       </div>
       
       {/* Card Content */}
-      <div className="p-4">
+      <div className="p-4 flex-1">
         {/* Event Details - Stacked */}
         <div className="space-y-2 mb-4">
           <div className="pb-2">
@@ -318,7 +318,7 @@ export default function EventsPage() {
         </div>
         
         {/* Buttons - Full Width Side by Side */}
-        <div className="flex space-x-2 mb-3">
+        <div className="flex space-x-2 mb-3 mt-auto">
           <MainButton 
             variant="default" 
             size="sm" 

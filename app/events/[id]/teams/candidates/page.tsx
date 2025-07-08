@@ -75,7 +75,7 @@ export default function TeamCandidatesPage() {
         {/* Header */}
         <div className="px-6 py-4 flex-1">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-4xl font-bold text-white pt-[3%]" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+            <h1 className="text-4xl font-bold text-white pt-[3%] ${spaceGrotesk.variable}">
               Team Candidates
             </h1>
           </div>
@@ -126,7 +126,7 @@ export default function TeamCandidatesPage() {
                         <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-white" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                    <h3 className="text-2xl font-bold text-white ${spaceGrotesk.variable}">
                       {application.name}
                     </h3>
                   </div>
@@ -142,7 +142,7 @@ export default function TeamCandidatesPage() {
                   {/* Applied For Section */}
                   <div className="mb-12 flex-1">
                     <p className="text-white text-base mb-6">Applied for</p>
-                    <span className="px-6 py-3 bg-transparent border border-green-600 text-white rounded-full text-sm font-mono">
+                    <span className="px-6 py-3 bg-transparent border border-green-600 text-white rounded-full text-sm '${spaceMono.variable}'">
                       {application.role}
                     </span>
                   </div>

@@ -90,7 +90,7 @@ export default function MentorMeetingsPage() {
         <div className="flex-1 p-6 pt-[4%] max-w-3xl mx-auto w-full">
           {/* Page Title and Description */}
           <div className="mb-8 text-center mt-16">
-            <h1 className="text-4xl font-bold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+            <h1 className="text-4xl font-bold text-white mb-4 ${spaceGrotesk.variable}">
               Meetings
             </h1>
             <p className="text-neutral-400 text-base">
@@ -142,7 +142,7 @@ export default function MentorMeetingsPage() {
           {selectedMentor && (
             <div className="mb-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-white" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h2 className="text-xl font-bold text-white ${spaceGrotesk.variable}">
                   Available times
                 </h2>
                 <button 
@@ -160,7 +160,7 @@ export default function MentorMeetingsPage() {
                 <div className="grid grid-cols-4 gap-6">
                   {days.map((day, dayIndex) => (
                     <div key={dayIndex} className="space-y-3">
-                      <h3 className="text-white font-bold text-center text-base" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                      <h3 className="text-white font-bold text-center text-base ${spaceGrotesk.variable}">
                         {day.name}
                       </h3>
                       <div className="space-y-2">

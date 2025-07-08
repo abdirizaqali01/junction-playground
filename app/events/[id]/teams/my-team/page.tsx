@@ -83,7 +83,7 @@ export default function MyTeamPage() {
         {/* Header */}
         <div className="px-6 py-4">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-4xl font-bold text-white pt-[3%]" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+            <h1 className="text-4xl font-bold text-white pt-[3%] ${spaceGrotesk.variable}">
               Team Management
             </h1>
           </div>
@@ -123,17 +123,17 @@ export default function MyTeamPage() {
             <div className="space-y-8">
               {/* Team Name and Code */}
               <div>
-                <h2 className="text-2xl font-bold text-green-400 mb-2" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h2 className="text-2xl font-bold text-green-400 mb-2 ${spaceGrotesk.variable}">
                   {teamData.name}
                 </h2>
-                <p className="text-zinc-300 font-mono text-sm tracking-wider">
+                <p className="text-zinc-300 '${spaceMono.variable}' text-sm tracking-wider">
                   {teamData.code}
                 </p>
               </div>
 
               {/* Team Description */}
               <div>
-                <h3 className="text-xl font-semibold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h3 className="text-xl font-semibold text-white mb-4 ${spaceGrotesk.variable}">
                   Team Description
                 </h3>
                 <p className="text-zinc-400 text-sm leading-relaxed">
@@ -143,14 +143,14 @@ export default function MyTeamPage() {
 
               {/* Available Roles */}
               <div>
-                <h3 className="text-xl font-semibold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h3 className="text-xl font-semibold text-white mb-4 ${spaceGrotesk.variable}">
                   Available roles
                 </h3>
                 <div className="flex gap-3">
                   {teamData.availableRoles.map((role, index) => (
                     <span
                       key={index}
-                      className="px-6 py-2 bg-transparent border border-green-600 text-white rounded-full font-mono text-sm"
+                      className="px-6 py-2 bg-transparent border border-green-600 text-white rounded-full '${spaceMono.variable}' text-sm"
                     >
                       {role}
                     </span>
@@ -160,7 +160,7 @@ export default function MyTeamPage() {
 
               {/* Team Members */}
               <div>
-                <h3 className="text-xl font-semibold text-white mb-4" style={{fontFamily: 'Space Grotesk, sans-serif'}}>
+                <h3 className="text-xl font-semibold text-white mb-4 ${spaceGrotesk.variable}">
                   Team members
                 </h3>
                 <div className="space-y-3">
@@ -195,13 +195,13 @@ export default function MyTeamPage() {
               <div className="flex gap-3 pt-4">
                 <button 
                   onClick={handleEditTeam}
-                  className="px-4 py-2 bg-transparent border border-zinc-600 text-zinc-300 rounded-full hover:bg-zinc-800 transition-colors text-sm font-mono"
+                  className="px-4 py-2 bg-transparent border border-zinc-600 text-zinc-300 rounded-full hover:bg-zinc-800 transition-colors text-sm '${spaceMono.variable}'"
                 >
                   Edit
                 </button>
                 <button 
                   onClick={handleDeleteTeam}
-                  className="px-4 py-2 bg-transparent border border-zinc-600 text-zinc-300 rounded-full hover:bg-zinc-800 transition-colors text-sm font-mono"
+                  className="px-4 py-2 bg-transparent border border-zinc-600 text-zinc-300 rounded-full hover:bg-zinc-800 transition-colors text-sm '${spaceMono.variable}'"
                 >
                   Delete the team
                 </button>

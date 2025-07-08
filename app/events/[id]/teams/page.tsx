@@ -171,7 +171,7 @@ export default function TeamManagementPage() {
               {/* Top content */}
               <div>
                 {/* Team name */}
-                <h3 className="text-xl font-bold text-white mb-3 leading-tight" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+                <h3 className="text-xl font-bold text-white mb-3 leading-tight ${spaceGrotesk.variable}">
                   {team.name}
                 </h3>
 
@@ -198,17 +198,17 @@ export default function TeamManagementPage() {
                     {team.availableRoles?.slice(0, 4).map((role, idx) => (
                       <span
                         key={idx}
-                        className="px-3 py-2 bg-transparent border border-green-400/80 text-green-400 text-xs rounded-lg font-mono text-center whitespace-nowrap"
+                        className="px-3 py-2 bg-transparent border border-green-400/80 text-green-400 text-xs rounded-lg '${spaceMono.variable}' text-center whitespace-nowrap"
                       >
                         {role}
                       </span>
                     ))}
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    <span className="px-3 py-2 bg-transparent border border-green-400/80 text-green-400 text-xs rounded-lg font-mono text-center">
+                    <span className="px-3 py-2 bg-transparent border border-green-400/80 text-green-400 text-xs rounded-lg '${spaceMono.variable}' text-center">
                       {team.availableRoles?.[4]}
                     </span>
-                    <span className="px-3 py-2 text-zinc-500 text-xs font-mono text-center flex items-center justify-center">
+                    <span className="px-3 py-2 text-zinc-500 text-xs '${spaceMono.variable}' text-center flex items-center justify-center">
                       and more...
                     </span>
                   </div>
@@ -288,7 +288,7 @@ export default function TeamManagementPage() {
             
             <button 
               onClick={() => setShowJoinModal(true)}
-              className="px-6 py-2 bg-transparent border border-green-600 rounded-full text-white hover:bg-green-600/10 transition-colors text-sm font-mono"
+              className="px-6 py-2 bg-transparent border border-green-600 rounded-full text-white hover:bg-green-600/10 transition-colors text-sm '${spaceMono.variable}'"
             >
               Join a team using a code
             </button>
