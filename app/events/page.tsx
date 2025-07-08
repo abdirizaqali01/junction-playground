@@ -328,13 +328,13 @@ export default function EventsPage() {
             View event
           </MainButton>
           <MainButton 
-            variant={event.status === 'CANCELLED' ? 'gray' : 'primary'} 
+            variant={event.status === 'CANCELLED' ? 'gray' : !isEventActive(event.start_date, event.status) ? 'gray' : 'primary'} 
             size="sm" 
             className="flex-1 justify-center"
-            disabled={event.status === 'CANCELLED'}
+            disabled={event.status === 'CANCELLED' || !isEventActive(event.start_date, event.status)}
             showIcon={false}
           >
-            {event.status === 'CANCELLED' ? 'Cancelled' : 'Register now'}
+            {event.status === 'CANCELLED' ? 'Cancelled' : !isEventActive(event.start_date, event.status) ? 'Passed' : 'Register now'}
           </MainButton>
         </div>
         
@@ -424,13 +424,13 @@ export default function EventsPage() {
         {/* Content with top padding to account for fixed header */}
         <div className="pt-20">
           <div className="container mx-auto px-6 py-6 max-w-7xl">
-            {/* Back to Events Button */}
-            <div className="mb-6">
+{/* Back to Events Button */}
+<div className="mb-6">
               <MainButton 
                 variant="ghost"
                 onClick={() => setSelectedEventId(null)}
                 showIcon={false}
-                className="text-[var(--color-light-opacity60)] hover:text-[var(--color-light-opacity100)] justify-center"
+                className="text-[var(--color-light-opacity60)] hover:text-[var(--color-light-opacity100)] justify-start items-center flex"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                   <path d="M19 12H5"/>
