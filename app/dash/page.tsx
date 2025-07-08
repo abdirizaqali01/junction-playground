@@ -1,5 +1,5 @@
 'use client'
-
+import { useRouter } from 'next/navigation' 
 import { useState, useEffect } from 'react'
 import { Footer } from "@/components/footer"
 import Navbar from '@/components/navi'
@@ -82,6 +82,7 @@ const sampleEvent: Event = {
 }
 
 export default function JunctionDashboard() {
+  const router = useRouter()
   useEffect(() => {
     initializeCSSVariables();
   }, []);
@@ -123,23 +124,23 @@ export default function JunctionDashboard() {
       <div className="p-4">
         <div className="space-y-3 mb-4">
           <div className="pb-2">
-            <h3 className="text-white text-lg font-space-grotesk font-semibold mb-2">
+            <h3 className="text-white text-lg ${spaceGrotesk.variable} font-semibold mb-2">
               {event.name || "Event Name TBD"}
             </h3>
   
             {/* Tags Row */}
             <div className="flex flex-wrap gap-1">
               <span
-                className={`px-2 py-1 text-xs font-space-mono rounded border ${getStatusColor(
+                className={`px-2 py-1 text-xs font-[var(${style.spaceMono.variable})] rounded border ${getStatusColor(
                   event.status
                 )}`}
               >
                 {event.status || "Status TBD"}
               </span>
-              <span className="px-2 py-1 bg-neutral-800/80 font-space-mono text-gray-200 text-xs rounded border border-neutral-600/30">
+              <span className="px-2 py-1 bg-neutral-800/80 '${spaceMono.variable}' text-gray-200 text-xs rounded border border-neutral-600/30">
                 {event.is_public ? "Public" : "Private"}
               </span>
-              <span className="px-2 py-1 bg-neutral-800/80 font-space-mono text-gray-200 text-xs rounded border border-neutral-600/30">
+              <span className="px-2 py-1 bg-neutral-800/80 '${spaceMono.variable}' text-gray-200 text-xs rounded border border-neutral-600/30">
                 Hackathon
               </span>
             </div>
@@ -161,7 +162,7 @@ export default function JunctionDashboard() {
                 <line x1="8" y1="2" x2="8" y2="6" />
                 <line x1="3" y1="10" x2="21" y2="10" />
               </svg>
-              <span className="text-gray-300 text-xs font-space-mono">
+              <span className="text-gray-300 text-xs '${spaceMono.variable}'">
                 {formatDate(event.start_date)}
               </span>
             </div>
@@ -179,14 +180,14 @@ export default function JunctionDashboard() {
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                 <circle cx="12" cy="10" r="3" />
               </svg>
-              <span className="text-gray-300 text-xs font-space-mono">
+              <span className="text-gray-300 text-xs '${spaceMono.variable}'">
                 {event.location || "Location TBD"}
               </span>
             </div>
   
             <div className="flex items-center space-x-2 py-1">
               <Globe size={14} className="text-gray-400" />
-              <span className="text-gray-300 text-xs font-space-mono">
+              <span className="text-gray-300 text-xs '${spaceMono.variable}'">
                 {event.type || "Type TBD"}
               </span>
             </div>
@@ -195,13 +196,13 @@ export default function JunctionDashboard() {
           {/* Buttons */}
           <div className="flex space-x-2 mb-3">
             <button
-              className="flex-1 px-3 py-4 bg-white text-black text-sm font-space-mono rounded hover:bg-gray-100 transition-colors"
+              className="flex-1 px-3 py-4 bg-white text-black text-sm '${spaceMono.variable}' rounded hover:bg-gray-100 transition-colors"
               onClick={(e) => e.stopPropagation()}
             >
               View event
             </button>
             <button
-              className={`flex-1 px-3 py-4 text-sm font-space-mono rounded transition-colors ${
+              className={`flex-1 px-3 py-4 text-sm 'font-[var(${style.spaceMono.variable})]}' rounded transition-colors ${
                 event.status === "CANCELLED"
                   ? "bg-gray-500/50 text-gray-400 cursor-not-allowed"
                   : "bg-[#55D186] text-white hover:bg-green-600"
@@ -214,7 +215,7 @@ export default function JunctionDashboard() {
           </div>
   
           {/* End Date */}
-          <div className="flex items-center justify-center space-x-1 text-gray-400 text-xs font-space-mono">
+          <div className="flex items-center justify-center space-x-1 text-gray-400 text-xs '${spaceMono.variable}'">
             <svg
               width="12"
               height="12"
@@ -236,7 +237,7 @@ export default function JunctionDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-white">
       {/* Use the imported Navbar component with required props */}
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
       
@@ -248,7 +249,7 @@ export default function JunctionDashboard() {
             <span className="text-emerald-400">Good morning,</span>{' '}
             <span className="text-white">Interract</span>
           </h1>
-          <p className="text-zinc-400 text-lg font-space-mono">
+          <p className="text-zinc-400 text-lg '${spaceMono.variable}'">
             Here's an overview of what's going on for you 
           </p>
         </div>
@@ -279,7 +280,7 @@ export default function JunctionDashboard() {
                 {/* Header with Title and Enter Button */}
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h1 className="text-2xl font-space-grotesk font-bold text-white mb-2 text-wrap mr-3">Junction Hackathon</h1>
+                    <h1 className="text-2xl ${spaceGrotesk.variable} font-bold text-white mb-2 text-wrap mr-3">Junction Hackathon</h1>
                     
                     {/* Stats */}
                     <div className="flex items-center space-x-8 text-sm text-zinc-400">
@@ -343,7 +344,7 @@ export default function JunctionDashboard() {
         <div className="pb-23">
           {/* Your Stats Section */}
           <section className="mt-12 px-4">
-            <h2 className="text-2xl font-space-grotesk text-white mb-6">Your Stats</h2>
+            <h2 className="text-2xl ${spaceGrotesk.variable} text-white mb-6">Your Stats</h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-6">
               <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col text-left">
@@ -422,9 +423,9 @@ export default function JunctionDashboard() {
 
                   {/* Event Tags */}
                   <div className="flex items-center space-x-3 mb-8">
-                    <span className="bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm font-space-mono">AI</span>
-                    <span className="bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm font-space-mono">Machine Learning</span>
-                    <span className="bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm font-space-mono">Innovation</span>
+                    <span className="bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm ${spaceMono.variable}">AI</span>
+                    <span className="bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm '${spaceMono.variable}'">Machine Learning</span>
+                    <span className="bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm '${spaceMono.variable}'">Innovation</span>
                   </div>
 
                   {/* Schedule */}
@@ -483,9 +484,12 @@ export default function JunctionDashboard() {
             </div>
           </div>
 
-          {/* View All Events Button */}
+         {/* View All Events Button */}
           <div className="text-center mb-20 mt-8">
-            <button className="border border-emerald-400 text-emerald-400 px-8 py-3 rounded-full font-medium text-sm hover:bg-emerald-400 hover:text-black transition-colors">
+            <button 
+              onClick={() => router.push('/events')}
+              className="border border-emerald-400 text-emerald-400 px-8 py-3 rounded-full font-medium text-sm hover:bg-emerald-400 hover:text-black transition-colors"
+            >
               View all events
             </button>
           </div>
