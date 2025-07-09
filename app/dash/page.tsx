@@ -246,7 +246,7 @@ export default function JunctionDashboard() {
 
         {/*------------------------------------------ Upcoming Event Section ------------------------------------------*/}
         <section className="">
-          <div className="bg-[#55D1860D] rounded-xl overflow-hidden ring-[1px] ring-[#55D18680]">
+          <div className={style.box.primary.bottom}>
             <div className="flex flex-col lg:flex-row">
               {/* Left Image */}
               <div className="lg:w-1/3 p-4">
@@ -291,7 +291,7 @@ export default function JunctionDashboard() {
                 {/* Content Sections */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
                   {/* Up Coming Deadlines */}
-                  <div className="bg-[#FFFFFF1A] rounded-lg p-3 border border-zinc-600">
+                  <div className={style.box.gray.middle + " p-5"}>
                     <h2 className="text-white font-bold text-lg mb-2">Up Coming Deadlines</h2>
                     <hr className="border-zinc-600 mb-2" />
                     <div className="space-y-2">
@@ -311,7 +311,7 @@ export default function JunctionDashboard() {
                   </div>
 
                   {/* Announcements */}
-                  <div className="bg-[#FFFFFF33] rounded-lg p-3 border border-zinc-600">
+                  <div className={style.box.gray.top + " p-5"}>
                     <h2 className="text-white font-bold text-lg mb-2">Announcements</h2>
                     <hr className="border-zinc-600 mb-2" />
                     <p className="text-zinc-400">Most recent announcements.</p>
@@ -330,12 +330,7 @@ export default function JunctionDashboard() {
             <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col text-left">
               <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
                 <div className="flex items-center gap-2 mb-2">
-                  <Image 
-                    src="/icons/calendar_check.svg" 
-                    alt="Calendar Check"
-                    width={22}
-                    height={22}
-                  />
+                  <Image src="/icons/calendar_check.svg" alt="Calendar Check"width={22}height={22} />
                   <div className="text-gray-400 text-sm">Events Joined</div>
                 </div>
                 <div className="text-white text-2xl font-bold">12</div>

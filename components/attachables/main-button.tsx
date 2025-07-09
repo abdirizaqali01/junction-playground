@@ -5,13 +5,14 @@ import * as style from '@/styles/design-system'
 import { initializeCSSVariables } from '@/styles/design-system';
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
+import Image from 'next/image';
 
 const mainButtonVariants = cva(
   "font-space-mono tracking-[-0.02rem] font-[400] px-6 py-3 rounded-lg transition-colors flex items-center space-x-2 flex-shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-[var(--color-light-opacity100)] text-[var(--color-dark-opacity80)] hover:bg-[var(--color-light-opacity60)]",
+        default: "bg-[var(--color-light-opacity100)] text-[var(--color-dark-opacity100)] hover:bg-[var(--color-light-opacity60)]",
         primary: "bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] hover:bg-[var(--color-primary-opacity60)]",
         alerts: "bg-[var(--color-alerts-opacity100)] text-[var(--color-light-opacity100)] hover:bg-[var(--color-alerts-opacity60)]",
         gray: "bg-[var(--color-light-opacity20)] text-[var(--color-light-opacity100)] hover:bg-[var(--color-light-opacity60)]",
@@ -53,9 +54,7 @@ const MainButton = React.forwardRef<HTMLButtonElement, MainButtonProps>(
       <>
         <span>{children}</span>
         {showIcon && (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-          </svg>
+          <Image src="/icons/Right-Arrow.svg" alt="Calendar Check" width={20} height={20} />
         )}
       </>
     )

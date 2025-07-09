@@ -24,9 +24,25 @@ export const spaceMono = Space_Mono({
 export const colors = {
     primary: {
         opacity100: '#55D186',
+        opacity95: '#55D186F2',
+        opacity90: '#55D186E6',
+        opacity85: '#55D186D9',
+        opacity80: '#55D186CC',
+        opacity75: '#55D186BF',
+        opacity70: '#55D186B3',
+        opacity65: '#55D186A6',
         opacity60: '#55D18699',
+        opacity55: '#55D1868C',
         opacity50: '#55D18680',
+        opacity45: '#55D18673',
         opacity40: '#55D18666',
+        opacity35: '#55D18659',
+        opacity30: '#55D1864D',
+        opacity25: '#55D18640',
+        opacity20: '#55D18633',
+        opacity15: '#55D18626',
+        opacity10: '#55D1861A',
+        opacity5: '#55D1860D',
     },
 
     secondary: {
@@ -138,4 +154,19 @@ export const font = {
 // SECTION TITLES //
 export const sectionTitle = {
     grotesk: ``,
+}
+
+// BOX STYLING //
+export const box = {
+    gray: {
+        bottom: `bg-[var(--color-white-opacity5)] ${border.solid} ${border.radius.outer} border-[var(--color-white-opacity20)]`,
+        middle: `bg-[var(--color-white-opacity10)] ${border.solid} ${border.radius.middle} border-[var(--color-white-opacity20)]`,
+        top: `bg-[var(--color-white-opacity20)] ${border.solid} ${border.radius.inner} border-[var(--color-white-opacity20)]`,
+    },
+
+    primary: {
+        bottom: `bg-[var(--color-primary-opacity5)] ${border.solid} ${border.radius.outer} border-[var(--color-primary-opacity100)]`,
+        middle: `bg-[var(--color-primary-opacity10)] ${border.solid} ${border.radius.middle} border-[var(--color-primary-opacity100)]`,
+        top: `bg-[var(--color-primary-opacity20)] ${border.solid} ${border.radius.inner} border-[var(--color-primary-opacity100)]`,
+    },
 }
