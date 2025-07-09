@@ -8,6 +8,7 @@ import { Space_Grotesk, Space_Mono } from 'next/font/google'
 export const spaceGrotesk = Space_Grotesk({
     subsets: ['latin', 'latin-ext'],
     display: 'swap',
+    weight: ['300', '400', '500', '600', '700'],
     variable: '--font-space-grotesk',
 })
 
@@ -68,6 +69,11 @@ export const colors = {
 
     dark: {
         opacity100: '#0D0D0D',
+        opacity80: '#0D0D0DCC',
+        opacity70: '#0D0D0DB3',
+        opacity60: '#0D0D0D99',
+        opacity50: '#0D0D0D80',
+        opacity40: '#0D0D0D66',
     }
 }
 
@@ -97,6 +103,10 @@ export const initializeCSSVariables = () => {
                 root.style.setProperty(`--color-${colorName}-${shade}`, value);
             });
         });
+
+        // SET FONT VARIABLES
+        root.style.setProperty('--font-space-grotesk', spaceGrotesk.style.fontFamily);
+        root.style.setProperty('--font-space-mono', spaceMono.style.fontFamily);
     }
 }
 
@@ -107,5 +117,25 @@ export const initializeCSSVariables = () => {
 
 // STATUS BADGE //
 export const status = {
-    greenLight: `bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] px-4 py-2 ${border.radius.full} text-sm font-medium font-[var(--font-space-grotesk)]`,
+    greenLight: `bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] px-4 py-2 ${border.radius.full} text-sm font-light font-[var(--font-space-grotesk)]`,
+}
+
+// FONT TITLE //
+export const font = {
+    grotesk: {
+        main: `font-space-grotesk font-[600] tracking-[-0.01rem]`,
+        heavy: `font-space-grotesk font-[700] tracking-[-0.05rem]`,
+        medium: `font-space-grotesk font-[500] tracking-[-0.05rem]`,
+        light: `font-space-grotesk font-[300] tracking-[-0.05rem]`,
+    },
+
+    mono: {
+        title: `font-space-mono font-[700] tracking-[-0.01rem]`,
+        text: `font-space-mono font-[400] tracking-[-0.05rem]`,
+    }
+}
+
+// SECTION TITLES //
+export const sectionTitle = {
+    grotesk: ``,
 }

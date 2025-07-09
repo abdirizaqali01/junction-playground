@@ -1,10 +1,13 @@
 'use client'
+import * as React from "react"
 import { useRouter } from 'next/navigation' 
 import { useState, useEffect } from 'react'
 import { Footer } from "@/components/footer"
 import Navbar from '@/components/navi'
 import * as style from '@/styles/design-system'
 import { initializeCSSVariables } from '@/styles/design-system';
+import Image from 'next/image';
+import { MainButton } from "@/components/attachables/main-button"
 
 import { Globe, CalendarCheck, ChevronsLeftRight, Clock, Star, Users} from 'lucide-react';
 
@@ -82,29 +85,13 @@ const sampleEvent: Event = {
 }
 
 export default function JunctionDashboard() {
+  {/*----------- STYLE VARIABILIZATION -----------*/}
   const router = useRouter()
   useEffect(() => {
     initializeCSSVariables();
   }, []);
   
   const [activeTab, setActiveTab] = useState('Dashboard')
-  const [selectedEventId, setSelectedEventId] = useState<number | null>(null)
-
-  const tabs = ['Dashboard', 'Events', 'Community']
-
-  // Helper function to check if event is active (upcoming or ongoing)
-  const isEventActive = (startDate: string, status: string) => {
-    if (status === 'CANCELLED') return false
-    if (!startDate) return false
-    
-    try {
-      const eventDate = new Date(startDate)
-      const now = new Date()
-      return eventDate >= now || status === 'ONGOING'
-    } catch (error) {
-      return false
-    }
-  }
 
   const EventCard = ({ event, index }: { event: Event; index: number }) => (
     <div
@@ -237,25 +224,28 @@ export default function JunctionDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-white">
+    <div className="min-h-screen bg-[var(--color-dark-opacity100)]">
       {/* Use the imported Navbar component with required props */}
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
       
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6">
-        {/* Welcome Section */}
-        <div className="text-center py-32">
-          <h1 className="text-5xl font-bold mb-6">
-            <span className="text-emerald-400">Good morning,</span>{' '}
-            <span className="text-white">Interract</span>
+      {/*--------------------------------------------------------------------------------*/}
+      {/* MAIN CONTENT */}
+      {/*--------------------------------------------------------------------------------*/}
+      <main className="w-[95%] lg:w-[80%] mx-auto">
+        {/*------------------------------------------ Welcome Section ------------------------------------------*/}
+        <section className="text-center py-[8%]">
+          <h1 className={style.font.grotesk.heavy + " text-5xl font-[700]"}>
+            <span className=" text-[var(--color-primary-opacity100)]">Good morning,</span>
+            {' '}
+            <span className="text-[var(--color-light-opacity100)]">Interract</span>
           </h1>
-          <p className="text-zinc-400 text-lg '${spaceMono.variable}'">
-            Here's an overview of what's going on for you 
+          <p className="font-space-mono text-[var(--color-white-opacity60)] tracking-[-0.02rem] text-[1.15rem] mt-3">
+            Here's an overview of what's going on for you.
           </p>
-        </div>
+        </section>
 
-        {/* Upcoming Event Section */}
-        <div className="mb-16 max-w-7xl mx-auto">
+        {/*------------------------------------------ Upcoming Event Section ------------------------------------------*/}
+        <section className="">
           <div className="bg-[#55D1860D] rounded-xl overflow-hidden ring-[1px] ring-[#55D18680]">
             <div className="flex flex-col lg:flex-row">
               {/* Left Image */}
@@ -276,38 +266,30 @@ export default function JunctionDashboard() {
               </div>
               
               {/* Right Content */}
-              <div className="lg:w-2/3 p-4">
+              <div className="lg:w-2/3 p-4 m-auto">
                 {/* Header with Title and Enter Button */}
-                <div className="flex justify-between items-start mb-3">
+                <div className="flex justify-between items-start">
                   <div>
-                    <h1 className="text-2xl ${spaceGrotesk.variable} font-bold text-white mb-2 text-wrap mr-3">Junction Hackathon</h1>
+                    <h1 className={style.font.grotesk.main + " text-3xl text-[var(--color-light-opacity100)] text-wrap mb-2 mr-3"}>Junction Hackathon</h1>
                     
-                    {/* Stats */}
-                    <div className="flex items-center space-x-8 text-sm text-zinc-400">
+                    {/* Information */}
+                    <div className="flex items-center space-x-8 text-sm text-[var(--color-white-opacity60)]">
                       <div className="flex items-center space-x-2">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
-                        </svg>
+                        <Clock size={16} className="text-gray-400" />
                         <span>2 Day 12 hours 45min Left</span>
                       </div>
                       <div className="flex items-center space-x-2">
-                      <Users size={14} className="text-gray-400" />
+                      <Users size={16} className="text-gray-400" />
                         <span>139 Teams</span>
                       </div>
                     </div>
                   </div>
                   
-                  {/* Enter Event Button */}
-                  <button className="bg-white text-black px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center space-x-2 flex-shrink-0">
-                    <span>Enter Event</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </button>
+                  <MainButton variant="default" size="default">Enter Event</MainButton>
                 </div>
 
                 {/* Content Sections */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-3">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
                   {/* Up Coming Deadlines */}
                   <div className="bg-[#FFFFFF1A] rounded-lg p-3 border border-zinc-600">
                     <h2 className="text-white font-bold text-lg mb-2">Up Coming Deadlines</h2>
@@ -338,165 +320,168 @@ export default function JunctionDashboard() {
               </div>
             </div>
           </div>
-        </div>
-        
-        {/* Stats Section */}
-        <div className="pb-23">
-          {/* Your Stats Section */}
-          <section className="mt-12 px-4">
-            <h2 className="text-2xl ${spaceGrotesk.variable} text-white mb-6">Your Stats</h2>
+        </section>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-              <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col text-left">
-                <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
-                  <div className="flex items-center gap-2 mb-2">
-                    <CalendarCheck size={14} color={"#55D186"} className="text-gray-400" />
-                    <div className="text-gray-400 text-sm">Events Joined</div>
-                  </div>
-                  <div className="text-white text-2xl font-bold">12</div>
-                </div>
-              </div>
+        {/*------------------------------------------ Your Stats Section ------------------------------------------*/}
+        <section className="">
+          <h2 className="text-2xl ${spaceGrotesk.variable} text-white mb-6">Your Stats</h2>
 
-              <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col text-left">
-                <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
-                  <div className="flex items-center gap-2 mb-2">
-                    <ChevronsLeftRight size={14} color={"#55D186"} className="text-gray-400" />
-                    <div className="text-gray-400 text-sm">Projects Built</div>
-                  </div>
-                  <div className="text-white text-2xl font-bold">10</div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col text-left">
+              <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
+                <div className="flex items-center gap-2 mb-2">
+                  <Image 
+                    src="/icons/calendar_check.svg" 
+                    alt="Calendar Check"
+                    width={22}
+                    height={22}
+                  />
+                  <div className="text-gray-400 text-sm">Events Joined</div>
                 </div>
-              </div>
-
-              <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col items-left text-left">
-                <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
-                  <div className="flex items-center gap-2 mb-2">    
-                    <Clock size={14} color={"#55D186"} className="text-gray-400" />
-                    <div className="text-gray-400 text-sm">Hours Hacking</div>
-                  </div>
-                  <div className="text-white text-2xl font-bold">576</div>
-                </div>
-              </div>
-
-              <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col items-left text-left">
-                <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
-                  <div className="flex items-center gap-2 mb-2">  
-                    <Star size={14} color={"#55D186"} className="text-gray-400" />
-                    <div className="text-gray-400 text-sm mt-1">Hackathon Wins</div>
-                  </div>
-                  <div className="text-white text-2xl font-bold">7</div>
-                </div>
+                <div className="text-white text-2xl font-bold">12</div>
               </div>
             </div>
-          </section>
+
+            <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col text-left">
+              <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
+                <div className="flex items-center gap-2 mb-2">
+                  <ChevronsLeftRight size={14} color={"#55D186"} className="text-gray-400" />
+                  <div className="text-gray-400 text-sm">Projects Built</div>
+                </div>
+                <div className="text-white text-2xl font-bold">10</div>
+              </div>
+            </div>
+
+            <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col items-left text-left">
+              <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
+                <div className="flex items-center gap-2 mb-2">    
+                  <Clock size={14} color={"#55D186"} className="text-gray-400" />
+                  <div className="text-gray-400 text-sm">Hours Hacking</div>
+                </div>
+                <div className="text-white text-2xl font-bold">576</div>
+              </div>
+            </div>
+
+            <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col items-left text-left">
+              <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
+                <div className="flex items-center gap-2 mb-2">  
+                  <Star size={14} color={"#55D186"} className="text-gray-400" />
+                  <div className="text-gray-400 text-sm mt-1">Hackathon Wins</div>
+                </div>
+                <div className="text-white text-2xl font-bold">7</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/*------------------------------------------ Your Registered Events Section ------------------------------------------*/}
+        <section className="">
+          <h2 className="text-white text-xl font-medium mb-6">Your Registered Events</h2>
           
-          {/* Your Registered Events Section */}
-          <div className="mb-16">
-            <h2 className="text-white text-xl font-medium mb-6">Your Registered Events</h2>
-            
-            <div className="bg-[#191919] rounded-2xl overflow-hidden">
-              <div className="flex flex-col lg:flex-row">
-                {/* Left Content */}
-                <div className="lg:w-1/2 p-8">
-                  <h3 className="text-3xl font-bold text-white mb-6">Event Name</h3>
-                  
-                  {/* Event Stats */}
-                  <div className="flex items-center space-x-8 mb-6 text-sm text-zinc-400">
-                    <div className="flex items-center space-x-2">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
-                      </svg>
-                      <span>Date of event</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                      </svg>
-                      <span>Location</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                      </svg>
-                      <span>Type of event</span>
-                    </div>
-                  </div>
-
-                  {/* Event Tags */}
-                  <div className="flex items-center space-x-3 mb-8">
-                    <span className="bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm ${spaceMono.variable}">AI</span>
-                    <span className="bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm '${spaceMono.variable}'">Machine Learning</span>
-                    <span className="bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm '${spaceMono.variable}'">Innovation</span>
-                  </div>
-
-                  {/* Schedule */}
-                  <div className="mb-8 mr-20">
-                    <h4 className="text-white font-bold text-lg mb-6">Schedule</h4>
-                    <div className="space-y-4">
-                      <div className="border-b border-gray-600">
-                        <div className="flex justify-between items-center py-3">
-                          <span className="text-white font-medium">Kickoff & Teambuilding</span>
-                          <span className="text-zinc-400 text-sm">10:00 - 11:00</span>
-                        </div>   
-                      </div>
-                      <div className="border-b border-gray-600">
-                        <div className="flex justify-between items-center py-3">
-                          <span className="text-white font-medium">Development</span>
-                          <span className="text-zinc-400 text-sm">11:00 - 15:00</span>
-                        </div> 
-                      </div>
-                      <div className="border-b border-gray-600">
-                        <div className="flex justify-between items-center py-3">
-                          <span className="text-white font-medium">Pitch, Judging & Celebration</span>
-                          <span className="text-zinc-400 text-sm">15:00 - 17:00</span>
-                        </div> 
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* View Event Button */}
-                  <button className="bg-white text-black px-8 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors w-[169px] h-12">
-                    View event
-                  </button>
-                </div>
+          <div className="bg-[#191919] rounded-2xl overflow-hidden">
+            <div className="flex flex-col lg:flex-row">
+              {/* Left Content */}
+              <div className="lg:w-1/2 p-8">
+                <h3 className="text-3xl font-bold text-white mb-6">Event Name</h3>
                 
-                {/* Right Image */}
-                <div className="lg:w-1/2">
-                  <div className="h-64 lg:h-full bg-zinc-600 flex items-center justify-center relative rounded-lg overflow-hidden">
-                    <img 
-                      src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                      alt="Event venue" 
-                      className="w-full h-full object-cover"
-                    />
+                {/* Event Stats */}
+                <div className="flex items-center space-x-8 mb-6 text-sm text-zinc-400">
+                  <div className="flex items-center space-x-2">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                    </svg>
+                    <span>Date of event</span>
                   </div>
+                  <div className="flex items-center space-x-2">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <span>Location</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Type of event</span>
+                  </div>
+                </div>
+
+                {/* Event Tags */}
+                <div className="flex items-center space-x-3 mb-8">
+                  <span className="bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm ${spaceMono.variable}">AI</span>
+                  <span className="bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm '${spaceMono.variable}'">Machine Learning</span>
+                  <span className="bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm '${spaceMono.variable}'">Innovation</span>
+                </div>
+
+                {/* Schedule */}
+                <div className="mb-8 mr-20">
+                  <h4 className="text-white font-bold text-lg mb-6">Schedule</h4>
+                  <div className="space-y-4">
+                    <div className="border-b border-gray-600">
+                      <div className="flex justify-between items-center py-3">
+                        <span className="text-white font-medium">Kickoff & Teambuilding</span>
+                        <span className="text-zinc-400 text-sm">10:00 - 11:00</span>
+                      </div>   
+                    </div>
+                    <div className="border-b border-gray-600">
+                      <div className="flex justify-between items-center py-3">
+                        <span className="text-white font-medium">Development</span>
+                        <span className="text-zinc-400 text-sm">11:00 - 15:00</span>
+                      </div> 
+                    </div>
+                    <div className="border-b border-gray-600">
+                      <div className="flex justify-between items-center py-3">
+                        <span className="text-white font-medium">Pitch, Judging & Celebration</span>
+                        <span className="text-zinc-400 text-sm">15:00 - 17:00</span>
+                      </div> 
+                    </div>
+                  </div>
+                </div>
+
+                {/* View Event Button */}
+                <button className="bg-white text-black px-8 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors w-[169px] h-12">
+                  View event
+                </button>
+              </div>
+              
+              {/* Right Image */}
+              <div className="lg:w-1/2">
+                <div className="h-64 lg:h-full bg-zinc-600 flex items-center justify-center relative rounded-lg overflow-hidden">
+                  <img 
+                    src="https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                    alt="Event venue" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* Browse Events Section */}
-          <div>
-            <h2 className="text-white text-xl font-medium mb-8 text-left">Events For You</h2>
+        {/*------------------------------------------ Browse Events Section ------------------------------------------*/}
+        <section className="">
+          <h2 className="text-white text-xl font-medium mb-8 text-left ">Events For You</h2>
 
-            <div className="flex space-x-4 justify-left">
-              <EventCard event={sampleEvent} index={0} />
-              <EventCard event={sampleEvent} index={1} />
-              <EventCard event={sampleEvent} index={2} />
-            </div>
+          <div className="flex space-x-4 justify-left">
+            <EventCard event={sampleEvent} index={0} />
+            <EventCard event={sampleEvent} index={1} />
+            <EventCard event={sampleEvent} index={2} />
           </div>
 
-         {/* View All Events Button */}
+          {/* View All Events Button */}
           <div className="text-center mb-20 mt-8">
             <button 
               onClick={() => router.push('/events')}
-              className="border border-emerald-400 text-emerald-400 px-8 py-3 rounded-full font-medium text-sm hover:bg-emerald-400 hover:text-black transition-colors"
-            >
+              className="border border-emerald-400 text-emerald-400 px-8 py-3 rounded-full font-medium text-sm hover:bg-emerald-400 hover:text-black transition-colors">
               View all events
             </button>
           </div>
-        </div>
+        </section>
       </main>
       
-      {/* Footer */}
+      {/*--------------------------------------------------------------------------------*/}
+      {/* FOOTER */}
+      {/*--------------------------------------------------------------------------------*/}
       <Footer />
     </div>
   )

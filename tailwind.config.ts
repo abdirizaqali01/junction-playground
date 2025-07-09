@@ -20,7 +20,7 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-inter)"],
+        sans: ["var(--font-space-grotesk)"],
         "space-mono": ["var(--font-space-mono)"],
       },
       colors: {

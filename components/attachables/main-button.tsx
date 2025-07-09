@@ -7,11 +7,11 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const mainButtonVariants = cva(
-  "px-6 py-3 rounded-lg font-medium transition-colors flex items-center space-x-2 flex-shrink-0",
+  "font-space-mono tracking-[-0.02rem] font-[400] px-6 py-3 rounded-lg transition-colors flex items-center space-x-2 flex-shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-[var(--color-light-opacity100)] text-[var(--color-dark-opacity100)] hover:bg-[var(--color-light-opacity60)]",
+        default: "bg-[var(--color-light-opacity100)] text-[var(--color-dark-opacity80)] hover:bg-[var(--color-light-opacity60)]",
         primary: "bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] hover:bg-[var(--color-primary-opacity60)]",
         alerts: "bg-[var(--color-alerts-opacity100)] text-[var(--color-light-opacity100)] hover:bg-[var(--color-alerts-opacity60)]",
         gray: "bg-[var(--color-light-opacity20)] text-[var(--color-light-opacity100)] hover:bg-[var(--color-light-opacity60)]",
