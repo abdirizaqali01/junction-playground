@@ -3,13 +3,15 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
+import { MainButton } from '@/components/attachables/main-button'
 import { Upload, Play, ChevronDown, Check, X } from 'lucide-react'
+import { initializeCSSVariables } from '@/styles/design-system'
 
 const userProfile = {
   name: 'Junction Hack',
   email: 'ju@hackjunction.com',
   initials: 'JU',
-  avatarColor: 'bg-neutral-600'
+  avatarColor: 'bg-green-400'
 }
 
 // Submit Confirmation Modal Component
@@ -21,28 +23,34 @@ const SubmitModal = ({ isOpen, onClose, onConfirm }: {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-      <div className="bg-neutral-900 border-2 border-white rounded-2xl p-6 max-w-md w-full mx-4">
+    <div className="fixed inset-0 bg-[var(--color-dark-opacity80)] flex items-center justify-center z-50">
+      <div className="bg-[var(--color-dark-opacity100)] border-2 border-[var(--color-light-opacity20)] rounded-[10px] p-6 max-w-md w-full mx-4">
         <div className="text-center mb-4">
-          <h3 className="text-lg font-semibold text-white mb-3">Final Submit your project?</h3>
-          <p className="text-neutral-400 leading-relaxed" style={{ fontSize: '10px' }}>
+          <h3 className="text-lg font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-3">
+            Final Submit your project?
+          </h3>
+          <p className="text-[var(--color-light-opacity60)] leading-relaxed font-space-grotesk font-[300] text-sm">
             You won't be able to undo this, a final submission will be the final submission. If you'd like to keep editing, press cancel. Otherwise, SUBMIT!
           </p>
         </div>
         
         <div className="flex space-x-3 justify-center">
-          <button
+          <MainButton
             onClick={onConfirm}
-            className="px-4 py-2 bg-green-500 hover:bg-green-400 text-white rounded-md text-sm font-medium transition-colors"
+            variant="primary"
+            size="sm"
+            showIcon={false}
           >
             Submit It!
-          </button>
-          <button
+          </MainButton>
+          <MainButton
             onClick={onClose}
-            className="px-4 py-2 bg-red-500 hover:bg-red-400 text-white rounded-md text-sm font-medium transition-colors"
+            variant="alerts"
+            size="sm"
+            showIcon={false}
           >
             Keep Editing
-          </button>
+          </MainButton>
         </div>
       </div>
     </div>
@@ -65,35 +73,35 @@ const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }: {
       }`}
       onTransitionEnd={onTransitionEnd}
     >
-      <div className={`border rounded-lg p-3 transition-all duration-200 ${
+      <div className={`border rounded-[5px] p-3 transition-all duration-200 ${
         isCompleted
-          ? 'border-green-500' 
-          : 'border-red-600'
+          ? 'border-[var(--color-primary-opacity100)]' 
+          : 'border-[var(--color-alerts-opacity100)]'
       }`}>
         <div className="mb-2">
           <div className="flex items-center space-x-2">
-            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+            <div className={`w-4 h-4 rounded-[3px] border flex items-center justify-center transition-colors ${
               isCompleted
-                ? 'bg-green-500 border-green-500' 
-                : 'border-neutral-400'
+                ? 'bg-[var(--color-primary-opacity100)] border-[var(--color-primary-opacity100)]' 
+                : 'border-[var(--color-light-opacity40)]'
             }`}>
               {isCompleted && (
-                <Check className="w-3 h-3 text-white" />
+                <Check className="w-3 h-3 text-[var(--color-light-opacity100)]" />
               )}
             </div>
-            <h4 className={`font-medium text-sm transition-colors ${
+            <h4 className={`font-space-grotesk font-[500] text-sm transition-colors ${
               isCompleted
-                ? 'text-green-400' 
-                : 'text-white'
+                ? 'text-[var(--color-primary-opacity100)]' 
+                : 'text-[var(--color-light-opacity100)]'
             }`}>
               {index + 1}. {item.label}
               {item.required && (
-                <span className="text-red-400 text-xs ml-1">*</span>
+                <span className="text-[var(--color-alerts-opacity100)] text-xs ml-1">*</span>
               )}
             </h4>
           </div>
         </div>
-        <p className="text-neutral-400 text-xs leading-relaxed">
+        <p className="text-[var(--color-light-opacity60)] text-xs leading-relaxed font-space-grotesk font-[300]">
           {item.key === 'projectName' && 'Enter a clear and descriptive name for your project.'}
           {item.key === 'description' && 'Provide a detailed description of what you built and the problem it solves.'}
           {item.key === 'selectedChallenge' && 'Select which challenge track your project is participating in.'}
@@ -109,6 +117,12 @@ const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }: {
 
 export default function ProjectSubmissionPage() {
   const router = useRouter()
+  
+  // Initialize design system variables
+  useEffect(() => {
+    initializeCSSVariables();
+  }, []);
+
   const [formData, setFormData] = useState({
     projectName: 'Energify',
     description: '',
@@ -266,7 +280,7 @@ export default function ProjectSubmissionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
+    <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex flex-col">
       <div className="flex flex-1">
         <Sidebar
           userProfile={userProfile}
@@ -282,25 +296,31 @@ export default function ProjectSubmissionPage() {
           <div className="flex-1 p-6">
             {/* Header */}
             <div className="mb-6 pt-[3%]">
-              <h1 className="text-2xl font-semibold text-white mb-4">Project Submission</h1>
+              <h1 className="text-2xl font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-4">
+                Project Submission
+              </h1>
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <button className="px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-md text-sm font-medium transition-colors flex items-center space-x-2">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
+                  <MainButton
+                    variant="outlineGray"
+                    size="sm"
+                    showIcon={false}
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 16 16">
                       <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
                       <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
                     </svg>
-                    <span>Preview</span>
-                  </button>
+                    Preview
+                  </MainButton>
                 </div>
 
-                <span className={`px-3 py-1 text-xs font-medium rounded-full transition-all duration-200 ${
+                <span className={`px-3 py-1 text-xs font-space-mono font-[400] tracking-[-0.02rem] rounded-full transition-all duration-200 ${
                   activeField 
-                    ? 'bg-transparent border border-white/30 text-white' 
+                    ? 'bg-transparent border border-[var(--color-light-opacity30)] text-[var(--color-light-opacity100)]' 
                     : allFieldsCompleted
-                    ? 'bg-green-500 text-white'
-                    : 'bg-orange-500 text-white'
+                    ? 'bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)]'
+                    : 'bg-[var(--color-secondary-opacity100)] text-[var(--color-light-opacity100)]'
                 }`}>
                   {activeField ? 'Editing' : allFieldsCompleted ? 'Final' : 'Draft'}
                 </span>
@@ -308,17 +328,19 @@ export default function ProjectSubmissionPage() {
             </div>
 
             {/* Form Content */}
-            <div className={`rounded-lg p-6 space-y-6 w-full transition-colors ${
+            <div className={`rounded-[10px] p-6 space-y-6 w-full transition-colors ${
               allFieldsCompleted 
-                ? 'bg-green-900/30 border border-green-500/50' 
+                ? 'bg-[var(--color-primary-opacity20)] border border-[var(--color-primary-opacity50)]' 
                 : activeField 
-                ? 'bg-neutral-800/80' 
-                : 'bg-neutral-900'
+                ? 'bg-[var(--color-white-opacity10)]' 
+                : 'bg-[var(--color-white-opacity5)]'
             }`}>
               
               {/* Project Name */}
               <div className="space-y-2">
-                <label className="block text-white text-sm font-medium">Project Name</label>
+                <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                  Project Name
+                </label>
                 <input
                   type="text"
                   name="projectName"
@@ -326,15 +348,17 @@ export default function ProjectSubmissionPage() {
                   onChange={handleInputChange}
                   onFocus={() => handleFieldFocus('projectName')}
                   onBlur={handleFieldBlur}
-                  className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-neutral-500 transition-colors text-sm"
+                  className="w-full bg-[var(--color-white-opacity10)] border border-[var(--color-light-opacity20)] rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors text-sm font-space-mono"
                   placeholder="Enter project name"
                 />
               </div>
 
               {/* Description */}
               <div className="space-y-2">
-                <label className="block text-white text-sm font-medium">Description of what you've built</label>
-                <p className="text-neutral-400 text-xs leading-relaxed mb-3">
+                <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                  Description of what you've built
+                </label>
+                <p className="text-[var(--color-light-opacity60)] text-xs leading-relaxed mb-3 font-space-grotesk font-[300]">
                   Description of maximum 10 lines limit of documents at lorem ipsum dictumst et nisl, mauris phasellus egestas vel tellus rutrum vel, ornare molestie mauris non pulvinar. Turpis neque viverra et auctor fermentum consectetur tortor vitae egestas. Lorem ipsum dolor sit amet consequat pharetra nunc ipsum nam, scelerisque duis ut ridiculus pellentesque et tortor vitae.
                 </p>
                 <textarea
@@ -344,15 +368,17 @@ export default function ProjectSubmissionPage() {
                   onFocus={() => handleFieldFocus('description')}
                   onBlur={handleFieldBlur}
                   rows={5}
-                  className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-neutral-500 transition-colors resize-none text-sm"
+                  className="w-full bg-[var(--color-white-opacity10)] border border-[var(--color-light-opacity20)] rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors resize-none text-sm font-space-mono"
                   placeholder="Describe your project, the problem it solves, and the technology you used..."
                 />
               </div>
 
               {/* Your Challenge */}
               <div className="space-y-2">
-                <label className="block text-white text-sm font-medium">Your Challenge</label>
-                <p className="text-neutral-400 text-xs mb-3">
+                <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                  Your Challenge
+                </label>
+                <p className="text-[var(--color-light-opacity60)] text-xs mb-3 font-space-grotesk font-[300]">
                   Leave a short note and slack channel name participating this work to receive bounty reward! or continue reading official terms.
                 </p>
                 <div className="relative">
@@ -362,32 +388,34 @@ export default function ProjectSubmissionPage() {
                     onChange={handleInputChange}
                     onFocus={() => handleFieldFocus('selectedChallenge')}
                     onBlur={handleFieldBlur}
-                    className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-neutral-500 transition-colors appearance-none text-sm"
+                    className="w-full bg-[var(--color-white-opacity10)] border border-[var(--color-light-opacity20)] rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors appearance-none text-sm font-space-mono"
                   >
                     <option value="">Select the challenge that your project is for...</option>
                     <option value="ai">AI Challenge</option>
                     <option value="sustainability">Sustainability Challenge</option>
                     <option value="fintech">FinTech Challenge</option>
                   </select>
-                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" />
+                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-light-opacity40)] pointer-events-none" />
                 </div>
               </div>
 
               {/* Slack Challenge Participation */}
               <div className="space-y-2">
-                <label className="block text-white text-sm font-medium">Slack challenge participation</label>
-                <p className="text-neutral-400 text-xs mb-3">
+                <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                  Slack challenge participation
+                </label>
+                <p className="text-[var(--color-light-opacity60)] text-xs mb-3 font-space-grotesk font-[300]">
                   Leave a short note and slack channel name participating this work to receive bounty reward! or continue reading official terms.
                 </p>
                 
                 {/* File Upload Area */}
                 <div
-                  className={`border-2 border-dashed rounded-md p-8 text-center transition-colors ${
+                  className={`border-2 border-dashed rounded-[5px] p-8 text-center transition-colors ${
                     slackFiles.length > 0
-                      ? 'border-green-500 bg-green-900/20' 
+                      ? 'border-[var(--color-primary-opacity100)] bg-[var(--color-primary-opacity20)]' 
                       : dragActive 
-                      ? 'border-neutral-500 bg-neutral-800/50' 
-                      : 'border-neutral-600 hover:border-neutral-500'
+                      ? 'border-[var(--color-light-opacity50)] bg-[var(--color-white-opacity10)]' 
+                      : 'border-[var(--color-light-opacity30)] hover:border-[var(--color-light-opacity50)]'
                   }`}
                   onDragEnter={handleDragEvents}
                   onDragLeave={handleDragEvents}
@@ -395,28 +423,30 @@ export default function ProjectSubmissionPage() {
                   onDrop={handleDrop}
                 >
                   <Upload className={`w-6 h-6 mx-auto mb-3 ${
-                    slackFiles.length > 0 ? 'text-green-400' : 'text-neutral-400'
+                    slackFiles.length > 0 ? 'text-[var(--color-primary-opacity100)]' : 'text-[var(--color-light-opacity40)]'
                   }`} />
                   {slackFiles.length > 0 ? (
                     <div>
-                      <p className="text-green-400 mb-2 text-sm font-medium">
+                      <p className="text-[var(--color-primary-opacity100)] mb-2 text-sm font-space-grotesk font-[500]">
                         {slackFiles.length} file{slackFiles.length > 1 ? 's' : ''} uploaded
                       </p>
-                      <div className="text-xs text-neutral-400 space-y-1 mb-3">
+                      <div className="text-xs text-[var(--color-light-opacity60)] space-y-1 mb-3 font-space-mono">
                         {slackFiles.map((file, index) => (
                           <div key={index}>{file.name}</div>
                         ))}
                       </div>
                       <button
                         onClick={handleClearSlackFiles}
-                        className="text-xs text-red-400 hover:text-red-300 underline"
+                        className="text-xs text-[var(--color-alerts-opacity100)] hover:text-[var(--color-alerts-opacity60)] underline font-space-grotesk"
                       >
                         Clear files
                       </button>
                     </div>
                   ) : (
                     <>
-                      <p className="text-neutral-400 mb-2 text-sm">Drag and drop files here, or</p>
+                      <p className="text-[var(--color-light-opacity60)] mb-2 text-sm font-space-grotesk font-[300]">
+                        Drag and drop files here, or
+                      </p>
                       <input
                         type="file"
                         multiple
@@ -426,7 +456,7 @@ export default function ProjectSubmissionPage() {
                       />
                       <label
                         htmlFor="file-upload"
-                        className="inline-flex items-center px-4 py-2 bg-neutral-700 hover:bg-neutral-600 rounded-md cursor-pointer transition-colors text-sm text-white"
+                        className="inline-flex items-center px-4 py-2 bg-[var(--color-white-opacity20)] hover:bg-[var(--color-white-opacity30)] rounded-[5px] cursor-pointer transition-colors text-sm text-[var(--color-light-opacity100)] font-space-grotesk font-[400]"
                       >
                         Browse files
                       </label>
@@ -440,30 +470,36 @@ export default function ProjectSubmissionPage() {
                 
                 {/* Video Upload */}
                 <div className="space-y-2 flex flex-col h-full">
-                  <div className={`rounded-md p-4 border flex flex-col h-full transition-colors ${
+                  <div className={`rounded-[5px] p-4 border flex flex-col h-full transition-colors ${
                     formData.videoFile 
-                      ? 'bg-green-900/20 border-green-500' 
-                      : 'bg-neutral-800 border-neutral-700'
+                      ? 'bg-[var(--color-primary-opacity20)] border-[var(--color-primary-opacity100)]' 
+                      : 'bg-[var(--color-white-opacity10)] border-[var(--color-light-opacity20)]'
                   }`}>
-                    <div className={`aspect-video rounded-md flex items-center justify-center mb-3 transition-colors ${
-                      formData.videoFile ? 'bg-green-900/30' : 'bg-neutral-900'
+                    <div className={`aspect-video rounded-[5px] flex items-center justify-center mb-3 transition-colors ${
+                      formData.videoFile ? 'bg-[var(--color-primary-opacity30)]' : 'bg-[var(--color-white-opacity5)]'
                     }`}>
                       {formData.videoFile ? (
                         <div className="text-center">
-                          <Play className="w-8 h-8 mx-auto mb-2 text-green-400" />
-                          <p className="text-xs text-green-400 font-medium">Video uploaded</p>
-                          <p className="text-xs text-neutral-400 mb-2">{formData.videoFile.name}</p>
+                          <Play className="w-8 h-8 mx-auto mb-2 text-[var(--color-primary-opacity100)]" />
+                          <p className="text-xs text-[var(--color-primary-opacity100)] font-space-grotesk font-[500]">
+                            Video uploaded
+                          </p>
+                          <p className="text-xs text-[var(--color-light-opacity60)] mb-2 font-space-mono">
+                            {formData.videoFile.name}
+                          </p>
                           <button
                             onClick={handleRemoveVideo}
-                            className="text-xs text-red-400 hover:text-red-300 underline"
+                            className="text-xs text-[var(--color-alerts-opacity100)] hover:text-[var(--color-alerts-opacity60)] underline font-space-grotesk"
                           >
                             Remove video
                           </button>
                         </div>
                       ) : (
                         <div className="text-center">
-                          <Play className="w-8 h-8 mx-auto mb-2 text-neutral-400" />
-                          <p className="text-xs text-neutral-400">No video uploaded</p>
+                          <Play className="w-8 h-8 mx-auto mb-2 text-[var(--color-light-opacity40)]" />
+                          <p className="text-xs text-[var(--color-light-opacity60)] font-space-grotesk font-[300]">
+                            No video uploaded
+                          </p>
                         </div>
                       )}
                     </div>
@@ -477,10 +513,10 @@ export default function ProjectSubmissionPage() {
                     />
                     <label
                       htmlFor="video-upload"
-                      className={`block w-full text-center px-3 py-2 border rounded-md cursor-pointer transition-colors text-sm mt-auto ${
+                      className={`block w-full text-center px-3 py-2 border rounded-[5px] cursor-pointer transition-colors text-sm mt-auto font-space-grotesk font-[400] ${
                         formData.videoFile
-                          ? 'bg-green-900/30 hover:bg-green-900/50 border-green-600 text-green-300'
-                          : 'bg-neutral-900 hover:bg-neutral-800 border-neutral-700 text-neutral-300'
+                          ? 'bg-[var(--color-primary-opacity30)] hover:bg-[var(--color-primary-opacity50)] border-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)]'
+                          : 'bg-[var(--color-white-opacity5)] hover:bg-[var(--color-white-opacity10)] border-[var(--color-light-opacity20)] text-[var(--color-light-opacity100)]'
                       }`}
                     >
                       {formData.videoFile ? 'Change Video' : 'Upload Video'}
@@ -493,8 +529,10 @@ export default function ProjectSubmissionPage() {
                   
                   {/* Project Demo */}
                   <div className="space-y-2">
-                    <label className="block text-white text-sm font-medium">Project Demo</label>
-                    <p className="text-neutral-400 text-xs mb-2">
+                    <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                      Project Demo
+                    </label>
+                    <p className="text-[var(--color-light-opacity60)] text-xs mb-2 font-space-grotesk font-[300]">
                       The place where you project can be experienced.
                     </p>
                     
@@ -505,15 +543,17 @@ export default function ProjectSubmissionPage() {
                       onChange={handleInputChange}
                       onFocus={() => handleFieldFocus('demoUrl')}
                       onBlur={handleFieldBlur}
-                      className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-neutral-500 transition-colors text-sm"
+                      className="w-full bg-[var(--color-white-opacity10)] border border-[var(--color-light-opacity20)] rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors text-sm font-space-mono"
                       placeholder="Project url link..."
                     />
                   </div>
 
                   {/* Source Code */}
                   <div className="space-y-2">
-                    <label className="block text-white text-sm font-medium">Source Code</label>
-                    <p className="text-neutral-400 text-xs mb-2">
+                    <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                      Source Code
+                    </label>
+                    <p className="text-[var(--color-light-opacity60)] text-xs mb-2 font-space-grotesk font-[300]">
                       Where viewers and judges can access your source code.
                     </p>
                     
@@ -524,7 +564,7 @@ export default function ProjectSubmissionPage() {
                       onChange={handleInputChange}
                       onFocus={() => handleFieldFocus('sourceCode')}
                       onBlur={handleFieldBlur}
-                      className="w-full bg-neutral-800 border border-neutral-700 rounded-md px-3 py-2 text-white focus:outline-none focus:border-neutral-500 transition-colors text-sm"
+                      className="w-full bg-[var(--color-white-opacity10)] border border-[var(--color-light-opacity20)] rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors text-sm font-space-mono"
                       placeholder="Source code url link..."
                     />
                   </div>
@@ -534,25 +574,33 @@ export default function ProjectSubmissionPage() {
                     {activeField ? (
                       // When editing a field, show save/cancel buttons
                       <>
-                        <button className="px-4 py-2 bg-white hover:bg-neutral-600 text-black rounded-xl text-sm font-medium transition-all duration-200">
+                        <MainButton 
+                          variant="default"
+                          size="sm"
+                          showIcon={false}
+                        >
                           Save Draft
-                        </button>
-                        <button 
+                        </MainButton>
+                        <MainButton 
                           onClick={() => setActiveField(null)}
-                          className="px-4 py-2 bg-red-400 hover:bg-neutral-800 text-white hover:text-neutral-300 rounded-xl text-sm font-medium transition-all duration-200"
+                          variant="alerts"
+                          size="sm"
+                          showIcon={false}
                         >
                           Cancel
-                        </button>
+                        </MainButton>
                       </>
                     ) : (
                       // When not editing, show submit button only if ALL fields are completed
                       allFieldsCompleted && (
-                        <button 
+                        <MainButton 
                           onClick={handleSubmitClick}
-                          className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-xl text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg"
+                          variant="primary"
+                          size="default"
+                          showIcon={false}
                         >
                           Submit As Final
-                        </button>
+                        </MainButton>
                       )
                     )}
                   </div>
@@ -563,21 +611,21 @@ export default function ProjectSubmissionPage() {
 
 {/* Right Sidebar - Next Steps with Enhanced Animation */}
 <div className="w-[26rem] p-6">
-  <div className={`border rounded-lg sticky top-6 transition-colors shadow-md
+  <div className={`border rounded-[10px] sticky top-6 transition-colors shadow-md
     ${allFieldsCompleted 
-      ? 'border-green-700 bg-[#0e1a14] px-8 py-6' 
-      : 'border-red-600 bg-neutral-900 px-6 py-4'
+      ? 'border-[var(--color-primary-opacity100)] bg-[var(--color-primary-opacity20)] px-8 py-6' 
+      : 'border-[var(--color-alerts-opacity100)] bg-[var(--color-white-opacity5)] px-6 py-4'
     }`}
   >
-    <h3 className="text-base font-medium text-white mb-4">
+    <h3 className="text-base font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-4">
       {allFieldsCompleted ? 'ALL DONE!' : 'Next Steps'}
     </h3>
 
     {allFieldsCompleted ? (
       <div>
-        <p className="text-neutral-400 text-sm leading-relaxed">
+        <p className="text-[var(--color-light-opacity60)] text-sm leading-relaxed font-space-grotesk font-[300]">
           Now, just sit back and relax. Follow the{" "}
-          <span className="underline cursor-pointer hover:text-neutral-300">
+          <span className="underline cursor-pointer hover:text-[var(--color-light-opacity100)] text-[var(--color-primary-opacity100)]">
             announcements
           </span>{" "}
           closely and get some sleep!
@@ -598,13 +646,15 @@ export default function ProjectSubmissionPage() {
         {nextSteps.map((step) => {
           const incompleteCount = checklistItems.filter(item => !checklist[item.key]).length
           return (
-            <div key={step.step} className="border border-red-600 rounded-lg p-3 mb-3">
+            <div key={step.step} className="border border-[var(--color-alerts-opacity100)] rounded-[5px] p-3 mb-3">
               <div className="mb-2">
-                <h4 className="text-white font-medium text-sm">
+                <h4 className="text-[var(--color-light-opacity100)] font-space-grotesk font-[500] text-sm">
                   {step.step + incompleteCount}. {step.title}
                 </h4>
               </div>
-              <p className="text-neutral-400 text-xs leading-relaxed">{step.description}</p>
+              <p className="text-[var(--color-light-opacity60)] text-xs leading-relaxed font-space-grotesk font-[300]">
+                {step.description}
+              </p>
             </div>
           )
         })}

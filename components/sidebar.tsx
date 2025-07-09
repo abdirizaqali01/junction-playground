@@ -24,7 +24,7 @@ interface UserProfile {
 }
 interface SidebarProps {
   navigationSections?: NavigationSection[] // Made optional
-  userProfile: UserProfile
+  userProfile?: UserProfile // Made optional
   backToHomeLabel?: string
   onBackToHome?: () => void
   className?: string
@@ -148,9 +148,17 @@ const defaultNavigationSections: NavigationSection[] = [
   }
 ]
 
+// Default user profile built into the sidebar
+const defaultUserProfile: UserProfile = {
+  name: 'Junction Hack',
+  email: 'ju@hackjunction.com',
+  initials: 'JU',
+  avatarColor: 'bg-green-500'
+}
+
 export default function Sidebar({
   navigationSections = defaultNavigationSections, // Use default if not provided
-  userProfile,
+  userProfile = defaultUserProfile, // Use default if not provided
   backToHomeLabel = 'Back To dashboard',
   onBackToHome,
   className = '',
@@ -177,12 +185,14 @@ export default function Sidebar({
     return null
   }
 
-  // Map pathnames to navigation item IDs
+  // Map pathnames to navigation item IDs - FIXED VERSION
   const getActiveItemId = () => {
     const pathToIdMap: Record<string, string> = {
       '/dash': 'dashboard',
       '/challenges': 'challenges',
       '/teams': 'team',
+      '/teams/my-team': 'team',
+      '/teams/candidates': 'team',
       '/hackerpack': 'hackerpack',
       '/submissions': 'project-submission',
       '/meetings': 'mentor-meetings',
@@ -190,7 +200,32 @@ export default function Sidebar({
       '/voting': 'finalist-voting',
     }
     
-    // Get the last segment of the pathname
+    // First check if the full pathname (after /events/[id]) matches
+    const pathSegments = pathname.split('/')
+    const eventsIndex = pathSegments.findIndex(segment => segment === 'events')
+    
+    if (eventsIndex !== -1) {
+      // Get the path after /events/[id]
+      const eventBasePath = pathSegments.slice(eventsIndex + 2).join('/')
+      const fullPath = `/${eventBasePath}`
+      
+      // Check for exact matches first (including sub-paths)
+      if (pathToIdMap[fullPath]) {
+        return pathToIdMap[fullPath]
+      }
+      
+      // Check for partial matches (for team sub-pages)
+      if (fullPath.startsWith('/teams')) {
+        return 'team'
+      }
+      
+      // Check for challenge pages
+      if (fullPath.startsWith('/challenges')) {
+        return 'challenges'
+      }
+    }
+    
+    // Fallback to checking just the last segment
     const lastSegment = pathname.split('/').pop() || ''
     return pathToIdMap[`/${lastSegment}`] || 'dashboard'
   }

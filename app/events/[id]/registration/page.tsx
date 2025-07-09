@@ -1,7 +1,28 @@
 'use client'
 
-import { useState } from 'react'
-import { ChevronRight, ChevronLeft, Check, AlertCircle, Calendar, MapPin, Globe, X } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useParams } from 'next/navigation'
+import { ChevronRight, ChevronLeft, Check, AlertCircle, Calendar, MapPin, Globe, X, Loader2 } from 'lucide-react'
+
+// Event interface based on your API response
+interface Event {
+  event_id: number
+  name: string
+  slug: string
+  status: string
+  start_date: string
+  end_date: string
+  location: string
+  description: string
+  cover_image_url: string
+  is_public: boolean
+  meta_tags: {
+    title: string
+    description: string
+  }
+  created_at: string
+  updated_at: string
+}
 
 // Form data interface
 interface FormData {
@@ -98,6 +119,12 @@ const expertiseOptions = [
 ]
 
 export default function HackathonRegistration() {
+  const params = useParams()
+  const eventId = params?.id as string
+  
+  const [event, setEvent] = useState<Event | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState<FormData>({
     // Basic Details
@@ -140,6 +167,62 @@ export default function HackathonRegistration() {
   const [newRoleExperience, setNewRoleExperience] = useState('')
   const [newSkill, setNewSkill] = useState('')
   const [newSkillExpertise, setNewSkillExpertise] = useState('')
+
+  // Fetch event data
+  useEffect(() => {
+    const fetchEvent = async () => {
+      if (!eventId) return
+      
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/proxy/events`)
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch events')
+        }
+        
+        const events: Event[] = await response.json()
+        const selectedEvent = events.find(e => e.event_id.toString() === eventId)
+        
+        if (!selectedEvent) {
+          throw new Error('Event not found')
+        }
+        
+        setEvent(selectedEvent)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load event')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchEvent()
+  }, [eventId])
+
+  // Format date for display
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    })
+  }
+
+  // Format date range
+  const formatDateRange = (startDate: string, endDate: string) => {
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+    
+    if (start.toDateString() === end.toDateString()) {
+      return formatDate(startDate)
+    }
+    
+    const startMonth = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    const endFormatted = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    
+    return `${startMonth} - ${endFormatted}`
+  }
 
   // Helper functions for managing arrays
   const addToArray = (field: keyof FormData, value: string) => {
@@ -209,6 +292,39 @@ export default function HackathonRegistration() {
           ? [...prev.themes, theme]
           : prev.themes
     }))
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin text-[#55D186]" />
+          <p className="text-[#FFFFFF99]">Loading event details...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Error state
+  if (error || !event) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-[#FF8383] rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle size={24} className="text-black" />
+          </div>
+          <h1 className="text-2xl font-bold mb-2">Event Not Found</h1>
+          <p className="text-[#FFFFFF99] mb-4">{error || 'The event you\'re looking for could not be found.'}</p>
+          <button
+            onClick={() => window.history.back()}
+            className="bg-[#55D186] text-black px-6 py-3 rounded-lg font-medium hover:bg-[#55D18699] transition-colors"
+          >
+            Go Back
+          </button>
+        </div>
+      </div>
+    )
   }
 
   const StepIndicator = () => (
@@ -965,22 +1081,30 @@ export default function HackathonRegistration() {
         <div className="max-w-6xl mx-auto px-6 py-6">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-[#55D186] rounded-xl flex items-center justify-center">
-              <span className="text-black font-bold text-xl">H</span>
+              <span className="text-black font-bold text-xl">{event.name.charAt(0)}</span>
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">HackForge 2025</h1>
+              <h1 className="text-2xl font-bold text-white">{event.name}</h1>
               <div className="flex items-center space-x-4 text-[#FFFFFF99] text-sm">
                 <div className="flex items-center space-x-1">
                   <Calendar size={14} />
-                  <span>March 15-17, 2025</span>
+                  <span>{formatDateRange(event.start_date, event.end_date)}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <MapPin size={14} />
-                  <span>Helsinki, Finland</span>
+                  <span>{event.location}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Globe size={14} />
-                  <span>Hybrid Event</span>
+                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
+                    event.status === 'PUBLISHED' 
+                      ? 'bg-[#55D186] text-black' 
+                      : event.status === 'ONGOING'
+                        ? 'bg-[#FFB800] text-black'
+                        : 'bg-[#FF8383] text-black'
+                  }`}>
+                    {event.status}
+                  </span>
                 </div>
               </div>
             </div>
@@ -1026,7 +1150,12 @@ export default function HackathonRegistration() {
               onClick={() => {
                 if (currentStep === 5) {
                   // Handle form submission
-                  console.log('Form submitted:', formData)
+                  const submissionData = {
+                    ...formData,
+                    event_id: event.event_id,
+                    event_name: event.name
+                  }
+                  console.log('Form submitted:', submissionData)
                   alert('Registration submitted successfully!')
                 } else {
                   setCurrentStep(prev => Math.min(5, prev + 1))
