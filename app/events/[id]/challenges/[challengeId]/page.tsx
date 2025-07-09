@@ -53,7 +53,7 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary-opacity100)] mx-auto mb-4"></div>
-              <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)]`}>Loading challenge...</p>
+              <p className={style.font.mono.text + " text-[var(--color-light-opacity60)]"}>Loading challenge...</p>
             </div>
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
         <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 pt-[3%] ml-[250px]">
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
-              <p className={`${style.font.mono.text} text-[var(--color-alerts-opacity100)] mb-4`}>
+              <p className={style.font.mono.text + " text-[var(--color-alerts-opacity100)] mb-4"}>
                 Error loading challenge: {error || 'Challenge not found'}
               </p>
               <MainButton 
@@ -123,10 +123,10 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
             
             {/* Text Content - Bottom Left */}
             <div className="relative z-10 p-6 pb-6">
-              <div className={`${style.font.mono.text} text-sm text-[var(--color-light-opacity100)] mb-2`}>
+              <div className={style.font.mono.text + " text-sm text-[var(--color-light-opacity100)] mb-2"}>
                 {organization.name}
               </div>
-              <h1 className={`${style.font.grotesk.heavy} text-3xl text-[var(--color-light-opacity100)]`}>
+              <h1 className={style.font.grotesk.heavy + " text-3xl text-[var(--color-light-opacity100)]"}>
                 {challenge.name}
               </h1>
             </div>
@@ -140,11 +140,11 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
             <div className="lg:col-span-2 space-y-8">
               {/* The Challenge Section */}
               <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity15)] rounded-xl p-8">
-                <h2 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-6`}>
+                <h2 className={style.font.grotesk.main + " text-2xl text-[var(--color-light-opacity100)] mb-6"}>
                   The Challenge
                 </h2>
                 
-                <div className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
+                <div className={style.font.mono.text + " space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed"}>
                   <p>
                     {challenge.description || 'No description available for this challenge.'}
                   </p>
@@ -153,11 +153,11 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
 
               {/* Insight */}
               <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity15)] rounded-xl p-8">
-                <h2 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-6`}>
+                <h2 className={style.font.grotesk.main + " text-2xl text-[var(--color-light-opacity100)] mb-6"}>
                   Insight
                 </h2>
                 
-                <div className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
+                <div className={style.font.mono.text + " space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed"}>
                   <p>
                     <span>TBD</span>
                   </p>
@@ -171,11 +171,11 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
 
               {/* What We'll Bring */}
               <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity15)] rounded-xl p-8">
-                <h2 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-6`}>
+                <h2 className={style.font.grotesk.main + " text-2xl text-[var(--color-light-opacity100)] mb-6"}>
                   What We'll Bring
                 </h2>
                 
-                <div className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
+                <div className={style.font.mono.text + " space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed"}>
                   <p>
                     <span>TBD</span>
                   </p>
@@ -192,11 +192,11 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
             <div className="space-y-6">
               {/* Organization Info Card */}
               <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity15)] rounded-xl p-6">
-                <h3 className={`${style.font.grotesk.main} text-xl text-[var(--color-light-opacity100)] mb-4`}>
+                <h3 className={style.font.grotesk.main + " text-xl text-[var(--color-light-opacity100)] mb-4"}>
                   {organization.name}
                 </h3>
                 
-                <div className={`${style.font.mono.text} text-sm text-[var(--color-light-opacity60)] leading-relaxed`}>
+                <div className={style.font.mono.text + " text-sm text-[var(--color-light-opacity60)] leading-relaxed"}>
                   {organization.description ? (
                     <p className="mb-4">{organization.description}</p>
                   ) : (
@@ -223,13 +223,13 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
 
               {/* Ongoing Criteria */}
               <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity15)] rounded-xl p-6">
-                <h3 className={`${style.font.grotesk.main} text-xl text-[var(--color-light-opacity100)] mb-4`}>
+                <h3 className={style.font.grotesk.main + " text-xl text-[var(--color-light-opacity100)] mb-4"}>
                   Ongoing Criteria
                 </h3>
                 
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
+                    <span className={style.font.mono.text + " space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed"}>
                       TBD
                     </span>
                   </div>
@@ -238,11 +238,11 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
 
               {/* Prizes */}
               <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity15)] rounded-xl p-6">
-                <h3 className={`${style.font.grotesk.main} text-xl text-[var(--color-light-opacity100)] mb-4`}>
+                <h3 className={style.font.grotesk.main + "  text-xl text-[var(--color-light-opacity100)] mb-4"}>
                   Prizes
                 </h3>
                 <div className="flex justify-between">
-                  <span className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
+                  <span className={style.font.mono.text + " space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed"}>
                     TBD
                   </span>
                 </div>

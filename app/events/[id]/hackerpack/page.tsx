@@ -104,7 +104,7 @@ export default function HackerpackPage() {
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary-opacity100)] mx-auto mb-4"></div>
-              <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)]`}>Loading hackerpacks...</p>
+              <p className={style.font.mono.text + " text-[var(--color-light-opacity60)]"}>Loading hackerpacks...</p>
             </div>
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function HackerpackPage() {
         <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
-              <p className={`${style.font.mono.text} text-[var(--color-alerts-opacity100)] mb-4`}>Error loading hackerpacks: {error}</p>
+              <p className={style.font.mono.text + " text-[var(--color-alerts-opacity100)] mb-4"}>Error loading hackerpacks: {error}</p>
               <MainButton 
                 onClick={() => window.location.reload()}
                 variant="primary"
@@ -156,10 +156,10 @@ export default function HackerpackPage() {
         <div className="flex-1 p-8 pt-[6%]">
           {/* Page Title and Description */}
           <div className="mb-8">
-            <h1 className={`${style.font.grotesk.heavy} text-4xl text-[var(--color-light-opacity100)] mb-6`}>
+            <h1 className={style.font.grotesk.heavy + " text-4xl text-[var(--color-light-opacity100)] mb-6"}>
               Hackerpack
             </h1>
-            <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-lg leading-relaxed max-w-4xl`}>
+            <p className={style.font.mono.text + " text-[var(--color-light-opacity60)] text-lg leading-relaxed max-w-4xl"}>
               We want you to focus entirely on making your hackathon project as awesome as possible! The software and tools provided by our partners are here to help you unlock your creativity and get the most out of your learning experience during the event.
             </p>
           </div>
@@ -172,8 +172,8 @@ export default function HackerpackPage() {
                   <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1zm3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4h-3.5z"/>
                 </svg>
               </div>
-              <h3 className={`${style.font.grotesk.medium} text-xl text-[var(--color-light-opacity100)] mb-2`}>No Hackerpacks Available</h3>
-              <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)]`}>Hackerpack offers for this event will be announced soon. Check back later!</p>
+              <h3 className={style.font.grotesk.medium + " text-xl text-[var(--color-light-opacity100)] mb-2"}>No Hackerpacks Available</h3>
+              <p className={style.font.mono.text + " text-[var(--color-light-opacity60)]"}>Hackerpack offers for this event will be announced soon. Check back later!</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6">
@@ -191,11 +191,11 @@ export default function HackerpackPage() {
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-3 mb-4">
-                        <h3 className={`${style.font.grotesk.medium} text-xl text-[var(--color-light-opacity100)]`}>
+                        <h3 className={style.font.grotesk.medium + " text-xl text-[var(--color-light-opacity100)]"}>
                           {hackerpack.title}
                         </h3>
                       </div>
-                      <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-sm leading-relaxed`}>
+                      <p className={style.font.mono.text + " text-[var(--color-light-opacity60)] text-sm leading-relaxed"}>
                         {hackerpack.content}
                       </p>
                     </div>

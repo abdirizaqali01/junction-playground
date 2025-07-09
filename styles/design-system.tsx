@@ -131,6 +131,17 @@ export const initializeCSSVariables = () => {
 // COMPONENTS
 //----------------------------------------------------------------//
 
+// SECTION GAPS //
+export const sectionGap = {
+    top: `pt-[5%]`,
+    bottom: `pb-[5%]`,
+}
+
+// SECTION TITLES //
+export const sectionTitle = {
+    grotesk: `text-[var(--color-light-opacity100)] font-space-grotesk font-[600] text-[1.7rem] tracking-[-0.01rem] mb-5`,
+}
+
 // STATUS BADGE //
 export const status = {
     greenLight: `bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] px-4 py-2 ${border.radius.full} text-sm font-light font-[var(--font-space-grotesk)]`,
@@ -151,11 +162,6 @@ export const font = {
     }
 }
 
-// SECTION TITLES //
-export const sectionTitle = {
-    grotesk: ``,
-}
-
 // BOX STYLING //
 export const box = {
     gray: {
@@ -169,4 +175,6 @@ export const box = {
         middle: `bg-[var(--color-primary-opacity10)] ${border.solid} ${border.radius.middle} border-[var(--color-primary-opacity100)]`,
         top: `bg-[var(--color-primary-opacity20)] ${border.solid} ${border.radius.inner} border-[var(--color-primary-opacity100)]`,
     },
+
+    grayPrimary: `bg-[var(--color-white-opacity15)] ${border.solid} ${border.radius.outer} border-[var(--color-primary-opacity100)]`,
 }

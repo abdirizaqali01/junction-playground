@@ -142,8 +142,8 @@ export default function ChallengesPage() {
         <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400 mx-auto mb-4" />
-              <p className={`${style.font.mono.text} text-white/60`}>Loading challenges...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary-opacity100)] mx-auto mb-4"></div>
+              <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)]`}>Loading challenges...</p>
             </div>
           </div>
         </div>
@@ -162,7 +162,7 @@ export default function ChallengesPage() {
         <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
-              <p className={`${style.font.mono.text} text-red-500 mb-4`}>
+              <p className={`${style.font.mono.text} text-[var(--color-alerts-opacity100)] mb-4`}>
                 Error loading challenges: {error}
               </p>
               <MainButton onClick={() => window.location.reload()} variant="primary">
@@ -230,28 +230,32 @@ export default function ChallengesPage() {
 
       {/* Main content */}
       <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
-        <div className="bg-black border-b border-white/10 px-8 py-8">
-          <h1 className={`${style.font.grotesk.heavy} text-3xl text-white mb-8`}>Challenges</h1>
-
-          {/* FILTER TABS*/}
-          <div className="flex gap-2">
-            {(['Main Challenges', 'Side Challenges'] as const).map(filter => {
-              const active = selectedFilter === filter
-              return (
-                <button
-                  key={filter}
-                  onClick={() => setSelectedFilter(filter)}
-                  className={`${style.font.mono.text} text-sm rounded-lg px-5 py-2 border transition-all duration-150
-                    ${
-                      active
-                        ? 'bg-white text-black border-transparent shadow'
-                        : 'bg-transparent text-white/60 border-white/15 hover:bg-white/5'
-                    }`}
-                >
-                  {filter}
-                </button>
-              )
-            })}
+        {/* Header */}
+        <div className="bg-[var(--color-dark-opacity100)] border-b border-[var(--color-white-opacity10)] px-8 py-8">
+          <div className="flex flex-col">
+            <h1 className={`${style.font.grotesk.heavy} text-3xl text-[var(--color-light-opacity100)] mb-8`}>
+              Challenges
+            </h1>
+            
+            {/* Toggle Buttons */}
+            <div className="flex space-x-1">
+              <MainButton
+                onClick={() => setSelectedFilter('Main Challenges')}
+                variant={selectedFilter === 'Main Challenges' ? 'default' : 'ghost'}
+                size="sm"
+                showIcon={false}
+              >
+                Main Challenges
+              </MainButton>
+              <MainButton
+                onClick={() => setSelectedFilter('Side Challenges')}
+                variant={selectedFilter === 'Side Challenges' ? 'default' : 'ghost'}
+                size="sm"
+                showIcon={false}
+              >
+                Side Challenges
+              </MainButton>
+            </div>
           </div>
         </div>
 
@@ -260,7 +264,7 @@ export default function ChallengesPage() {
           <div className="flex-1 p-8">
             {challenges.length === 0 ? (
               <div className="text-center py-12">
-                <p className={`${style.font.mono.text} text-white/60 text-lg`}>
+                <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-lg`}>
                   No challenges found.
                 </p>
               </div>
@@ -268,7 +272,12 @@ export default function ChallengesPage() {
               <div className="space-y-8">
                 {Object.entries(grouped).map(([track, list]) => (
                   <div key={track} id={`track-${track.replace(/\s+/g, '-').toLowerCase()}`}>
-                    <h2 className={`${style.font.grotesk.medium} text-green-400 text-lg mb-4`}>{track}</h2>
+                    {/* Track Header */}
+                    <h2 className={`${style.font.grotesk.medium} text-[var(--color-primary-opacity100)] text-lg mb-4`}>
+                      {track}
+                    </h2>
+                    
+                    {/* Track Challenges */}
                     <div className="space-y-3 mr-16">
                       {list.map(ch => (
                         <div
@@ -282,35 +291,39 @@ export default function ChallengesPage() {
                                 CO
                               </div>
                               <div className="flex-1 min-w-0 py-1">
-                                <div className={`${style.font.mono.text} text-xs text-white/60 mb-2`}>
-                                  {ch.organization?.name || 'General'}
+                                <div className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)] mb-2`}>
+                                  {challenge.organization?.name || 'General'}
                                 </div>
-                                <h3 className={`${style.font.grotesk.main} text-2xl text-white mb-3 leading-tight`}>
-                                  {ch.name}
+                                <h3 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-3 leading-tight`}>
+                                  {challenge.name}
                                 </h3>
                                 <div className="flex items-center gap-3 mb-4">
-                                  <span className={`${style.font.mono.text} px-2 py-1 bg-black/50 rounded text-xs text-white/80`}>
+                                  <span className={`${style.font.mono.text} px-2 py-1 bg-[var(--color-dark-opacity100)] rounded text-xs text-[var(--color-light-opacity60)]`}>
                                     AI
                                   </span>
-                                  <span className={`${style.font.mono.text} px-2 py-1 bg-black/50 rounded text-xs text-white/80`}>
+                                  <span className={`${style.font.mono.text} px-2 py-1 bg-[var(--color-dark-opacity100)] rounded text-xs text-[var(--color-light-opacity60)]`}>
                                     Machine Learning
                                   </span>
-                                  <span className={`${style.font.mono.text} px-2 py-1 bg-black/50 rounded text-xs text-white/80`}>
+                                  <span className={`${style.font.mono.text} px-2 py-1 bg-[var(--color-dark-opacity100)] rounded text-xs text-[var(--color-light-opacity60)]`}>
                                     Data Science
                                   </span>
                                 </div>
                                 <div className="w-full h-px bg-white/10 mb-4" />
                                 <div className="pb-1">
                                   <div className="flex items-center gap-6 pb-1">
-                                    <span className={`${style.font.mono.text} text-xs font-medium text-white`}>
+                                    <span className={`${style.font.mono.text} text-xs font-medium text-[var(--color-light-opacity100)]`}>
                                       Prizes
                                     </span>
-                                    <span className={`${style.font.mono.text} text-xs text-white/60`}>TBD</span>
+                                    <span className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)]`}>
+                                      TBD
+                                    </span>
                                   </div>
                                   <div className="flex items-center gap-6 pb-1">
-                                    <span className={`${style.font.mono.text} text-xs font-medium text-white`}>Event</span>
-                                    <span className={`${style.font.mono.text} text-xs text-white/60`}>
-                                      {ch.event?.name || 'Unknown Event'}
+                                    <span className={`${style.font.mono.text} text-xs font-medium text-[var(--color-light-opacity100)]`}>
+                                      Event
+                                    </span>
+                                    <span className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)]`}>
+                                      {challenge.event?.name || 'Unknown Event'}
                                     </span>
                                   </div>
                                 </div>
@@ -340,32 +353,43 @@ export default function ChallengesPage() {
                           <div className={`${style.font.mono.text} text-xs text-white/60 mb-1`}>
                             {ch.organization?.name || 'General'}
                           </div>
-                          <h3 className={`${style.font.grotesk.medium} text-xl text-green-400 leading-tight mb-3`}>
-                            {ch.name}
-                          </h3>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className={`${style.font.mono.text} px-2 py-1 bg-black/50 rounded text-xs text-white/80`}>
-                              AI
-                            </span>
-                            <span className={`${style.font.mono.text} px-2 py-1 bg-black/50 rounded text-xs text-white/80`}>
-                              Machine Learning
-                            </span>
-                            <span className={`${style.font.mono.text} px-2 py-1 bg-black/50 rounded text-xs text-white/80`}>
-                              Data Science
-                            </span>
+                          <div className="flex-1">
+                            <div className={`${style.font.mono.text} text-xs text-[var(--color-primary-opacity100)] mb-1`}>
+                              {challenge.organization?.name || 'General'}
+                            </div>
+                            <h3 className={`${style.font.grotesk.medium} text-sm text-[var(--color-primary-opacity100)]`}>
+                              {challenge.name}
+                            </h3>
+                            <div className="flex items-center gap-3 mb-4">
+                              <span className={`${style.font.mono.text} px-2 py-1 bg-[var(--color-dark-opacity100)] rounded text-xs text-[var(--color-light-opacity60)]`}>
+                                AI
+                              </span>
+                              <span className={`${style.font.mono.text} px-2 py-1 bg-[var(--color-dark-opacity100)] rounded text-xs text-[var(--color-light-opacity60)]`}>
+                                Machine Learning
+                              </span>
+                              <span className={`${style.font.mono.text} px-2 py-1 bg-[var(--color-dark-opacity100)] rounded text-xs text-[var(--color-light-opacity60)]`}>
+                                Data Science
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
                       <div className="flex-1" />
                       <div className="pt-4 border-t border-white/10 space-y-2">
                         <div className="flex items-center gap-6 pb-1">
-                          <span className={`${style.font.mono.text} text-xs font-medium text-white`}>Prizes</span>
-                          <span className={`${style.font.mono.text} text-xs text-white/60`}>TBD</span>
+                          <span className={`${style.font.mono.text} text-xs font-medium text-[var(--color-light-opacity100)]`}>
+                            Prizes
+                          </span>
+                          <span className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)]`}>
+                            TBD
+                          </span>
                         </div>
                         <div className="flex items-center gap-6 pb-1">
-                          <span className={`${style.font.mono.text} text-xs font-medium text-white`}>Event</span>
-                          <span className={`${style.font.mono.text} text-xs text-white/60`}>
-                            {ch.event?.name || 'Unknown Event'}
+                          <span className={`${style.font.mono.text} text-xs font-medium text-[var(--color-light-opacity100)]`}>
+                            Event
+                          </span>
+                          <span className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)]`}>
+                            {challenge.event?.name || 'Unknown Event'}
                           </span>
                         </div>
                       </div>

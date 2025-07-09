@@ -39,28 +39,28 @@ const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
       <div className="flex">
         {/* Left side - CO badge - darker */}
         <div className="w-48 h-48 bg-[var(--color-dark-opacity100)] flex items-center justify-center border-r border-[var(--color-white-opacity10)] flex-shrink-0 mt-6 mb-6">
-          <div className="text-[var(--color-light-opacity60)] text-6xl font-bold font-[family-name:var(--font-space-grotesk)]">CO</div>
+          <div className="text-[var(--color-light-opacity60)] text-6xl font-bold font-space-grotesk ">CO</div>
         </div>
         
         {/* Right side - Content */}
         <div className="flex-1 p-6 flex flex-col justify-between">
           <div>
-            <h3 className="text-[var(--color-primary-opacity100)] text-lg font-medium mb-3 font-[family-name:var(--font-space-grotesk)]">
+            <h3 className="text-[var(--color-primary-opacity100)] text-lg font-medium mb-3 font-space-grotesk ">
               {challenge.name || 'Sustainable Generative AI Assistant For Insights'}
             </h3>
             
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mb-4">
-              <span className="px-2 py-1 bg-[var(--color-white-opacity5)] text-[var(--color-light-opacity60)] text-xs rounded border border-[var(--color-white-opacity10)] font-[family-name:var(--font-space-mono)]">AI</span>
-              <span className="px-2 py-1 bg-[var(--color-white-opacity5)] text-[var(--color-light-opacity60)] text-xs rounded border border-[var(--color-white-opacity10)] font-[family-name:var(--font-space-mono)]">Machine Learning</span>
-              <span className="px-2 py-1 bg-[var(--color-white-opacity5)] text-[var(--color-light-opacity60)] text-xs rounded border border-[var(--color-white-opacity10)] font-[family-name:var(--font-space-mono)]">Data Science</span>
+              <span className="px-2 py-1 bg-[var(--color-white-opacity5)] text-[var(--color-light-opacity60)] text-xs rounded border border-[var(--color-white-opacity10)] font-space-grotesk ">AI</span>
+              <span className="px-2 py-1 bg-[var(--color-white-opacity5)] text-[var(--color-light-opacity60)] text-xs rounded border border-[var(--color-white-opacity10)] font-space-grotesk ">Machine Learning</span>
+              <span className="px-2 py-1 bg-[var(--color-white-opacity5)] text-[var(--color-light-opacity60)] text-xs rounded border border-[var(--color-white-opacity10)] font-space-grotesk ">Data Science</span>
             </div>
             
             {/* Section Header */}
-            <h4 className="text-[var(--color-light-opacity100)] font-medium mb-3 font-[family-name:var(--font-space-grotesk)]">Insight</h4>
+            <h4 className="text-[var(--color-light-opacity100)] font-medium mb-3 font-space-grotesk ">Insight</h4>
             
             {/* Description */}
-            <p className="text-[var(--color-light-opacity60)] text-sm leading-relaxed mb-4 font-[family-name:var(--font-space-mono)]">
+            <p className="text-[var(--color-light-opacity60)] text-sm leading-relaxed mb-4 font-space-grotesk ">
               {isExpanded 
                 ? (challenge.description || `Description of Challenge... at vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores! Voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia...`)
                 : `${(challenge.description || 'Description of Challenge... at vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores...').slice(0, 120)}...`
@@ -275,19 +275,19 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
     {/* Content Section  */}
     <div className="h-[50%] p-4 flex flex-col justify-between flex-shrink-0">
       <div>
-        <h3 className="text-[var(--color-light-opacity100)] text-lg font-semibold font-[family-name:var(--font-space-grotesk)] mb-2 line-clamp-2">
+        <h3 className="text-[var(--color-light-opacity100)] text-lg font-semibold font-space-grotesk  mb-2 line-clamp-2">
           {event.name || 'Event Name TBD'}
         </h3>
         
         {/* Tags Row */}
         <div className="flex flex-wrap gap-1 mb-3">
-          <span className={`px-2 py-1 text-xs font-medium rounded border font-[family-name:var(--font-space-mono)] ${getStatusColor(event.status)}`}>
+          <span className={`px-2 py-1 text-xs font-medium rounded border font-space-grotesk  ${getStatusColor(event.status)}`}>
             {event.status || 'Status TBD'}
           </span>
-          <span className="px-2 py-1 bg-[var(--color-white-opacity10)] text-[var(--color-light-opacity100)] text-xs rounded border border-[var(--color-white-opacity20)] font-[family-name:var(--font-space-mono)]">
+          <span className="px-2 py-1 bg-[var(--color-white-opacity10)] text-[var(--color-light-opacity100)] text-xs rounded border border-[var(--color-white-opacity20)] font-space-grotesk ">
             {event.is_public ? 'Public' : 'Private'}
           </span>
-          <span className="px-2 py-1 bg-[var(--color-white-opacity10)] text-[var(--color-light-opacity100)] text-xs rounded border border-[var(--color-white-opacity20)] font-[family-name:var(--font-space-mono)]">
+          <span className="px-2 py-1 bg-[var(--color-white-opacity10)] text-[var(--color-light-opacity100)] text-xs rounded border border-[var(--color-white-opacity20)] font-space-grotesk ">
             Category TBD
           </span>
         </div>
@@ -302,14 +302,14 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
             <line x1="8" y1="2" x2="8" y2="6"/>
             <line x1="3" y1="10" x2="21" y2="10"/>
           </svg>
-          <span className="text-[var(--color-light-opacity100)] text-xs font-[family-name:var(--font-space-mono)] truncate">{formatDate(event.start_date)}</span>
+          <span className="text-[var(--color-light-opacity100)] text-xs font-space-grotesk  truncate">{formatDate(event.start_date)}</span>
         </div>
         <div className="flex items-center space-x-2">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[var(--color-light-opacity60)] flex-shrink-0">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
             <circle cx="12" cy="10" r="3"/>
           </svg>
-          <span className="text-[var(--color-light-opacity100)] text-xs font-[family-name:var(--font-space-mono)] truncate">{event.location || 'Location TBD'}</span>
+          <span className="text-[var(--color-light-opacity100)] text-xs font-space-grotesk  truncate">{event.location || 'Location TBD'}</span>
         </div>
         <div className="flex items-center space-x-2">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[var(--color-light-opacity60)] flex-shrink-0">
@@ -317,7 +317,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
             <line x1="2" y1="12" x2="22" y2="12"/>
             <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
           </svg>
-          <span className="text-[var(--color-light-opacity100)] text-xs font-[family-name:var(--font-space-mono)]">Hackathon</span>
+          <span className="text-[var(--color-light-opacity100)] text-xs font-space-grotesk ">Hackathon</span>
         </div>
       </div>
     </div>
@@ -356,7 +356,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
       </div>
       
       {/* End Date */}
-      <div className="flex items-center justify-center space-x-1 text-[var(--color-light-opacity60)] text-xs font-[family-name:var(--font-space-mono)]">
+      <div className="flex items-center justify-center space-x-1 text-[var(--color-light-opacity60)] text-xs font-space-grotesk ">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
           <circle cx="12" cy="12" r="10"/>
           <polyline points="12,6 12,12 16,14"/>
@@ -369,7 +369,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-[family-name:var(--font-space-grotesk)]">
+      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk ">
         <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
         <div className="pt-20 flex justify-center items-center h-64">
           <div className="text-center">
@@ -384,7 +384,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-[family-name:var(--font-space-grotesk)]">
+      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk ">
         <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
         <div className="pt-20 flex justify-center items-center h-64">
           <div className="text-center">
@@ -414,7 +414,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
     }
 
     return (
-      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-[family-name:var(--font-space-grotesk)]">
+      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk ">
         {/* Header */}
         <div className={`fixed top-0 left-0 right-0 z-50 ${showChallengesPopup ? 'bg-[var(--color-white-opacity10)]' : 'bg-[var(--color-dark-opacity100)]/80'} backdrop-blur-md`}>
           <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -473,12 +473,12 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
                   
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--color-dark-opacity100)]/80 to-transparent p-6">
                     <div className="flex items-center space-x-3 mb-2">
-                      <h1 className="text-3xl font-bold text-[var(--color-light-opacity100)] font-[family-name:var(--font-space-grotesk)]">{selectedEvent.name}</h1>
+                      <h1 className="text-3xl font-bold text-[var(--color-light-opacity100)] font-space-grotesk">{selectedEvent.name}</h1>
                       <span className={`px-3 py-1 text-xs font-medium rounded-full ${getStatusColor(selectedEvent.status)}`}>
                         {selectedEvent.status || 'LIVE'}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-6 text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">
+                    <div className="flex items-center space-x-6 text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">
                       <span className="flex items-center space-x-1">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -509,31 +509,31 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
 
                 {/* About Section */}
                 <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
-                  <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] mb-4 font-[family-name:var(--font-space-grotesk)]">About</h2>
-                  <p className="text-[var(--color-light-opacity60)] text-sm leading-relaxed font-[family-name:var(--font-space-mono)]">
+                  <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] mb-4 font-space-grotesk ">About</h2>
+                  <p className="text-[var(--color-light-opacity60)] text-sm leading-relaxed font-space-grotesk ">
                     {selectedEvent.description || 'Join us for one of the most anticipated hackathon adventures where epic talents convene and brilliant minds unite. Experience the ultimate hackathon where innovation meets creativity and where great ideas come to life. Our event brings together the brightest minds in technology, design, and entrepreneurship for an unforgettable experience.'}
                   </p>
                 </div>
 
                 {/* Schedule Section */}
                 <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
-                  <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] mb-6 font-[family-name:var(--font-space-grotesk)]">Schedule</h2>
+                  <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] mb-6 font-space-grotesk ">Schedule</h2>
                   
                   <div className="space-y-1">
                     <div className="flex items-center justify-between py-4 border-b border-[var(--color-white-opacity10)] last:border-b-0">
                       <div className="flex items-center space-x-4">
-                        <span className="text-[var(--color-light-opacity60)] text-sm w-12 font-[family-name:var(--font-space-mono)]">Day 1</span>
-                        <span className="text-[var(--color-light-opacity100)] text-sm font-medium font-[family-name:var(--font-space-grotesk)]">Hackathon Announcement & Building</span>
+                        <span className="text-[var(--color-light-opacity60)] text-sm w-12 font-space-grotesk ">Day 1</span>
+                        <span className="text-[var(--color-light-opacity100)] text-sm font-medium font-space-grotesk ">Hackathon Announcement & Building</span>
                       </div>
-                      <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">10:00 - 18:00</span>
+                      <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">10:00 - 18:00</span>
                     </div>
                     
                     <div className="flex items-center justify-between py-4">
                       <div className="flex items-center space-x-4">
-                        <span className="text-[var(--color-light-opacity60)] text-sm w-12 font-[family-name:var(--font-space-mono)]">Day 3</span>
-                        <span className="text-[var(--color-light-opacity100)] text-sm font-medium font-[family-name:var(--font-space-grotesk)]">Final Submissions & Pitches</span>
+                        <span className="text-[var(--color-light-opacity60)] text-sm w-12 font-space-grotesk ">Day 3</span>
+                        <span className="text-[var(--color-light-opacity100)] text-sm font-medium font-space-grotesk ">Final Submissions & Pitches</span>
                       </div>
-                      <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">10:00 - 18:00</span>
+                      <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">10:00 - 18:00</span>
                     </div>
                   </div>
                 </div>
@@ -541,7 +541,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
                 {/* Challenges Section - Preview one challenge with button */}
                 <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] font-[family-name:var(--font-space-grotesk)]">Challenges</h2>
+                    <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] font-space-grotesk ">Challenges</h2>
                   </div>
                   
                   {eventChallenges.length > 0 ? (
@@ -551,12 +551,12 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
                         <div className="flex items-center">
                           {/* Left side - CO badge */}
                           <div className="w-16 h-16 bg-[var(--color-white-opacity10)] flex items-center justify-center border-r border-[var(--color-white-opacity10)] flex-shrink-0 m-4">
-                            <div className="text-[var(--color-light-opacity60)] text-xl font-bold font-[family-name:var(--font-space-grotesk)]">CO</div>
+                            <div className="text-[var(--color-light-opacity60)] text-xl font-bold font-space-grotesk ">CO</div>
                           </div>
                           
                           {/* Right side - Just title */}
                           <div className="flex-1 p-4">
-                            <h3 className="text-[var(--color-light-opacity100)] text-lg font-medium font-[family-name:var(--font-space-grotesk)]">
+                            <h3 className="text-[var(--color-light-opacity100)] text-lg font-medium font-space-grotesk ">
                               {eventChallenges[0].name || 'Sustainable Generative AI Assistant For Insights'}
                             </h3>
                           </div>
@@ -583,7 +583,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
 
                 {/* Prizes Section */}
                 <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
-                  <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] mb-6 font-[family-name:var(--font-space-grotesk)]">Prizes</h2>
+                  <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] mb-6 font-space-grotesk ">Prizes</h2>
                   
                   <div className="space-y-3">
                     <div className="flex items-center space-x-4 p-4 bg-[var(--color-primary-opacity20)] border border-[var(--color-primary-opacity40)] rounded-lg">
@@ -591,8 +591,8 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
                         <span className="text-[var(--color-light-opacity100)] text-sm font-bold">1</span>
                       </div>
                       <div>
-                        <div className="text-[var(--color-light-opacity100)] font-medium text-sm font-[family-name:var(--font-space-grotesk)]">1st Place</div>
-                        <div className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Prize information pending</div>
+                        <div className="text-[var(--color-light-opacity100)] font-medium text-sm font-space-grotesk ">1st Place</div>
+                        <div className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">Prize information pending</div>
                       </div>
                     </div>
                     
@@ -601,8 +601,8 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
                         <span className="text-[var(--color-light-opacity100)] text-sm font-bold">2</span>
                       </div>
                       <div>
-                        <div className="text-[var(--color-light-opacity100)] font-medium text-sm font-[family-name:var(--font-space-grotesk)]">2nd Place</div>
-                        <div className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Prize information pending</div>
+                        <div className="text-[var(--color-light-opacity100)] font-medium text-sm font-space-grotesk ">2nd Place</div>
+                        <div className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">Prize information pending</div>
                       </div>
                     </div>
                     
@@ -611,8 +611,8 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
                         <span className="text-[var(--color-light-opacity100)] text-sm font-bold">3</span>
                       </div>
                       <div>
-                        <div className="text-[var(--color-light-opacity100)] font-medium text-sm font-[family-name:var(--font-space-grotesk)]">3rd Place</div>
-                        <div className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Prize information pending</div>
+                        <div className="text-[var(--color-light-opacity100)] font-medium text-sm font-space-grotesk ">3rd Place</div>
+                        <div className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">Prize information pending</div>
                       </div>
                     </div>
                   </div>
@@ -625,30 +625,30 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
                 
                 {/* Registration Card */}
                 <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-[var(--color-light-opacity100)] mb-6 font-[family-name:var(--font-space-grotesk)]">Registration</h3>
+                  <h3 className="text-lg font-semibold text-[var(--color-light-opacity100)] mb-6 font-space-grotesk ">Registration</h3>
                   
                   {!isRegistered ? (
                     // Unregistered State
                     <>
                       <div className="space-y-4 mb-6">
                         <div className="flex justify-between items-center">
-                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Status</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">Status</span>
                           <span className={`px-2 py-1 text-xs font-medium rounded ${getStatusColor('PUBLISHED')}`}>Open</span>
                         </div>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Deadline</span>
-                          <span className="text-[var(--color-light-opacity100)] text-sm font-[family-name:var(--font-space-mono)]">{formatDate(selectedEvent.end_date) || 'Information pending'}</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">Deadline</span>
+                          <span className="text-[var(--color-light-opacity100)] text-sm font-space-grotesk ">{formatDate(selectedEvent.end_date) || 'Information pending'}</span>
                         </div>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Participants</span>
-                          <span className="text-[var(--color-light-opacity100)] text-sm font-[family-name:var(--font-space-mono)]">Information pending</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">Participants</span>
+                          <span className="text-[var(--color-light-opacity100)] text-sm font-space-grotesk ">Information pending</span>
                         </div>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Team Size</span>
-                          <span className="text-[var(--color-light-opacity100)] text-sm font-[family-name:var(--font-space-mono)]">1-4 People</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">Team Size</span>
+                          <span className="text-[var(--color-light-opacity100)] text-sm font-space-grotesk ">1-4 People</span>
                         </div>
                       </div>
                       
@@ -666,28 +666,28 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
                     <>
                       <div className="space-y-4 mb-6">
                         <div className="flex justify-between items-center">
-                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Status</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">Status</span>
                           <span className={`px-2 py-1 text-xs font-medium rounded ${getStatusColor('PUBLISHED')}`}>Open</span>
                         </div>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Deadline</span>
-                          <span className="text-[var(--color-light-opacity100)] text-sm font-[family-name:var(--font-space-mono)]">May 30, 2025</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">Deadline</span>
+                          <span className="text-[var(--color-light-opacity100)] text-sm font-space-grotesk ">May 30, 2025</span>
                         </div>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Participants</span>
-                          <span className="text-[var(--color-light-opacity100)] text-sm font-[family-name:var(--font-space-mono)]">1,478 Registered</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">Participants</span>
+                          <span className="text-[var(--color-light-opacity100)] text-sm font-space-grotesk ">1,478 Registered</span>
                         </div>
                         
                         <div className="flex justify-between items-center">
-                          <span className="text-[var(--color-light-opacity60)] text-sm font-[family-name:var(--font-space-mono)]">Team Size</span>
-                          <span className="text-[var(--color-light-opacity100)] text-sm font-[family-name:var(--font-space-mono)]">1-4 People</span>
+                          <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ">Team Size</span>
+                          <span className="text-[var(--color-light-opacity100)] text-sm font-space-grotesk ">1-4 People</span>
                         </div>
                       </div>
 
                       {/* Registration ends info with clock icon */}
-                      <div className="flex items-center justify-center space-x-2 text-[var(--color-light-opacity60)] text-sm mb-4 font-[family-name:var(--font-space-mono)]">
+                      <div className="flex items-center justify-center space-x-2 text-[var(--color-light-opacity60)] text-sm mb-4 font-space-grotesk ">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <circle cx="12" cy="12" r="10"/>
                           <polyline points="12,6 12,12 16,14"/>
@@ -719,12 +719,12 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
 
                 {/* Sponsors Card */}
                 <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-[var(--color-light-opacity100)] mb-6 font-[family-name:var(--font-space-grotesk)]">Sponsors</h3>
+                  <h3 className="text-lg font-semibold text-[var(--color-light-opacity100)] mb-6 font-space-grotesk ">Sponsors</h3>
                   
                   <div className="grid grid-cols-2 gap-3">
                     {[1,2,3,4,5,6].map((i) => (
                       <div key={i} className="h-14 bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity20)] rounded-lg flex items-center justify-center">
-                        <span className="text-[var(--color-light-opacity60)] text-xs font-[family-name:var(--font-space-mono)]">Company {i}</span>
+                        <span className="text-[var(--color-light-opacity60)] text-xs font-space-grotesk ">Company {i}</span>
                       </div>
                     ))}
                   </div>
@@ -732,7 +732,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
 
                 {/* Organizers Card */}
                 <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-[var(--color-light-opacity100)] mb-6 font-[family-name:var(--font-space-grotesk)]">Organizers</h3>
+                  <h3 className="text-lg font-semibold text-[var(--color-light-opacity100)] mb-6 font-space-grotesk ">Organizers</h3>
                   
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3">
@@ -740,8 +740,8 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
                         <span className="text-[var(--color-light-opacity100)] text-sm font-bold">A</span>
                       </div>
                       <div>
-                        <div className="text-[var(--color-light-opacity100)] text-sm font-medium font-[family-name:var(--font-space-grotesk)]">Junction Organizing</div>
-                        <div className="text-[var(--color-light-opacity60)] text-xs font-[family-name:var(--font-space-mono)]">Team Organizer</div>
+                        <div className="text-[var(--color-light-opacity100)] text-sm font-medium font-space-grotesk ">Junction Organizing</div>
+                        <div className="text-[var(--color-light-opacity60)] text-xs font-space-grotesk ">Team Organizer</div>
                       </div>
                     </div>
                   </div>
@@ -751,7 +751,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
 
             {/* Similar Events Section - Full Width */}
             <div className="mt-8">
-              <h2 className="text-2xl font-bold text-[var(--color-light-opacity100)] mb-6 font-[family-name:var(--font-space-grotesk)]">Similar Events</h2>
+              <h2 className="text-2xl font-bold text-[var(--color-light-opacity100)] mb-6 font-space-grotesk ">Similar Events</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {events.filter(e => e.event_id !== selectedEventId).slice(0, 2).map((event, index) => (
@@ -764,8 +764,8 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
                         className="w-full h-full object-cover grayscale"
                       />
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--color-dark-opacity100)]/90 to-transparent p-4">
-                        <h3 className="text-[var(--color-light-opacity100)] text-lg font-bold mb-2 font-[family-name:var(--font-space-grotesk)]">{event.name}</h3>
-                        <div className="flex items-center space-x-4 text-[var(--color-light-opacity60)] text-xs mb-3 font-[family-name:var(--font-space-mono)]">
+                        <h3 className="text-[var(--color-light-opacity100)] text-lg font-bold mb-2 font-space-grotesk ">{event.name}</h3>
+                        <div className="flex items-center space-x-4 text-[var(--color-light-opacity60)] text-xs mb-3 font-space-grotesk ">
                           <span className="flex items-center space-x-1">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -792,9 +792,9 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
                           </span>
                         </div>
                         <div className="flex flex-wrap gap-1 mb-3">
-                          <span className="px-2 py-1 bg-[var(--color-white-opacity20)] text-[var(--color-light-opacity60)] text-xs rounded-full font-[family-name:var(--font-space-mono)]">AI</span>
-                          <span className="px-2 py-1 bg-[var(--color-white-opacity20)] text-[var(--color-light-opacity60)] text-xs rounded-full font-[family-name:var(--font-space-mono)]">Machine Learning</span>
-                          <span className="px-2 py-1 bg-[var(--color-white-opacity20)] text-[var(--color-light-opacity60)] text-xs rounded-full font-[family-name:var(--font-space-mono)]">Innovation</span>
+                          <span className="px-2 py-1 bg-[var(--color-white-opacity20)] text-[var(--color-light-opacity60)] text-xs rounded-full font-space-grotesk ">AI</span>
+                          <span className="px-2 py-1 bg-[var(--color-white-opacity20)] text-[var(--color-light-opacity60)] text-xs rounded-full font-space-grotesk ">Machine Learning</span>
+                          <span className="px-2 py-1 bg-[var(--color-white-opacity20)] text-[var(--color-light-opacity60)] text-xs rounded-full font-space-grotesk ">Innovation</span>
                         </div>
                       </div>
                     </div>
@@ -812,7 +812,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
                         >
                           Register now
                         </MainButton>
-                        <div className="flex items-center space-x-1 text-[var(--color-light-opacity60)] text-xs font-[family-name:var(--font-space-mono)]">
+                        <div className="flex items-center space-x-1 text-[var(--color-light-opacity60)] text-xs font-space-grotesk ">
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <circle cx="12" cy="12" r="10"/>
                             <polyline points="12,6 12,12 16,14"/>
@@ -882,7 +882,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
 
   // Main events listing view
   return (
-    <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-[family-name:var(--font-space-grotesk)]">
+    <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk ">
       {/* Header using Navbar component */}
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
@@ -891,7 +891,7 @@ const EventCard = ({ event, index }: { event: Event; index: number }) => (
         <div className="w-full max-w-6xl px-6 py-6">
           
           {/* Search Bar - Centered */}
-          <div className="mb-8 flex font-[family-name:var(--font-space-mono)] justify-center">
+          <div className="mb-8 flex font-space-grotesk  justify-center">
             <div className="relative max-w-2xl w-full">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <svg className="h-5 w-5 text-[var(--color-light-opacity60)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

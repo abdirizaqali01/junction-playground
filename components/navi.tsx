@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import * as style from '@/styles/design-system'
+import { initializeCSSVariables } from '@/styles/design-system';
 import { useRouter, usePathname } from 'next/navigation'
 import { JunctionLogo } from '@/components/logo'
 
 // Profile Avatar Component
 const ProfileAvatar = ({ name = "JM" }) => (
-  <div className="w-10 h-10 bg-emerald-400 rounded-full flex items-center justify-center text-black font-semibold text-sm">
+  <div className="w-10 h-10 bg-[var(--color-primary-opacity100)] border border-[var(--color-white-opacity50)] rounded-full flex items-center justify-center text-black font-semibold text-sm">
     {name}
   </div>
 )
@@ -41,8 +43,8 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
   }
 
   return (
-    <header className="px-6 py-4">
-      <div className="max-w-7xl mx-auto flex items-center justify-between mt-3">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black to-transparent backdrop-blur-[10px] px-6 py-8">
+      <div className="max-w-[90%] mx-auto flex items-center justify-between">
         {/* Logo */}
         <JunctionLogo />
       
