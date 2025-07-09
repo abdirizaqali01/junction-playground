@@ -141,7 +141,7 @@ export const font = {
     grotesk: {
         main: `font-space-grotesk font-[600] tracking-[-0.01rem]`,
         heavy: `font-space-grotesk font-[700] tracking-[-0.05rem]`,
-        medium: `font-space-grotesk font-[500] tracking-[-0.05rem]`,
+        medium: `font-space-grotesk font-[500] tracking-[-0.01rem]`,
         light: `font-space-grotesk font-[300] tracking-[-0.05rem]`,
     },
 

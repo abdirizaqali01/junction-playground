@@ -246,11 +246,11 @@ export default function JunctionDashboard() {
 
         {/*------------------------------------------ Upcoming Event Section ------------------------------------------*/}
         <section className="">
-          <div className={style.box.primary.bottom}>
-            <div className="flex flex-col lg:flex-row">
+          <div className={style.box.primary.bottom + " p-4"}>
+            <div className="flex flex-col lg:flex-row gap-5">
               {/* Left Image */}
-              <div className="lg:w-1/3 p-4">
-                <div className="h-32 lg:h-full bg-zinc-600 relative rounded-lg border border-zinc-600">
+              <div className="lg:w-1/3">
+                <div className={style.border.radius.middle + " h-32 lg:h-full relative bg-[var(color-white-opacity20)] border border-[var(--color-white-opacity40)]"}>
                   <img 
                     src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
                     alt="Junction Hackathon Venue" 
@@ -266,7 +266,7 @@ export default function JunctionDashboard() {
               </div>
               
               {/* Right Content */}
-              <div className="lg:w-2/3 p-4 m-auto">
+              <div className="lg:w-2/3 m-auto">
                 {/* Header with Title and Enter Button */}
                 <div className="flex justify-between items-start">
                   <div>
@@ -292,20 +292,20 @@ export default function JunctionDashboard() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
                   {/* Up Coming Deadlines */}
                   <div className={style.box.gray.middle + " p-5"}>
-                    <h2 className="text-white font-bold text-lg mb-2">Up Coming Deadlines</h2>
-                    <hr className="border-zinc-600 mb-2" />
-                    <div className="space-y-2">
+                    <h2 className={style.font.grotesk.main + " text-[var(--color-light-opacity100)] text-lg mb-4"}>Up Coming Deadlines</h2>
+                    <hr className="border-[var(--color-white-opacity30)] mb-2" />
+                    <div className="mt-4 space-y-2">
                       <div className="flex justify-between items-center py-1">
-                        <span className="text-white font-medium">Team Set</span>
-                        <span className="text-zinc-400 text-sm">Today at 17:00</span>
+                        <span className={style.font.grotesk.medium + " text-[var(--color-light-opacity100)] text-[1rem]"}>Team Set</span>
+                        <span className={style.font.mono.text + " text-[var(--color-light-opacity50)] text-[0.9rem]"}>Today at 17:00</span>
                       </div>
                       <div className="flex justify-between items-center py-1">
-                        <span className="text-white font-medium">Project Draft</span>
-                        <span className="text-zinc-400 text-sm">Tomorrow at 21:00</span>
+                        <span className={style.font.grotesk.medium + " text-[var(--color-light-opacity100)] text-[1rem]"}>Project Draft</span>
+                        <span className={style.font.mono.text + " text-[var(--color-light-opacity50)] text-[0.9rem]"}>Tomorrow at 21:00</span>
                       </div>
                       <div className="flex justify-between items-center py-1">
-                        <span className="text-white font-medium">Final Submission</span>
-                        <span className="text-zinc-400 text-sm">23rd of November at 21:00</span>
+                        <span className={style.font.grotesk.medium + " text-[var(--color-light-opacity100)] text-[1rem]"}>Final Submission</span>
+                        <span className={style.font.mono.text + " text-[var(--color-light-opacity50)] text-[0.9rem]"}>23rd of November at 21:00</span>
                       </div>
                     </div>
                   </div>
