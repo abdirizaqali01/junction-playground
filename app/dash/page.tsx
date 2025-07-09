@@ -93,12 +93,14 @@ export default function JunctionDashboard() {
   
   const [activeTab, setActiveTab] = useState('Dashboard')
 
+
+  {/*------------- STATIC COMPONENT Event Card -------------*/}
   const EventCard = ({ event, index }: { event: Event; index: number }) => (
     <div
       className="bg-neutral-900/60 border border-neutral-700/50 rounded-xl overflow-hidden group hover:border-neutral-600 transition-all cursor-pointer flex flex-col w-full"
       onClick={() => setSelectedEventId(event.event_id)}
     >
-      {/* Event Image */}
+      {/* STATIC COMPONENT Event Image */}
       <div className="relative h-40 bg-neutral-800 overflow-hidden">
         <img
           src={event.cover_image_url || getPlaceholderImage(index)}
@@ -107,7 +109,7 @@ export default function JunctionDashboard() {
         />
       </div>
   
-      {/* Event Details */}
+      {/* STATIC COMPONENT Event Details */}
       <div className="p-4">
         <div className="space-y-3 mb-4">
           <div className="pb-2">
@@ -231,7 +233,7 @@ export default function JunctionDashboard() {
       {/*--------------------------------------------------------------------------------*/}
       {/* MAIN CONTENT */}
       {/*--------------------------------------------------------------------------------*/}
-      <main className="w-[95%] lg:w-[80%] mx-auto">
+      <main className="w-[95%] lg:w-[80%] mx-auto pt-20">
         {/*------------------------------------------ Welcome Section ------------------------------------------*/}
         <section className="text-center py-[8%]">
           <h1 className={style.font.grotesk.heavy + " text-5xl font-[700]"}>
@@ -289,9 +291,9 @@ export default function JunctionDashboard() {
                 </div>
 
                 {/* Content Sections */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-5">
                   {/* Up Coming Deadlines */}
-                  <div className={style.box.gray.middle + " p-5"}>
+                  <div className={style.box.gray.middle + " p-4"}>
                     <h2 className={style.font.grotesk.main + " text-[var(--color-light-opacity100)] text-lg mb-4"}>Up Coming Deadlines</h2>
                     <hr className="border-[var(--color-white-opacity30)] mb-2" />
                     <div className="mt-4 space-y-2">
@@ -311,10 +313,10 @@ export default function JunctionDashboard() {
                   </div>
 
                   {/* Announcements */}
-                  <div className={style.box.gray.top + " p-5"}>
-                    <h2 className="text-white font-bold text-lg mb-2">Announcements</h2>
-                    <hr className="border-zinc-600 mb-2" />
-                    <p className="text-zinc-400">Most recent announcements.</p>
+                  <div className={style.box.gray.top + " p-4"}>
+                    <h2 className={style.font.grotesk.main + "text-white font-bold text-lg mb-4"}>Announcements</h2>
+                    <hr className="border-[var(--color-white-opacity30)] mb-2" />
+                    <p className={style.font.mono.text + " text-[var(--color-light-opacity50)] text-[0.9rem] mt-4 py-1"}>Most recent announcements.</p>
                   </div>
                 </div>
               </div>
@@ -323,54 +325,54 @@ export default function JunctionDashboard() {
         </section>
 
         {/*------------------------------------------ Your Stats Section ------------------------------------------*/}
-        <section className="">
-          <h2 className="text-2xl ${spaceGrotesk.variable} text-white mb-6">Your Stats</h2>
+        <section className={style.sectionGap.top}>
+          <h2 className={style.sectionTitle.grotesk}>Your Stats</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-            <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col text-left">
-              <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
+            <div className={style.box.grayPrimary + " p-4 flex flex-col text-left"}>
+              <div className="border border-[var(--color-white-opacity20)] rounded-[3px] p-7 flex flex-col text-left h-full">
                 <div className="flex items-center gap-2 mb-2">
                   <Image src="/icons/calendar_check.svg" alt="Calendar Check"width={22}height={22} />
-                  <div className="text-gray-400 text-sm">Events Joined</div>
+                  <div className="text-[var(--color-white-opacity60)] text-sm">Events Joined</div>
                 </div>
-                <div className="text-white text-2xl font-bold">12</div>
+                <div className="text-[var(--color-light-opacity100)] text-2xl font-bold">12</div>
               </div>
             </div>
 
-            <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col text-left">
-              <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
+            <div className={style.box.grayPrimary + " p-4 flex flex-col text-left"}>
+              <div className="border border-[var(--color-white-opacity20)] rounded-[3px] p-7 flex flex-col text-left h-full">
                 <div className="flex items-center gap-2 mb-2">
-                  <ChevronsLeftRight size={14} color={"#55D186"} className="text-gray-400" />
-                  <div className="text-gray-400 text-sm">Projects Built</div>
+                  <Image src="/icons/Code.svg" alt="Calendar Check"width={22}height={22} />
+                  <div className="text-[var(--color-white-opacity60)] text-sm">Projects Built</div>
                 </div>
-                <div className="text-white text-2xl font-bold">10</div>
+                <div className="text-[var(--color-light-opacity100)] text-2xl font-bold">10</div>
               </div>
             </div>
 
-            <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col items-left text-left">
-              <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
+            <div className={style.box.grayPrimary + " p-4 flex flex-col text-left"}>
+              <div className="border border-[var(--color-white-opacity20)] rounded-[3px] p-7 flex flex-col text-left h-full">
                 <div className="flex items-center gap-2 mb-2">    
-                  <Clock size={14} color={"#55D186"} className="text-gray-400" />
-                  <div className="text-gray-400 text-sm">Hours Hacking</div>
+                  <Image src="/icons/Clock.svg" alt="Calendar Check"width={22}height={22} />
+                  <div className="text-[var(--color-white-opacity60)] text-sm">Hours Hacking</div>
                 </div>
-                <div className="text-white text-2xl font-bold">576</div>
+                <div className="text-[var(--color-light-opacity100)] text-2xl font-bold">576</div>
               </div>
             </div>
 
-            <div className="bg-[#FFFFFF1A] border border-green-600 rounded-xl p-3 flex flex-col items-left text-left">
-              <div className="border border-[#2e2e2e] rounded-[4px] p-6 flex flex-col text-left h-full">
+            <div className={style.box.grayPrimary + " p-4 flex flex-col text-left"}>
+              <div className="border border-[var(--color-white-opacity20)] rounded-[3px] p-7 flex flex-col text-left h-full">
                 <div className="flex items-center gap-2 mb-2">  
-                  <Star size={14} color={"#55D186"} className="text-gray-400" />
-                  <div className="text-gray-400 text-sm mt-1">Hackathon Wins</div>
+                  <Image src="/icons/Star.svg" alt="Calendar Check"width={22}height={22} />
+                  <div className="text-[var(--color-white-opacity60)] text-sm mt-1">Hackathon Wins</div>
                 </div>
-                <div className="text-white text-2xl font-bold">7</div>
+                <div className="text-[var(--color-light-opacity100)] text-2xl font-bold">7</div>
               </div>
             </div>
           </div>
         </section>
 
         {/*------------------------------------------ Your Registered Events Section ------------------------------------------*/}
-        <section className="">
+        <section className={style.sectionGap.top}>
           <h2 className="text-white text-xl font-medium mb-6">Your Registered Events</h2>
           
           <div className="bg-[#191919] rounded-2xl overflow-hidden">
@@ -454,7 +456,7 @@ export default function JunctionDashboard() {
         </section>
 
         {/*------------------------------------------ Browse Events Section ------------------------------------------*/}
-        <section className="">
+        <section className={style.sectionGap.top}>
           <h2 className="text-white text-xl font-medium mb-8 text-left ">Events For You</h2>
 
           <div className="flex space-x-4 justify-left">
