@@ -48,14 +48,14 @@ export default function Navbar({ activeTab, setActiveTab }: NavbarProps) {
       
         {/* Navigation Tabs - Centered */}
         <div className="absolute left-1/2 transform -translate-x-1/2">
-          <div className="flex items-center border border-zinc-700 rounded-2xl p-1">
+          <div className="flex items-center border border-zinc-700 rounded-[6px] p-1">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.name
               return (
                 <button
                   key={tab.name}
                   onClick={() => handleTabClick(tab)}
-                  className={`px-8 py-3 text-sm rounded-xl transition-all duration-500 ease-in-out min-w-[120px] relative
+                  className={`px-8 py-3 text-sm rounded-[5px] transition-all duration-500 ease-in-out min-w-[120px] relative
                     ${isActive
                       ? 'text-emerald-400'
                       : 'text-zinc-500 hover:text-zinc-300'}

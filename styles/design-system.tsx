@@ -8,6 +8,7 @@ import { Space_Grotesk, Space_Mono } from 'next/font/google'
 export const spaceGrotesk = Space_Grotesk({
     subsets: ['latin', 'latin-ext'],
     display: 'swap',
+    weight: ['300', '400', '500', '600', '700'],
     variable: '--font-space-grotesk',
 })
 
@@ -23,9 +24,25 @@ export const spaceMono = Space_Mono({
 export const colors = {
     primary: {
         opacity100: '#55D186',
+        opacity95: '#55D186F2',
+        opacity90: '#55D186E6',
+        opacity85: '#55D186D9',
+        opacity80: '#55D186CC',
+        opacity75: '#55D186BF',
+        opacity70: '#55D186B3',
+        opacity65: '#55D186A6',
         opacity60: '#55D18699',
+        opacity55: '#55D1868C',
         opacity50: '#55D18680',
+        opacity45: '#55D18673',
         opacity40: '#55D18666',
+        opacity35: '#55D18659',
+        opacity30: '#55D1864D',
+        opacity25: '#55D18640',
+        opacity20: '#55D18633',
+        opacity15: '#55D18626',
+        opacity10: '#55D1861A',
+        opacity5: '#55D1860D',
     },
 
     secondary: {
@@ -68,6 +85,11 @@ export const colors = {
 
     dark: {
         opacity100: '#0D0D0D',
+        opacity80: '#0D0D0DCC',
+        opacity70: '#0D0D0DB3',
+        opacity60: '#0D0D0D99',
+        opacity50: '#0D0D0D80',
+        opacity40: '#0D0D0D66',
     }
 }
 
@@ -97,6 +119,10 @@ export const initializeCSSVariables = () => {
                 root.style.setProperty(`--color-${colorName}-${shade}`, value);
             });
         });
+
+        // SET FONT VARIABLES
+        root.style.setProperty('--font-space-grotesk', spaceGrotesk.style.fontFamily);
+        root.style.setProperty('--font-space-mono', spaceMono.style.fontFamily);
     }
 }
 
@@ -107,5 +133,40 @@ export const initializeCSSVariables = () => {
 
 // STATUS BADGE //
 export const status = {
-    greenLight: `bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] px-4 py-2 ${border.radius.full} text-sm font-medium font-[var(--font-space-grotesk)]`,
+    greenLight: `bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] px-4 py-2 ${border.radius.full} text-sm font-light font-[var(--font-space-grotesk)]`,
+}
+
+// FONT TITLE //
+export const font = {
+    grotesk: {
+        main: `font-space-grotesk font-[600] tracking-[-0.01rem]`,
+        heavy: `font-space-grotesk font-[700] tracking-[-0.05rem]`,
+        medium: `font-space-grotesk font-[500] tracking-[-0.01rem]`,
+        light: `font-space-grotesk font-[300] tracking-[-0.05rem]`,
+    },
+
+    mono: {
+        title: `font-space-mono font-[700] tracking-[-0.01rem]`,
+        text: `font-space-mono font-[400] tracking-[-0.05rem]`,
+    }
+}
+
+// SECTION TITLES //
+export const sectionTitle = {
+    grotesk: ``,
+}
+
+// BOX STYLING //
+export const box = {
+    gray: {
+        bottom: `bg-[var(--color-white-opacity5)] ${border.solid} ${border.radius.outer} border-[var(--color-white-opacity20)]`,
+        middle: `bg-[var(--color-white-opacity10)] ${border.solid} ${border.radius.middle} border-[var(--color-white-opacity20)]`,
+        top: `bg-[var(--color-white-opacity20)] ${border.solid} ${border.radius.inner} border-[var(--color-white-opacity20)]`,
+    },
+
+    primary: {
+        bottom: `bg-[var(--color-primary-opacity5)] ${border.solid} ${border.radius.outer} border-[var(--color-primary-opacity100)]`,
+        middle: `bg-[var(--color-primary-opacity10)] ${border.solid} ${border.radius.middle} border-[var(--color-primary-opacity100)]`,
+        top: `bg-[var(--color-primary-opacity20)] ${border.solid} ${border.radius.inner} border-[var(--color-primary-opacity100)]`,
+    },
 }

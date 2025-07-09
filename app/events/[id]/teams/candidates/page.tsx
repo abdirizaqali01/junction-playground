@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useParams } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
-import { Footer } from "@/components/footer"
+import { MainButton } from "@/components/attachables/main-button"
+import * as style from '@/styles/design-system'
+import { initializeCSSVariables } from '@/styles/design-system'
 
 const userProfile = {
   name: 'Junction Hack',
@@ -13,9 +15,17 @@ const userProfile = {
 }
 
 export default function TeamCandidatesPage() {
-  const [activeTab, setActiveTab] = useState('team-candidates')
-  const [hasApplications, setHasApplications] = useState(true) // Change to true to show applications
   const router = useRouter()
+  const params = useParams()
+  const eventId = params?.id as string
+  
+  const [activeTab, setActiveTab] = useState('candidates')
+  const [hasApplications, setHasApplications] = useState(true) // Change to true to show applications
+
+  //-------------------------------- DESIGN SYSTEM ACTUATOR --------------------------------//
+  useEffect(() => {
+    initializeCSSVariables();
+  }, []);
 
   // Mock applications data
   const applications = Array(6).fill(null).map((_, index) => ({
@@ -26,46 +36,41 @@ export default function TeamCandidatesPage() {
   }))
 
   const handleBackToHome = () => {
-    router.push('/')
+    router.push(`/events/${eventId}/dash`)
   }
 
-  const handleAllChallenges = () => {
-    router.push('/challenges')
-  }
-
-  const handleTabNavigation = (tabId) => {
+  const handleTabNavigation = (tabId: string) => {
+    setActiveTab(tabId)
     switch(tabId) {
       case 'all-teams':
-        router.push('/teams')
+        router.push(`/events/${eventId}/teams`)
         break
       case 'my-team':
-        router.push('/teams/my-team')
+        router.push(`/events/${eventId}/teams/my-team`)
         break
-      case 'team-candidates':
-        router.push('/teams/candidates')
+      case 'candidates':
+        router.push(`/events/${eventId}/teams/candidates`)
         break
-      default:
-        setActiveTab(tabId)
     }
   }
 
-  const handleAcceptApplication = (applicationId) => {
+  const handleAcceptApplication = (applicationId: number) => {
     console.log('Accept application:', applicationId)
   }
 
-  const handleDeclineApplication = (applicationId) => {
+  const handleDeclineApplication = (applicationId: number) => {
     console.log('Decline application:', applicationId)
   }
 
-  const handleViewFullApplication = (applicationId) => {
+  const handleViewFullApplication = (applicationId: number) => {
     console.log('View full application:', applicationId)
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
       <Sidebar
         userProfile={userProfile}
-        backToHomeLabel="Back To Home"
+        backToHomeLabel="Back To Dashboard"
         onBackToHome={handleBackToHome}
         showImagePlaceholder={true}
       />
@@ -75,7 +80,7 @@ export default function TeamCandidatesPage() {
         {/* Header */}
         <div className="px-6 py-4 flex-1">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-4xl font-bold text-white pt-[3%] ${spaceGrotesk.variable}">
+            <h1 className={`${style.font.grotesk.heavy} text-4xl text-[var(--color-light-opacity100)] pt-[3%]`}>
               Team Candidates
             </h1>
           </div>
@@ -86,81 +91,92 @@ export default function TeamCandidatesPage() {
               {[
                 { id: 'all-teams', label: 'All Teams' },
                 { id: 'my-team', label: 'My Team' },
-                { id: 'team-candidates', label: 'Team Candidates' }
+                { id: 'candidates', label: 'Team Candidates' }
               ].map((tab) => (
-                <button
+                <MainButton
                   key={tab.id}
                   onClick={() => handleTabNavigation(tab.id)}
-                  className={`w-40 py-2 rounded-lg text-sm transition-colors ${
-                    activeTab === tab.id
-                      ? 'bg-white text-black font-medium'
-                      : 'bg-zinc-800/90 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/90'
-                  }`}
+                  variant={activeTab === tab.id ? 'default' : 'outlineGray'}
+                  size="sm"
+                  className="w-32 px-3 py-1 text-xs text-center justify-center"
+                  showIcon={false}
                 >
                   {tab.label}
-                </button>
+                </MainButton>
               ))}
             </div>
             
-            <button 
-              onClick={handleAllChallenges}
-              className="w-40 py-2 bg-zinc-800/90 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/90 transition-colors text-sm rounded-lg"
+            <MainButton 
+              onClick={() => router.push(`/events/${eventId}/challenges`)}
+              variant="outlineGray"
+              size="sm"
+              className="w-40 text-center justify-center"
+              showIcon={false}
             >
               All Challenges
-            </button>
+            </MainButton>
           </div>
 
           {/* Content */}
           {hasApplications ? (
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="grid grid-cols-3 gap-6 justify-items-center">
               {applications.map((application) => (
                 <div
                   key={application.id}
-                  className="bg-zinc-900/95 rounded-xl overflow-hidden border border-zinc-800/80 w-96 h-[28rem] flex flex-col flex-shrink-0 p-8"
+                  className="bg-[var(--color-white-opacity10)] rounded-xl overflow-hidden border border-[var(--color-white-opacity15)] w-full min-h-fit flex flex-col flex-shrink-0 p-8"
                 >
                   {/* Profile Section */}
                   <div className="flex items-center gap-4 mb-12">
-                    <div className="w-16 h-16 bg-zinc-600 rounded-full flex items-center justify-center flex-shrink-0">
-                      <svg className="w-8 h-8 text-zinc-400" fill="currentColor" viewBox="0 0 16 16">
+                    <div className="w-16 h-16 bg-[var(--color-light-opacity40)] rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg className="w-8 h-8 text-[var(--color-light-opacity60)]" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                         <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-white ${spaceGrotesk.variable}">
+                    <h3 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)]`}>
                       {application.name}
                     </h3>
                   </div>
 
                   {/* View Full Application Link */}
-                  <button 
+                  <MainButton 
                     onClick={() => handleViewFullApplication(application.id)}
-                    className="text-green-400 text-base mb-12 hover:text-green-300 transition-colors text-left"
+                    variant="ghost"
+                    size="sm"
+                    className="text-[var(--color-primary-opacity100)] text-base mb-12 text-left justify-start px-0"
+                    showIcon={false}
                   >
                     View full application
-                  </button>
+                  </MainButton>
 
                   {/* Applied For Section */}
                   <div className="mb-12 flex-1">
-                    <p className="text-white text-base mb-6">Applied for</p>
-                    <span className="px-6 py-3 bg-transparent border border-green-600 text-white rounded-full text-sm '${spaceMono.variable}'">
+                    <p className={`${style.font.mono.text} text-[var(--color-light-opacity100)] text-base mb-6`}>Applied for</p>
+                    <span className={`${style.font.mono.text} px-6 py-3 bg-transparent border border-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] rounded-full text-sm`}>
                       {application.role}
                     </span>
                   </div>
 
                   {/* Action Buttons */}
                   <div className="flex gap-4 mt-auto">
-                    <button
+                    <MainButton
                       onClick={() => handleAcceptApplication(application.id)}
-                      className="flex-1 py-4 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-full text-base transition-colors"
+                      variant="primary"
+                      size="default"
+                      className="flex-1 rounded-full text-center justify-center"
+                      showIcon={false}
                     >
                       Accept
-                    </button>
-                    <button
+                    </MainButton>
+                    <MainButton
                       onClick={() => handleDeclineApplication(application.id)}
-                      className="flex-1 py-4 bg-transparent border border-green-600 text-white hover:bg-green-600/10 font-semibold rounded-full text-base transition-colors"
+                      variant="outlineGreen"
+                      size="default"
+                      className="flex-1 rounded-full text-center justify-center"
+                      showIcon={false}
                     >
                       Decline
-                    </button>
+                    </MainButton>
                   </div>
                 </div>
               ))}
@@ -168,14 +184,12 @@ export default function TeamCandidatesPage() {
           ) : (
             /* Empty State Content */
             <div>
-              <p className="text-zinc-400 text-lg leading-relaxed">
+              <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-lg leading-relaxed`}>
                 It seems like you don't have any applications yet.
               </p>
             </div>
           )}
         </div>
-
-        <Footer />
       </div>
     </div>
   )

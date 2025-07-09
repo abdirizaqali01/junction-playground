@@ -1,9 +1,12 @@
+// app/events/[id]/teams/my-team/page.tsx
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useParams } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
-import { Footer } from "@/components/footer"
+import { MainButton } from "@/components/attachables/main-button"
+import * as style from '@/styles/design-system'
+import { initializeCSSVariables } from '@/styles/design-system'
 
 const userProfile = {
   name: 'Junction Hack',
@@ -13,9 +16,17 @@ const userProfile = {
 }
 
 export default function MyTeamPage() {
+  const router = useRouter()
+  const params = useParams()
+  const eventId = params?.id as string
+  
   const [activeTab, setActiveTab] = useState('my-team')
   const [hasTeam, setHasTeam] = useState(true) // Change to false to see empty state
-  const router = useRouter()
+
+  //-------------------------------- DESIGN SYSTEM ACTUATOR --------------------------------//
+  useEffect(() => {
+    initializeCSSVariables();
+  }, []);
 
   // Mock team data
   const teamData = {
@@ -34,26 +45,21 @@ export default function MyTeamPage() {
   }
 
   const handleBackToHome = () => {
-    router.push('/')
+    router.push(`/events/${eventId}/dash`)
   }
 
-  const handleAllChallenges = () => {
-    router.push('/challenges')
-  }
-
-  const handleTabNavigation = (tabId) => {
+  const handleTabNavigation = (tabId: string) => {
+    setActiveTab(tabId)
     switch(tabId) {
       case 'all-teams':
-        router.push('/teams')
+        router.push(`/events/${eventId}/teams`)
         break
       case 'my-team':
-        router.push('/teams/my-team')
+        router.push(`/events/${eventId}/teams/my-team`)
         break
-      case 'team-candidates':
-        router.push('/teams/candidates')
+      case 'candidates':
+        router.push(`/events/${eventId}/teams/candidates`)
         break
-      default:
-        setActiveTab(tabId)
     }
   }
 
@@ -65,15 +71,15 @@ export default function MyTeamPage() {
     console.log('Delete team')
   }
 
-  const handleSeeMoreMember = (memberId) => {
+  const handleSeeMoreMember = (memberId: number) => {
     console.log('See more for member:', memberId)
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
       <Sidebar
         userProfile={userProfile}
-        backToHomeLabel="Back To Home"
+        backToHomeLabel="Back To Dashboard"
         onBackToHome={handleBackToHome}
         showImagePlaceholder={true}
       />
@@ -83,7 +89,7 @@ export default function MyTeamPage() {
         {/* Header */}
         <div className="px-6 py-4">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-4xl font-bold text-white pt-[3%] ${spaceGrotesk.variable}">
+            <h1 className={`${style.font.grotesk.heavy} text-4xl text-[var(--color-light-opacity100)] pt-[3%]`}>
               Team Management
             </h1>
           </div>
@@ -94,28 +100,30 @@ export default function MyTeamPage() {
               {[
                 { id: 'all-teams', label: 'All Teams' },
                 { id: 'my-team', label: 'My Team' },
-                { id: 'team-candidates', label: 'Team Candidates' }
+                { id: 'candidates', label: 'Team Candidates' }
               ].map((tab) => (
-                <button
+                <MainButton
                   key={tab.id}
                   onClick={() => handleTabNavigation(tab.id)}
-                  className={`w-40 py-2 rounded-lg text-sm transition-colors ${
-                    activeTab === tab.id
-                      ? 'bg-white text-black font-medium'
-                      : 'bg-zinc-800/90 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/90'
-                  }`}
+                  variant={activeTab === tab.id ? 'default' : 'outlineGray'}
+                  size="sm"
+                  className="w-32 px-3 py-1 text-xs text-center justify-center"
+                  showIcon={false}
                 >
                   {tab.label}
-                </button>
+                </MainButton>
               ))}
             </div>
             
-            <button 
-              onClick={handleAllChallenges}
-              className="w-40 py-2 bg-zinc-800/90 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/90 transition-colors text-sm rounded-lg"
+            <MainButton 
+              onClick={() => router.push(`/events/${eventId}/challenges`)}
+              variant="outlineGray"
+              size="sm"
+              className="w-40 text-center justify-center"
+              showIcon={false}
             >
               All Challenges
-            </button>
+            </MainButton>
           </div>
 
           {/* Content */}
@@ -123,34 +131,34 @@ export default function MyTeamPage() {
             <div className="space-y-8">
               {/* Team Name and Code */}
               <div>
-                <h2 className="text-2xl font-bold text-green-400 mb-2 ${spaceGrotesk.variable}">
+                <h2 className={`${style.font.grotesk.main} text-2xl text-[var(--color-primary-opacity100)] mb-2`}>
                   {teamData.name}
                 </h2>
-                <p className="text-zinc-300 '${spaceMono.variable}' text-sm tracking-wider">
+                <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-sm tracking-wider`}>
                   {teamData.code}
                 </p>
               </div>
 
               {/* Team Description */}
               <div>
-                <h3 className="text-xl font-semibold text-white mb-4 ${spaceGrotesk.variable}">
+                <h3 className={`${style.font.grotesk.medium} text-xl text-[var(--color-light-opacity100)] mb-4`}>
                   Team Description
                 </h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">
+                <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-sm leading-relaxed`}>
                   {teamData.description}
                 </p>
               </div>
 
               {/* Available Roles */}
               <div>
-                <h3 className="text-xl font-semibold text-white mb-4 ${spaceGrotesk.variable}">
+                <h3 className={`${style.font.grotesk.medium} text-xl text-[var(--color-light-opacity100)] mb-4`}>
                   Available roles
                 </h3>
                 <div className="flex gap-3">
                   {teamData.availableRoles.map((role, index) => (
                     <span
                       key={index}
-                      className="px-6 py-2 bg-transparent border border-green-600 text-white rounded-full '${spaceMono.variable}' text-sm"
+                      className={`${style.font.mono.text} px-6 py-2 bg-transparent border border-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] rounded-full text-sm`}
                     >
                       {role}
                     </span>
@@ -160,32 +168,35 @@ export default function MyTeamPage() {
 
               {/* Team Members */}
               <div>
-                <h3 className="text-xl font-semibold text-white mb-4 ${spaceGrotesk.variable}">
+                <h3 className={`${style.font.grotesk.medium} text-xl text-[var(--color-light-opacity100)] mb-4`}>
                   Team members
                 </h3>
                 <div className="space-y-3">
                   {teamData.members.map((member) => (
                     <div
                       key={member.id}
-                      className="bg-zinc-800/60 rounded-xl p-4 flex items-center justify-between w-full max-w-3xl"
+                      className="bg-[var(--color-white-opacity10)] rounded-xl p-4 flex items-center justify-between w-full max-w-3xl border border-[var(--color-white-opacity15)]"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-zinc-600 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-sm font-medium">
+                        <div className="w-12 h-12 bg-[var(--color-light-opacity40)] rounded-full flex items-center justify-center flex-shrink-0">
+                          <span className={`${style.font.mono.text} text-[var(--color-dark-opacity100)] text-sm font-medium`}>
                             {member.name.split(' ').map(n => n[0]).join('')}
                           </span>
                         </div>
                         <div>
-                          <p className="text-white font-medium text-base">{member.name}</p>
-                          <p className="text-zinc-400 text-sm">{member.role}</p>
+                          <p className={`${style.font.grotesk.medium} text-[var(--color-light-opacity100)] text-base`}>{member.name}</p>
+                          <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-sm`}>{member.role}</p>
                         </div>
                       </div>
-                      <button 
+                      <MainButton 
                         onClick={() => handleSeeMoreMember(member.id)}
-                        className="text-zinc-400 text-sm hover:text-white transition-colors flex-shrink-0"
+                        variant="ghost"
+                        size="sm"
+                        className="text-center justify-center"
+                        showIcon={false}
                       >
                         See more
-                      </button>
+                      </MainButton>
                     </div>
                   ))}
                 </div>
@@ -193,33 +204,37 @@ export default function MyTeamPage() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4">
-                <button 
+                <MainButton 
                   onClick={handleEditTeam}
-                  className="px-4 py-2 bg-transparent border border-zinc-600 text-zinc-300 rounded-full hover:bg-zinc-800 transition-colors text-sm '${spaceMono.variable}'"
+                  variant="outlineGray"
+                  size="sm"
+                  className="text-center justify-center"
+                  showIcon={false}
                 >
                   Edit
-                </button>
-                <button 
+                </MainButton>
+                <MainButton 
                   onClick={handleDeleteTeam}
-                  className="px-4 py-2 bg-transparent border border-zinc-600 text-zinc-300 rounded-full hover:bg-zinc-800 transition-colors text-sm '${spaceMono.variable}'"
+                  variant="outlineGray"
+                  size="sm"
+                  className="text-center justify-center"
+                  showIcon={false}
                 >
                   Delete the team
-                </button>
+                </MainButton>
               </div>
             </div>
           ) : (
             /* Empty State Content */
             <div className="flex items-center justify-center min-h-96">
               <div className="text-center">
-                <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl">
+                <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-lg leading-relaxed max-w-2xl`}>
                   It seems like you don't have a team yet. Here you can create a new team or join already existing one.
                 </p>
               </div>
             </div>
           )}
         </div>
-
-        <Footer />
       </div>
     </div>
   )
