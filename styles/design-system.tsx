@@ -73,6 +73,9 @@ export const colors = {
 
     white: {
         opacity100: '#ffffff',
+        opacity90: '#ffffffe6',
+        opacity80: '#ffffffcc',
+        opacity70: '#ffffffb3',
         opacity60: '#FFFFFF99',
         opacity50: '#FFFFFF80',
         opacity40: '#FFFFFF66',
@@ -153,7 +156,7 @@ export const font = {
         main: `font-space-grotesk font-[600] tracking-[-0.01rem]`,
         heavy: `font-space-grotesk font-[700] tracking-[-0.05rem]`,
         medium: `font-space-grotesk font-[500] tracking-[-0.01rem]`,
-        light: `font-space-grotesk font-[300] tracking-[-0.05rem]`,
+        light: `font-space-grotesk font-[300] tracking-[-0.01rem]`,
     },
 
     mono: {
@@ -177,4 +180,9 @@ export const box = {
     },
 
     grayPrimary: `bg-[var(--color-white-opacity15)] ${border.solid} ${border.radius.outer} border-[var(--color-primary-opacity100)]`,
+}
+
+// BOX SOMETHING ELSE //
+export const tag = {
+    main: `bg-[var(--color-light-opacity10)] text-[var(--color-light-opacity90)] px-[8px] ${border.radius.middle} ${border.solid} border-[var(--color-white-opacity10)] border-[0.5px] text-[0.8rem] font-[400] leading-loose font-space-mono]`,
 }

@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import Image from 'next/image';
 
 const mainButtonVariants = cva(
-  "font-space-mono tracking-[-0.02rem] font-[400] px-6 py-3 rounded-lg transition-colors flex items-center space-x-2 flex-shrink-0",
+  "font-space-mono tracking-[-0.02rem] font-[400] px-6 py-3 rounded-lg transition-colors flex items-center justify-center space-x-2 flex-shrink-0",
   {
     variants: {
       variant: {
@@ -24,7 +24,7 @@ const mainButtonVariants = cva(
       size: {
         default: "px-6 py-3 text-base",
         sm: "px-6 py-2 text-sm",
-        lg: "px-8 py-4 text-lg",
+        lg: "px-8 py-4 text-md",
       },
     },
     defaultVariants: {

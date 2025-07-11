@@ -81,7 +81,7 @@ export default function JunctionDashboard() {
               </div>
               
               {/* Right Content */}
-              <div className="lg:w-2/3 m-auto">
+              <div className="lg:w-2/3 my-auto">
                 {/* Header with Title and Enter Button */}
                 <div className="flex justify-between items-start">
                   <div>
@@ -272,15 +272,15 @@ export default function JunctionDashboard() {
         <section className={style.sectionGap.top}>
           <h2 className={style.sectionTitle.grotesk}>Events For You</h2>
 
-          <div className="flex space-x-4 justify-left">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <EventCard event={sampleEvent} index={0} onEventClick={handleEventClick} />
             <EventCard event={sampleEvent} index={1} onEventClick={handleEventClick} />
             <EventCard event={sampleEvent} index={2} onEventClick={handleEventClick} />
           </div>
 
           {/* View All Events Button */}
-          <div className="text-center mb-20 mt-8">
-            <MainButton variant="default" size="default" onClick={() => router.push('/events')}>
+          <div className="mt-8 flex justify-center">
+            <MainButton variant="gray" showIcon="" size="default" onClick={() => router.push('/events')}>
               View All Events
             </MainButton>
           </div>
