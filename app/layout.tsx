@@ -1,10 +1,9 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, Space_Mono } from "next/font/google"
+import { Space_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 
-const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" })
 const spaceMono = Space_Mono({
   weight: ["400", "700"],
   subsets: ["latin"],
@@ -15,7 +14,12 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: "Junction Platform - The World's Leading Builder Ecosystem",
   description: "Connect, collaborate, and create the future with a global community of innovators and problem-solvers.",
-    generator: 'v0.dev'
+  generator: 'v0.dev',
+  icons: {
+    icon: '/icons/Clock.svg',
+    shortcut: '/icons/Clock.svg',
+    apple: '/icons/Clock.svg',
+  },
 }
 
 export default function RootLayout({
@@ -25,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="dark">
-      <body className={`${inter.variable} ${spaceMono.variable} font-sans`}>
+      <body className={`${spaceMono.variable} font-sans`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           {children}
         </ThemeProvider>
