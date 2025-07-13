@@ -22,9 +22,9 @@ const mainButtonVariants = cva(
         ghost: "bg-transparent text-[var(--color-light-opacity60)] hover:text-[var(--color-light-opacity100)]",
       },
       size: {
-        default: "px-6 py-3 text-base",
+        default: "px-6 py-3 text-[0.9rem]",
         sm: "px-6 py-2 text-sm",
-        lg: "px-8 py-4 text-md",
+        lg: "px-8 py-4 text-[1rem]",
       },
     },
     defaultVariants: {

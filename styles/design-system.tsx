@@ -161,7 +161,7 @@ export const font = {
 
     mono: {
         title: `font-space-mono font-[700] tracking-[-0.01rem]`,
-        text: `font-space-mono font-[400] tracking-[-0.05rem]`,
+        text: `font-space-mono font-[400] tracking-[-0.03rem]`,
     }
 }
 

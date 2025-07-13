@@ -22,12 +22,16 @@ interface Event {
   created_at: string
   updated_at: string
   type: string
+  tags?: string[] // Optional array of tags
+  category?: string // Optional category
 }
 
 interface EventCardProps {
   event: Event
   index: number
   onEventClick?: (eventId: number) => void
+  onRegister?: (eventId: number) => void
+  setSelectedEventId?: (eventId: number) => void
 }
 
 // Helper functions
@@ -69,16 +73,56 @@ const getPlaceholderImage = (index: number) => {
   return placeholderImages[index % placeholderImages.length]
 }
 
-export const EventCard: React.FC<EventCardProps> = ({ event, index, onEventClick }) => {
+// Helper function to check if event is active (from first component logic)
+const isEventActive = (startDate: string, status: string) => {
+  if (status === 'CANCELLED') return false
+  try {
+    const eventDate = new Date(startDate)
+    const now = new Date()
+    return eventDate > now || status === 'ONGOING'
+  } catch {
+    return false
+  }
+}
+
+export const EventCard: React.FC<EventCardProps> = ({ 
+  event, 
+  index, 
+  onEventClick, 
+  onRegister, 
+  setSelectedEventId 
+}) => {
+  
+  useEffect(() => {
+    initializeCSSVariables()
+  }, [])
+
+  // Handle card click - uses both setSelectedEventId and onEventClick for flexibility
   const handleCardClick = () => {
+    if (setSelectedEventId) {
+      setSelectedEventId(event.event_id)
+    }
     if (onEventClick) {
       onEventClick(event.event_id)
     }
   }
 
-  useEffect(() => {
-      initializeCSSVariables()
-    }, [])
+  // Handle registration logic from first component
+  const handleRegistration = (eventId: number) => {
+    if (onRegister) {
+      onRegister(eventId)
+    }
+  }
+
+  // Handle view event logic
+  const handleViewEvent = () => {
+    if (setSelectedEventId) {
+      setSelectedEventId(event.event_id)
+    }
+    if (onEventClick) {
+      onEventClick(event.event_id)
+    }
+  }
 
   return (
     <div
@@ -94,8 +138,8 @@ export const EventCard: React.FC<EventCardProps> = ({ event, index, onEventClick
         />
 
         <span
-            className={`absolute z-99 top-3 left-3 px-2 py-1 text-xs font-space-mono rounded border ${getStatusColor(event.status)}`}>
-            {event.status || "Status TBD"}
+          className={`absolute z-99 top-3 left-3 px-2 py-1 text-xs font-space-mono rounded border ${getStatusColor(event.status)}`}>
+          {event.status || "Status TBD"}
         </span>
       </div>
 
@@ -110,20 +154,29 @@ export const EventCard: React.FC<EventCardProps> = ({ event, index, onEventClick
               </h3>
             </div>
 
-            {/* Tags Row */}
+            {/* Tags Row - Dynamic tags based on event data */}
             <div className="flex flex-wrap gap-1">
               <span className={style.tag.main}>
                 {event.is_public ? "Public" : "Private"}
               </span>
-              <span className={style.tag.main}>
-                Innovation
-              </span>
-              <span className={style.tag.main}>
-                AI
-              </span>
-              <span className={style.tag.main}>
-                SpaceTech
-              </span>
+              {event.category && (
+                <span className={style.tag.main}>
+                  {event.category}
+                </span>
+              )}
+              {event.tags && event.tags.length > 0 && 
+                event.tags.slice(0, 3).map((tag, tagIndex) => (
+                  <span key={tagIndex} className={style.tag.main}>
+                    {tag}
+                  </span>
+                ))
+              }
+              {/* Fallback tags if no tags are provided */}
+              {(!event.tags || event.tags.length === 0) && !event.category && (
+                <span className={style.tag.main}>
+                  Category TBD
+                </span>
+              )}
             </div>
           </div>
 
@@ -136,24 +189,49 @@ export const EventCard: React.FC<EventCardProps> = ({ event, index, onEventClick
             </div>
 
             <div className="flex items-center space-x-2 py-1">
-              <Image src="/icons/Map.svg" alt="Calendar Check" width={20} height={20} />
+              <Image src="/icons/Map.svg" alt="Map" width={20} height={20} />
               <span className={style.font.grotesk.light + " text-[var(--color-white-opacity70)] text-sm"}>
                 {event.location || "Location TBD"}
               </span>
             </div>
 
             <div className="flex items-center space-x-2 py-1">
-              <Image src="/icons/Globe.svg" alt="Calendar Check" width={20} height={20} />
+              <Image src="/icons/Globe.svg" alt="Globe" width={20} height={20} />
               <span className={style.font.grotesk.light + " text-[var(--color-white-opacity70)] text-sm"}>
-                {event.type || "Type TBD"}
+                {event.type || "Hackathon"}
               </span>
             </div>
           </div>
 
-          {/* Buttons */}
+          {/* Buttons - Updated with first component logic */}
           <div className="flex space-x-2 mb-2">
-            <MainButton className="flex-1 text-center" variant="default" showIcon="" size="lg" onClick={(e) => e.stopPropagation()}>View Event</MainButton>
-            <MainButton className="flex-1 text-center" variant="primary" showIcon="" size="lg" disabled={event.status === "CANCELLED"} onClick={(e) => e.stopPropagation()}>{event.status === "CANCELLED" ? "Cancelled" : "Register now"}</MainButton>
+            <MainButton 
+              className="flex-1 text-center" 
+              variant="default" 
+              showIcon={false} 
+              size="default" 
+              onClick={(e) => {
+                e.stopPropagation()
+                handleViewEvent()
+              }}
+            >
+              View event
+            </MainButton>
+            <MainButton 
+              className="flex-1 text-center" 
+              variant={event.status === 'CANCELLED' ? 'gray' : !isEventActive(event.start_date, event.status) ? 'gray' : 'primary'} 
+              showIcon={false} 
+              size="default" 
+              disabled={event.status === 'CANCELLED' || !isEventActive(event.start_date, event.status)}
+              onClick={(e) => {
+                e.stopPropagation()
+                if (event.status !== 'CANCELLED' && isEventActive(event.start_date, event.status)) {
+                  handleRegistration(event.event_id)
+                }
+              }}
+            >
+              {event.status === 'CANCELLED' ? 'Cancelled' : !isEventActive(event.start_date, event.status) ? 'Passed' : 'Register now'}
+            </MainButton>
           </div>
         </div>
 

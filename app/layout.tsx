@@ -16,9 +16,9 @@ export const metadata: Metadata = {
   description: "Connect, collaborate, and create the future with a global community of innovators and problem-solvers.",
   generator: 'v0.dev',
   icons: {
-    icon: '/icons/Clock.svg',
-    shortcut: '/icons/Clock.svg',
-    apple: '/icons/Clock.svg',
+    icon: '/junction_platform_logo.png',
+    shortcut: '/junction_platform_logo.png',
+    apple: '/junction_platform_logo.png',
   },
 }
 
