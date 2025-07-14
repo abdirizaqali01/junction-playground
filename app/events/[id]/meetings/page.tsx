@@ -1,11 +1,26 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import { MainButton } from '@/components/attachables/main-button'
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
-import { initializeCSSVariables } from '@/styles/design-system'
+import { 
+  initializeCSSVariables, 
+  colors, 
+  font, 
+  box, 
+  border 
+} from '@/styles/design-system'
+
+// Types for better TypeScript support
+interface Challenge {
+  challenge_id?: string | number
+  id?: string | number
+  name?: string
+  title?: string
+  challenge_name?: string
+}
 
 const userProfile = {
   name: 'Junction Hack',
@@ -16,11 +31,13 @@ const userProfile = {
 
 export default function MentorMeetingsPage() {
   const [selectedChallenge, setSelectedChallenge] = useState('')
-  const [selectedMentor, setSelectedMentor] = useState('Mentor 1') // Pre-select for demo
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState('0-0') // Pre-select first slot
-  const [challenges, setChallenges] = useState([])
+  const [selectedMentor, setSelectedMentor] = useState('Mentor 1')
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState('0-0')
+  const [challenges, setChallenges] = useState<Challenge[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const params = useParams()
 
   // Initialize design system variables
   useEffect(() => {
@@ -32,27 +49,39 @@ export default function MentorMeetingsPage() {
     const fetchChallenges = async () => {
       try {
         setLoading(true)
-        // Replace 'eventId' with the actual event ID
-        const eventId = 'your-event-id' // You'll need to get this from props, params, or context
+        setError(null)
+        
+        // Get eventId from URL parameters
+        const eventId = params?.id as string
+        
+        if (!eventId) {
+          throw new Error('No event ID found in URL')
+        }
+        
         const response = await fetch(`/api/proxy/events/${eventId}/challenges`)
         
         if (!response.ok) {
-          throw new Error('Failed to fetch challenges')
+          throw new Error(`Failed to fetch challenges: ${response.status} ${response.statusText}`)
         }
         
         const data = await response.json()
-        setChallenges(data)
-      } catch (error) {
-        console.error('Error fetching challenges:', error)
-        // Fallback to hardcoded challenges for demo
-        setChallenges(['Challenge 1', 'Challenge 2', 'Challenge 3'])
+        
+        // Handle both array and single object responses
+        const challengesArray = Array.isArray(data) ? data : [data]
+        setChallenges(challengesArray)
+        
+      } catch (err) {
+        console.error('Error fetching challenges:', err)
+        setError(err instanceof Error ? err.message : 'Unknown error occurred')
+        // Fallback to empty array
+        setChallenges([])
       } finally {
         setLoading(false)
       }
     }
 
     fetchChallenges()
-  }, [])
+  }, [params?.id])
 
   const handleBackToHome = () => {
     router.push('/dash')
@@ -74,12 +103,24 @@ export default function MentorMeetingsPage() {
     { name: 'Thu 15.11', slots: [0, 1, 2, 3] }
   ]
 
-  const handleTimeSlotClick = (dayIndex, slotIndex) => {
+  const handleTimeSlotClick = (dayIndex: number, slotIndex: number) => {
     setSelectedTimeSlot(`${dayIndex}-${slotIndex}`)
   }
 
   const handleMoreTimeSlots = () => {
     console.log('Show more time slots')
+  }
+
+  // Helper function to get challenge name
+  const getChallengeDisplayName = (challenge: Challenge): string => {
+    if (typeof challenge === 'string') return challenge
+    return challenge.name || challenge.title || challenge.challenge_name || 'Unnamed Challenge'
+  }
+
+  // Helper function to get challenge value for selection
+  const getChallengeValue = (challenge: Challenge): string => {
+    if (typeof challenge === 'string') return challenge
+    return String(challenge.challenge_id || challenge.id || challenge.name || challenge.title || '')
   }
 
   return (
@@ -97,13 +138,20 @@ export default function MentorMeetingsPage() {
         <div className="flex-1 p-6 pt-[4%] max-w-3xl mx-auto w-full">
           {/* Page Title and Description */}
           <div className="mb-8 text-center mt-16">
-            <h1 className="text-4xl font-space-grotesk font-[700] tracking-[-0.05rem] text-[var(--color-light-opacity100)] mb-4">
+            <h1 className={`text-4xl ${font.grotesk.heavy} text-[var(--color-light-opacity100)] mb-4`}>
               Meetings
             </h1>
-            <p className="text-[var(--color-light-opacity60)] text-base font-space-grotesk font-[300] tracking-[-0.05rem]">
+            <p className={`text-[var(--color-light-opacity60)] text-base ${font.grotesk.light}`}>
               Book a meeting with partners to learn more about their challenge
             </p>
           </div>
+
+          {/* Error Display */}
+          {error && (
+            <div className="mb-4 p-3 bg-[var(--color-alerts-opacity10)] border border-[var(--color-alerts-opacity40)] rounded-[10px] text-[var(--color-alerts-opacity100)] text-sm">
+              Error loading challenges: {error}
+            </div>
+          )}
 
           {/* Dropdowns */}
           <div className="space-y-4 mb-8 max-w-xl mx-auto">
@@ -112,15 +160,17 @@ export default function MentorMeetingsPage() {
               <select
                 value={selectedChallenge}
                 onChange={(e) => setSelectedChallenge(e.target.value)}
-                disabled={loading}
-                className="w-full bg-[var(--color-white-opacity10)] border border-[var(--color-light-opacity20)] rounded-[10px] px-4 py-3 text-[var(--color-light-opacity100)] text-base appearance-none cursor-pointer focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-space-mono font-[400] tracking-[-0.05rem]"
+                disabled={loading || !challenges?.length}
+                className={`w-full ${box.gray.bottom} px-4 py-3 text-[var(--color-light-opacity100)] text-base appearance-none cursor-pointer focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${font.mono.text}`}
               >
                 <option value="">
-                  {loading ? 'Loading challenges...' : 'Challenge'}
+                  {loading ? 'Loading challenges...' : 
+                   !challenges?.length ? 'No challenges available' : 
+                   'Select a challenge'}
                 </option>
-                {challenges.map((challenge, index) => (
-                  <option key={index} value={challenge}>
-                    {typeof challenge === 'string' ? challenge : challenge.name || challenge.title}
+                {challenges?.map((challenge, index) => (
+                  <option key={index} value={getChallengeValue(challenge)}>
+                    {getChallengeDisplayName(challenge)}
                   </option>
                 ))}
               </select>
@@ -132,7 +182,7 @@ export default function MentorMeetingsPage() {
               <select
                 value={selectedMentor}
                 onChange={(e) => setSelectedMentor(e.target.value)}
-                className="w-full bg-[var(--color-white-opacity10)] border border-[var(--color-light-opacity20)] rounded-[10px] px-4 py-3 text-[var(--color-light-opacity100)] text-base appearance-none cursor-pointer focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors font-space-mono font-[400] tracking-[-0.05rem]"
+                className={`w-full ${box.gray.bottom} px-4 py-3 text-[var(--color-light-opacity100)] text-base appearance-none cursor-pointer focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors ${font.mono.text}`}
               >
                 <option value="">Mentor</option>
                 {mentors.map((mentor, index) => (
@@ -149,12 +199,12 @@ export default function MentorMeetingsPage() {
           {selectedMentor && (
             <div className="mb-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)]">
+                <h2 className={`text-xl ${font.grotesk.main} text-[var(--color-light-opacity100)]`}>
                   Available times
                 </h2>
                 <button 
                   onClick={handleMoreTimeSlots}
-                  className="text-[var(--color-primary-opacity100)] text-sm hover:text-[var(--color-primary-opacity60)] transition-colors flex items-center font-space-grotesk font-[500] tracking-[-0.01rem]"
+                  className={`text-[var(--color-primary-opacity100)] text-sm hover:text-[var(--color-primary-opacity60)] transition-colors flex items-center ${font.grotesk.medium}`}
                 >
                   More time slots
                   <ChevronLeft className="w-4 h-4 ml-2" />
@@ -163,21 +213,21 @@ export default function MentorMeetingsPage() {
               </div>
 
               {/* Time Slots Grid */}
-              <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-light-opacity20)] rounded-[10px] p-6">
+              <div className={`${box.gray.bottom} p-6`}>
                 <div className="grid grid-cols-4 gap-6">
                   {days.map((day, dayIndex) => (
                     <div key={dayIndex} className="space-y-3">
-                      <h3 className="text-[var(--color-light-opacity100)] font-space-grotesk font-[600] tracking-[-0.01rem] text-center text-base">
+                      <h3 className={`text-[var(--color-light-opacity100)] ${font.grotesk.main} text-center text-base`}>
                         {day.name}
                       </h3>
                       <div className="space-y-2">
-                        {day.slots.map((slotIndex) => (
+                        {day.slots.map((slotIndex: number) => (
                           <button
                             key={slotIndex}
                             onClick={() => handleTimeSlotClick(dayIndex, slotIndex)}
-                            className={`w-full py-2 px-3 rounded-[5px] text-xs font-space-mono font-[400] tracking-[-0.02rem] transition-all duration-200 ${
+                            className={`w-full py-2 px-3 ${border.radius.middle} text-xs ${font.mono.text} transition-all duration-200 ${
                               selectedTimeSlot === `${dayIndex}-${slotIndex}`
-                                ? 'bg-[var(--color-light-opacity20)] text-[var(--color-light-opacity100)] border border-[var(--color-light-opacity50)]'
+                                ? `${box.gray.middle} text-[var(--color-light-opacity100)] border-[var(--color-light-opacity50)]`
                                 : 'bg-transparent text-[var(--color-light-opacity60)] hover:bg-[var(--color-white-opacity10)] border border-transparent'
                             }`}
                           >
@@ -198,10 +248,16 @@ export default function MentorMeetingsPage() {
                     size="lg"
                     onClick={() => {
                       // Handle booking logic here
+                      const selectedChallengeData = challenges?.find((c: Challenge) => 
+                        getChallengeValue(c) === selectedChallenge
+                      )
+                      
                       console.log('Booking meeting:', {
                         challenge: selectedChallenge,
+                        challengeData: selectedChallengeData,
                         mentor: selectedMentor,
-                        timeSlot: selectedTimeSlot
+                        timeSlot: selectedTimeSlot,
+                        eventId: params?.id
                       })
                     }}
                   >

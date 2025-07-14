@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useParams } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import { MainButton } from '@/components/attachables/main-button'
-import { Upload, Play, ChevronDown, Check, X } from 'lucide-react'
+import { Upload, Play, ChevronDown, Check, X, Eye } from 'lucide-react'
 import { initializeCSSVariables } from '@/styles/design-system'
 
 const userProfile = {
@@ -23,8 +23,8 @@ const SubmitModal = ({ isOpen, onClose, onConfirm }: {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-[var(--color-dark-opacity80)] flex items-center justify-center z-50">
-      <div className="bg-[var(--color-dark-opacity100)] border-2 border-[var(--color-light-opacity20)] rounded-[10px] p-6 max-w-md w-full mx-4">
+    <div className="fixed inset-0 bg-[var(--color-dark-opacity80)] flex items-center justify-center z-50 transition-all duration-300">
+      <div className="bg-[var(--color-dark-opacity100)] border-2 border-[var(--color-light-opacity20)] rounded-[10px] p-6 max-w-md w-full mx-4 transform transition-all duration-300 scale-100 opacity-100">
         <div className="text-center mb-4">
           <h3 className="text-lg font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-3">
             Final Submit your project?
@@ -57,40 +57,72 @@ const SubmitModal = ({ isOpen, onClose, onConfirm }: {
   );
 };
 
-// Enhanced Next Steps Item Component with fade animation
+// Enhanced Next Steps Item Component with 2-step animation
 const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }: {
   item: { key: string; label: string; required: boolean };
   index: number;
   isCompleted: boolean;
   onTransitionEnd?: () => void;
 }) => {
+  const [animationPhase, setAnimationPhase] = useState<'idle' | 'filling' | 'removing' | 'returning'>('idle')
+  const [wasCompleted, setWasCompleted] = useState(false)
+
+  useEffect(() => {
+    // If field just became completed
+    if (isCompleted && !wasCompleted && animationPhase === 'idle') {
+      setAnimationPhase('filling')
+      setWasCompleted(true)
+      // After the fill animation, start the remove animation
+      setTimeout(() => {
+        setAnimationPhase('removing')
+      }, 500)
+    }
+    // If field became incomplete again
+    else if (!isCompleted && wasCompleted) {
+      setAnimationPhase('returning')
+      setWasCompleted(false)
+      // Reset to idle after return animation
+      setTimeout(() => {
+        setAnimationPhase('idle')
+      }, 500)
+    }
+  }, [isCompleted, wasCompleted, animationPhase])
+
   return (
     <div 
-      className={`transition-all duration-500 ease-in-out transform ${
-        isCompleted 
+      className={`transition-all duration-500 ease-out transform ${
+        animationPhase === 'removing' && isCompleted
           ? 'opacity-0 scale-95 max-h-0 mb-0 overflow-hidden pointer-events-none' 
+          : animationPhase === 'returning'
+          ? 'opacity-100 scale-100 max-h-96 mb-3'
           : 'opacity-100 scale-100 max-h-96 mb-3'
       }`}
-      onTransitionEnd={onTransitionEnd}
+      onTransitionEnd={() => {
+        if (animationPhase === 'removing' && isCompleted && onTransitionEnd) {
+          onTransitionEnd()
+        }
+      }}
     >
-      <div className={`border rounded-[5px] p-3 transition-all duration-200 ${
-        isCompleted
-          ? 'border-[var(--color-primary-opacity100)]' 
-          : 'border-[var(--color-alerts-opacity100)]'
+      <div className={`border rounded-[5px] p-3 transition-all duration-500 ease-out ${
+        animationPhase === 'filling' || (animationPhase === 'removing' && isCompleted)
+          ? 'border-[var(--color-primary-opacity100)] bg-[var(--color-primary-opacity30)]' 
+          : animationPhase === 'returning' || animationPhase === 'idle'
+          ? 'border-[var(--color-alerts-opacity100)] bg-[var(--color-alerts-opacity5)]'
+          : 'border-[var(--color-alerts-opacity100)] bg-[var(--color-alerts-opacity5)]'
       }`}>
         <div className="mb-2">
           <div className="flex items-center space-x-2">
-            <div className={`w-4 h-4 rounded-[3px] border flex items-center justify-center transition-colors ${
-              isCompleted
-                ? 'bg-[var(--color-primary-opacity100)] border-[var(--color-primary-opacity100)]' 
-                : 'border-[var(--color-light-opacity40)]'
+            <div className={`w-4 h-4 rounded-[3px] border flex items-center justify-center transition-all duration-500 ease-out ${
+              animationPhase === 'filling' || (animationPhase === 'removing' && isCompleted)
+                ? 'bg-[var(--color-primary-opacity100)] border-[var(--color-primary-opacity100)] transform scale-110' 
+                : 'border-[var(--color-light-opacity40)] scale-100'
             }`}>
-              {isCompleted && (
-                <Check className="w-3 h-3 text-[var(--color-light-opacity100)]" />
+              {(animationPhase === 'filling' || (animationPhase === 'removing' && isCompleted)) && (
+                <Check className="w-3 h-3 text-[var(--color-light-opacity100)] transition-all duration-300 ease-out" />
               )}
             </div>
-            <h4 className={`font-space-grotesk font-[500] text-sm transition-colors ${
-              isCompleted
+            <h4 className={`font-space-grotesk font-[500] text-sm transition-all duration-500 ease-out ${
+              animationPhase === 'filling' || (animationPhase === 'removing' && isCompleted)
                 ? 'text-[var(--color-primary-opacity100)]' 
                 : 'text-[var(--color-light-opacity100)]'
             }`}>
@@ -117,6 +149,8 @@ const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }: {
 
 export default function ProjectSubmissionPage() {
   const router = useRouter()
+  const params = useParams()
+  const eventId = params.id
   
   // Initialize design system variables
   useEffect(() => {
@@ -130,7 +164,7 @@ export default function ProjectSubmissionPage() {
     slackChannel: '',
     demoUrl: '',
     sourceCode: '',
-    videoFile: null
+    videoFile: null as File | null
   })
 
   const [slackFiles, setSlackFiles] = useState<File[]>([])
@@ -146,8 +180,9 @@ export default function ProjectSubmissionPage() {
   })
 
   const [dragActive, setDragActive] = useState(false)
-  const [activeField, setActiveField] = useState(null)
+  const [activeField, setActiveField] = useState<string | null>(null)
   const [showSubmitModal, setShowSubmitModal] = useState(false)
+  const [fieldErrors, setFieldErrors] = useState<{[key: string]: string}>({})
 
   // Update checklist when form data changes
   useEffect(() => {
@@ -162,12 +197,47 @@ export default function ProjectSubmissionPage() {
     })
   }, [formData, slackFiles])
 
+  const handlePreview = () => {
+    // Prepare form data for preview
+    const previewData = {
+      projectName: formData.projectName,
+      description: formData.description,
+      selectedChallenge: formData.selectedChallenge,
+      demoUrl: formData.demoUrl,
+      sourceCode: formData.sourceCode,
+      videoFile: formData.videoFile,
+      slackFiles: slackFiles
+    }
+    
+    // Store in sessionStorage for preview page to access
+    sessionStorage.setItem('previewData', JSON.stringify(previewData))
+    
+    // Navigate to preview page with proper event ID
+    router.push(`/events/${eventId}/submissions/preview`)
+  }
+
   const handleBackToHome = () => {
     router.push('/dash')
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
+    
+    // Handle character limit for description
+    if (name === 'description' && value.length > 300) {
+      setFieldErrors(prev => ({
+        ...prev,
+        description: `Character limit exceeded (${value.length}/300)`
+      }))
+      return
+    } else if (name === 'description') {
+      setFieldErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors.description
+        return newErrors
+      })
+    }
+    
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
@@ -238,9 +308,6 @@ export default function ProjectSubmissionPage() {
     setShowSubmitModal(false)
   }
 
-  const nextSteps: Array<{step: number; title: string; description: string}> = [
-  ]
-
   const checklistItems = [
     { key: 'projectName', label: 'Project Name', required: true },
     { key: 'description', label: 'Project Description', required: true },
@@ -271,7 +338,7 @@ export default function ProjectSubmissionPage() {
   })
 
   // Calculate current step numbers for incomplete items only
-  const getStepNumber = (item) => {
+  const getStepNumber = (item: { key: string; label: string; required: boolean }) => {
     const incompleteItems = checklistItems.filter(checklistItem => 
       !checklist[checklistItem.key]
     )
@@ -302,25 +369,21 @@ export default function ProjectSubmissionPage() {
               
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <MainButton
-                    variant="outlineGray"
-                    size="sm"
-                    showIcon={false}
+                  <button 
+                    onClick={handlePreview}
+                    className="border-[1.5px] border-[var(--color-white-opacity10)] bg-[var(--color-white-opacity10)] text-[var(--color-light-opacity100)] hover:bg-[var(--color-white-opacity30)] font-space-mono tracking-[-0.02rem] font-[400] px-6 py-2 rounded-lg transition-colors flex items-center justify-center space-x-2 flex-shrink-0 text-sm"
                   >
-                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
-                      <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
-                    </svg>
-                    Preview
-                  </MainButton>
+                    <Eye className="w-4 h-4" />
+                    <span>Preview</span>
+                  </button>
                 </div>
 
-                <span className={`px-3 py-1 text-xs font-space-mono font-[400] tracking-[-0.02rem] rounded-full transition-all duration-200 ${
+                <span className={`px-4 py-2 text-xs font-space-mono font-[400] tracking-[-0.02rem] rounded-full transition-all duration-500 ease-out transform ${
                   activeField 
-                    ? 'bg-transparent border border-[var(--color-light-opacity30)] text-[var(--color-light-opacity100)]' 
+                    ? 'bg-transparent border border-[var(--color-light-opacity30)] text-[var(--color-light-opacity100)] scale-105' 
                     : allFieldsCompleted
-                    ? 'bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)]'
-                    : 'bg-[var(--color-secondary-opacity100)] text-[var(--color-light-opacity100)]'
+                    ? 'bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] scale-100'
+                    : 'bg-[var(--color-secondary-opacity100)] text-[var(--color-light-opacity100)] scale-100'
                 }`}>
                   {activeField ? 'Editing' : allFieldsCompleted ? 'Final' : 'Draft'}
                 </span>
@@ -328,12 +391,12 @@ export default function ProjectSubmissionPage() {
             </div>
 
             {/* Form Content */}
-            <div className={`rounded-[10px] p-6 space-y-6 w-full transition-colors ${
+            <div className={`rounded-[10px] p-6 space-y-6 w-full transition-all duration-500 ease-out transform ${
               allFieldsCompleted 
-                ? 'bg-[var(--color-primary-opacity20)] border border-[var(--color-primary-opacity50)]' 
+                ? 'bg-[var(--color-primary-opacity20)] border border-[var(--color-primary-opacity50)] shadow-lg scale-[1.01]' 
                 : activeField 
-                ? 'bg-[var(--color-white-opacity10)]' 
-                : 'bg-[var(--color-white-opacity5)]'
+                ? 'bg-[var(--color-white-opacity10)] shadow-md scale-[1.005]' 
+                : 'bg-[var(--color-white-opacity5)] scale-100'
             }`}>
               
               {/* Project Name */}
@@ -348,16 +411,31 @@ export default function ProjectSubmissionPage() {
                   onChange={handleInputChange}
                   onFocus={() => handleFieldFocus('projectName')}
                   onBlur={handleFieldBlur}
-                  className="w-full bg-[var(--color-white-opacity10)] border border-[var(--color-light-opacity20)] rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors text-sm font-space-mono"
+                  className={`w-full bg-[var(--color-white-opacity10)] border rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none transition-all duration-300 ease-out text-sm font-space-mono transform ${
+                    activeField === 'projectName' 
+                      ? 'border-[var(--color-primary-opacity100)] shadow-md scale-[1.02] bg-[var(--color-white-opacity15)]' 
+                      : 'border-[var(--color-light-opacity20)] scale-100'
+                  }`}
                   placeholder="Enter project name"
                 />
               </div>
 
               {/* Description */}
               <div className="space-y-2">
-                <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
-                  Description of what you've built
-                </label>
+                <div className="flex justify-between items-center">
+                  <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                    Description of what you've built
+                  </label>
+                  <span className={`text-xs font-space-mono transition-all duration-300 ${
+                    formData.description.length > 250 
+                      ? 'text-[var(--color-alerts-opacity100)]' 
+                      : formData.description.length > 200
+                      ? 'text-[var(--color-secondary-opacity100)]'
+                      : 'text-[var(--color-light-opacity40)]'
+                  }`}>
+                    {formData.description.length}/300
+                  </span>
+                </div>
                 <p className="text-[var(--color-light-opacity60)] text-xs leading-relaxed mb-3 font-space-grotesk font-[300]">
                   Description of maximum 10 lines limit of documents at lorem ipsum dictumst et nisl, mauris phasellus egestas vel tellus rutrum vel, ornare molestie mauris non pulvinar. Turpis neque viverra et auctor fermentum consectetur tortor vitae egestas. Lorem ipsum dolor sit amet consequat pharetra nunc ipsum nam, scelerisque duis ut ridiculus pellentesque et tortor vitae.
                 </p>
@@ -368,9 +446,18 @@ export default function ProjectSubmissionPage() {
                   onFocus={() => handleFieldFocus('description')}
                   onBlur={handleFieldBlur}
                   rows={5}
-                  className="w-full bg-[var(--color-white-opacity10)] border border-[var(--color-light-opacity20)] rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors resize-none text-sm font-space-mono"
+                  className={`w-full bg-[var(--color-white-opacity10)] border rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none transition-all duration-300 ease-out resize-none text-sm font-space-mono transform ${
+                    activeField === 'description' 
+                      ? 'border-[var(--color-primary-opacity100)] shadow-md scale-[1.02] bg-[var(--color-white-opacity15)]' 
+                      : 'border-[var(--color-light-opacity20)] scale-100'
+                  } ${fieldErrors.description ? 'border-[var(--color-alerts-opacity100)]' : ''}`}
                   placeholder="Describe your project, the problem it solves, and the technology you used..."
                 />
+                {fieldErrors.description && (
+                  <p className="text-[var(--color-alerts-opacity100)] text-xs mt-1 font-space-grotesk animate-pulse">
+                    {fieldErrors.description}
+                  </p>
+                )}
               </div>
 
               {/* Your Challenge */}
@@ -388,14 +475,18 @@ export default function ProjectSubmissionPage() {
                     onChange={handleInputChange}
                     onFocus={() => handleFieldFocus('selectedChallenge')}
                     onBlur={handleFieldBlur}
-                    className="w-full bg-[var(--color-white-opacity10)] border border-[var(--color-light-opacity20)] rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors appearance-none text-sm font-space-mono"
+                    className={`w-full bg-[var(--color-white-opacity10)] border rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none transition-all duration-300 ease-out appearance-none text-sm font-space-mono transform ${
+                      activeField === 'selectedChallenge' 
+                        ? 'border-[var(--color-primary-opacity100)] shadow-md scale-[1.02] bg-[var(--color-white-opacity15)]' 
+                        : 'border-[var(--color-light-opacity20)] scale-100'
+                    }`}
                   >
                     <option value="">Select the challenge that your project is for...</option>
                     <option value="ai">AI Challenge</option>
                     <option value="sustainability">Sustainability Challenge</option>
                     <option value="fintech">FinTech Challenge</option>
                   </select>
-                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-light-opacity40)] pointer-events-none" />
+                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-light-opacity40)] pointer-events-none transition-transform duration-300" />
                 </div>
               </div>
 
@@ -410,19 +501,19 @@ export default function ProjectSubmissionPage() {
                 
                 {/* File Upload Area */}
                 <div
-                  className={`border-2 border-dashed rounded-[5px] p-8 text-center transition-colors ${
+                  className={`border-2 border-dashed rounded-[5px] p-8 text-center transition-all duration-500 ease-out transform ${
                     slackFiles.length > 0
-                      ? 'border-[var(--color-primary-opacity100)] bg-[var(--color-primary-opacity20)]' 
+                      ? 'border-[var(--color-primary-opacity100)] bg-[var(--color-primary-opacity20)] scale-[1.02]' 
                       : dragActive 
-                      ? 'border-[var(--color-light-opacity50)] bg-[var(--color-white-opacity10)]' 
-                      : 'border-[var(--color-light-opacity30)] hover:border-[var(--color-light-opacity50)]'
+                      ? 'border-[var(--color-light-opacity50)] bg-[var(--color-white-opacity10)] scale-[1.02]' 
+                      : 'border-[var(--color-light-opacity30)] hover:border-[var(--color-light-opacity50)] scale-100'
                   }`}
                   onDragEnter={handleDragEvents}
                   onDragLeave={handleDragEvents}
                   onDragOver={handleDragEvents}
                   onDrop={handleDrop}
                 >
-                  <Upload className={`w-6 h-6 mx-auto mb-3 ${
+                  <Upload className={`w-6 h-6 mx-auto mb-3 transition-all duration-300 ${
                     slackFiles.length > 0 ? 'text-[var(--color-primary-opacity100)]' : 'text-[var(--color-light-opacity40)]'
                   }`} />
                   {slackFiles.length > 0 ? (
@@ -437,7 +528,7 @@ export default function ProjectSubmissionPage() {
                       </div>
                       <button
                         onClick={handleClearSlackFiles}
-                        className="text-xs text-[var(--color-alerts-opacity100)] hover:text-[var(--color-alerts-opacity60)] underline font-space-grotesk"
+                        className="text-xs text-[var(--color-alerts-opacity100)] hover:text-[var(--color-alerts-opacity60)] underline font-space-grotesk transition-colors duration-200"
                       >
                         Clear files
                       </button>
@@ -456,7 +547,7 @@ export default function ProjectSubmissionPage() {
                       />
                       <label
                         htmlFor="file-upload"
-                        className="inline-flex items-center px-4 py-2 bg-[var(--color-white-opacity20)] hover:bg-[var(--color-white-opacity30)] rounded-[5px] cursor-pointer transition-colors text-sm text-[var(--color-light-opacity100)] font-space-grotesk font-[400]"
+                        className="inline-flex items-center px-4 py-2 bg-[var(--color-white-opacity20)] hover:bg-[var(--color-white-opacity30)] rounded-[5px] cursor-pointer transition-all duration-300 ease-out text-sm text-[var(--color-light-opacity100)] font-space-grotesk font-[400] transform hover:scale-105"
                       >
                         Browse files
                       </label>
@@ -470,12 +561,12 @@ export default function ProjectSubmissionPage() {
                 
                 {/* Video Upload */}
                 <div className="space-y-2 flex flex-col h-full">
-                  <div className={`rounded-[5px] p-4 border flex flex-col h-full transition-colors ${
+                  <div className={`rounded-[5px] p-4 border flex flex-col h-full transition-all duration-500 ease-out transform ${
                     formData.videoFile 
-                      ? 'bg-[var(--color-primary-opacity20)] border-[var(--color-primary-opacity100)]' 
-                      : 'bg-[var(--color-white-opacity10)] border-[var(--color-light-opacity20)]'
+                      ? 'bg-[var(--color-primary-opacity20)] border-[var(--color-primary-opacity100)] scale-[1.02]' 
+                      : 'bg-[var(--color-white-opacity10)] border-[var(--color-light-opacity20)] scale-100'
                   }`}>
-                    <div className={`aspect-video rounded-[5px] flex items-center justify-center mb-3 transition-colors ${
+                    <div className={`aspect-video rounded-[5px] flex items-center justify-center mb-3 transition-all duration-300 ${
                       formData.videoFile ? 'bg-[var(--color-primary-opacity30)]' : 'bg-[var(--color-white-opacity5)]'
                     }`}>
                       {formData.videoFile ? (
@@ -489,7 +580,7 @@ export default function ProjectSubmissionPage() {
                           </p>
                           <button
                             onClick={handleRemoveVideo}
-                            className="text-xs text-[var(--color-alerts-opacity100)] hover:text-[var(--color-alerts-opacity60)] underline font-space-grotesk"
+                            className="text-xs text-[var(--color-alerts-opacity100)] hover:text-[var(--color-alerts-opacity60)] underline font-space-grotesk transition-colors duration-200"
                           >
                             Remove video
                           </button>
@@ -513,7 +604,7 @@ export default function ProjectSubmissionPage() {
                     />
                     <label
                       htmlFor="video-upload"
-                      className={`block w-full text-center px-3 py-2 border rounded-[5px] cursor-pointer transition-colors text-sm mt-auto font-space-grotesk font-[400] ${
+                      className={`block w-full text-center px-3 py-2 border rounded-[5px] cursor-pointer transition-all duration-300 ease-out text-sm mt-auto font-space-grotesk font-[400] transform hover:scale-105 ${
                         formData.videoFile
                           ? 'bg-[var(--color-primary-opacity30)] hover:bg-[var(--color-primary-opacity50)] border-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)]'
                           : 'bg-[var(--color-white-opacity5)] hover:bg-[var(--color-white-opacity10)] border-[var(--color-light-opacity20)] text-[var(--color-light-opacity100)]'
@@ -543,7 +634,11 @@ export default function ProjectSubmissionPage() {
                       onChange={handleInputChange}
                       onFocus={() => handleFieldFocus('demoUrl')}
                       onBlur={handleFieldBlur}
-                      className="w-full bg-[var(--color-white-opacity10)] border border-[var(--color-light-opacity20)] rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors text-sm font-space-mono"
+                      className={`w-full bg-[var(--color-white-opacity10)] border rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none transition-all duration-300 ease-out text-sm font-space-mono transform ${
+                        activeField === 'demoUrl' 
+                          ? 'border-[var(--color-primary-opacity100)] shadow-md scale-[1.02] bg-[var(--color-white-opacity15)]' 
+                          : 'border-[var(--color-light-opacity20)] scale-100'
+                      }`}
                       placeholder="Project url link..."
                     />
                   </div>
@@ -564,7 +659,11 @@ export default function ProjectSubmissionPage() {
                       onChange={handleInputChange}
                       onFocus={() => handleFieldFocus('sourceCode')}
                       onBlur={handleFieldBlur}
-                      className="w-full bg-[var(--color-white-opacity10)] border border-[var(--color-light-opacity20)] rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors text-sm font-space-mono"
+                      className={`w-full bg-[var(--color-white-opacity10)] border rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none transition-all duration-300 ease-out text-sm font-space-mono transform ${
+                        activeField === 'sourceCode' 
+                          ? 'border-[var(--color-primary-opacity100)] shadow-md scale-[1.02] bg-[var(--color-white-opacity15)]' 
+                          : 'border-[var(--color-light-opacity20)] scale-100'
+                      }`}
                       placeholder="Source code url link..."
                     />
                   </div>
@@ -578,6 +677,7 @@ export default function ProjectSubmissionPage() {
                           variant="default"
                           size="sm"
                           showIcon={false}
+                          className="transition-all duration-300 ease-out transform hover:scale-105"
                         >
                           Save Draft
                         </MainButton>
@@ -586,6 +686,7 @@ export default function ProjectSubmissionPage() {
                           variant="alerts"
                           size="sm"
                           showIcon={false}
+                          className="transition-all duration-300 ease-out transform hover:scale-105"
                         >
                           Cancel
                         </MainButton>
@@ -598,6 +699,7 @@ export default function ProjectSubmissionPage() {
                           variant="primary"
                           size="default"
                           showIcon={false}
+                          className="transition-all duration-300 ease-out transform hover:scale-105"
                         >
                           Submit As Final
                         </MainButton>
@@ -609,59 +711,42 @@ export default function ProjectSubmissionPage() {
             </div>
           </div>
 
-{/* Right Sidebar - Next Steps with Enhanced Animation */}
-<div className="w-[26rem] p-6">
-  <div className={`border rounded-[10px] sticky top-6 transition-colors shadow-md
-    ${allFieldsCompleted 
-      ? 'border-[var(--color-primary-opacity100)] bg-[var(--color-primary-opacity20)] px-8 py-6' 
-      : 'border-[var(--color-alerts-opacity100)] bg-[var(--color-white-opacity5)] px-6 py-4'
-    }`}
-  >
-    <h3 className="text-base font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-4">
-      {allFieldsCompleted ? 'ALL DONE!' : 'Next Steps'}
-    </h3>
+          {/* Right Sidebar - Next Steps with Enhanced Animation */}
+          <div className="w-[26rem] p-6">
+            <div className={`border rounded-[10px] sticky top-6 transition-all duration-700 ease-out shadow-md transform
+              ${allFieldsCompleted 
+                ? 'border-[var(--color-primary-opacity100)] bg-[var(--color-primary-opacity20)] px-8 py-6 scale-105' 
+                : 'border-[var(--color-alerts-opacity100)] bg-[var(--color-white-opacity5)] px-6 py-4 scale-100'
+              }`}
+            >
+              <h3 className="text-base font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-4 transition-all duration-300">
+                {allFieldsCompleted ? 'ALL DONE!' : 'Next Steps'}
+              </h3>
 
-    {allFieldsCompleted ? (
-      <div>
-        <p className="text-[var(--color-light-opacity60)] text-sm leading-relaxed font-space-grotesk font-[300]">
-          Now, just sit back and relax. Follow the{" "}
-          <span className="underline cursor-pointer hover:text-[var(--color-light-opacity100)] text-[var(--color-primary-opacity100)]">
-            announcements
-          </span>{" "}
-          closely and get some sleep!
-        </p>
-      </div>
-    ) : (
-      <div className="space-y-0">
-        {sortedChecklistItems.map((item) => (
-          <NextStepItem
-            key={item.key}
-            item={item}
-            index={getStepNumber(item) - 1}
-            isCompleted={checklist[item.key]}
-          />
-        ))}
-
-        {/* Static Next Steps */}
-        {nextSteps.map((step) => {
-          const incompleteCount = checklistItems.filter(item => !checklist[item.key]).length
-          return (
-            <div key={step.step} className="border border-[var(--color-alerts-opacity100)] rounded-[5px] p-3 mb-3">
-              <div className="mb-2">
-                <h4 className="text-[var(--color-light-opacity100)] font-space-grotesk font-[500] text-sm">
-                  {step.step + incompleteCount}. {step.title}
-                </h4>
-              </div>
-              <p className="text-[var(--color-light-opacity60)] text-xs leading-relaxed font-space-grotesk font-[300]">
-                {step.description}
-              </p>
+              {allFieldsCompleted ? (
+                <div className="transition-all duration-500 ease-out">
+                  <p className="text-[var(--color-light-opacity60)] text-sm leading-relaxed font-space-grotesk font-[300]">
+                    Now, just sit back and relax. Follow the{" "}
+                    <span className="underline cursor-pointer hover:text-[var(--color-light-opacity100)] text-[var(--color-primary-opacity100)] transition-colors duration-200">
+                      announcements
+                    </span>{" "}
+                    closely and get some sleep!
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-0">
+                  {sortedChecklistItems.map((item) => (
+                    <NextStepItem
+                      key={item.key}
+                      item={item}
+                      index={getStepNumber(item) - 1}
+                      isCompleted={checklist[item.key]}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
-          )
-        })}
-      </div>
-    )}
-  </div>
-</div>
+          </div>
 
         </div>
       </div>
