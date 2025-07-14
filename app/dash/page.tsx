@@ -188,11 +188,11 @@ export default function JunctionDashboard() {
         <section className={style.sectionGap.top}>
           <h2 className={style.sectionTitle.grotesk}>Your Registered Events</h2>
           
-          <div className="bg-[#191919] rounded-2xl overflow-hidden">
+          <div className={style.box.gray.bottom + " overflow-hidden"}>
             <div className="flex flex-col lg:flex-row">
               {/* Left Content */}
               <div className="lg:w-1/2 p-8">
-                <h3 className="text-3xl font-bold text-white mb-6">Event Name</h3>
+                <h3 className={style.font.grotesk.main + " text-[1.6rem] text-[var(--color-light-opacity100)] mb-3"}>Event Name</h3>
                 
                 {/* Event Stats */}
                 <div className="flex items-center space-x-8 mb-6 text-sm text-zinc-400">
@@ -218,31 +218,31 @@ export default function JunctionDashboard() {
 
                 {/* Event Tags */}
                 <div className="flex items-center space-x-3 mb-8">
-                  <span className={`bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm font-[var(${style.spaceMono.variable})]`}>AI</span>
-                  <span className={`bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm font-[var(${style.spaceMono.variable})]`}>Machine Learning</span>
-                  <span className={`bg-[#00000066] text-[#FFFFFFB2] px-3 py-1 rounded text-sm font-[var(${style.spaceMono.variable})]`}>Innovation</span>
+                  <span className={style.tag.main}>AI</span>
+                  <span className={style.tag.main}>Machine Learning</span>
+                  <span className={style.tag.main}>Innovation</span>
                 </div>
 
                 {/* Schedule */}
-                <div className="mb-8 mr-20">
-                  <h4 className="text-white font-bold text-lg mb-6">Schedule</h4>
-                  <div className="space-y-4">
+                <div className={style.box.gray.bottom + " mb-6 p-6"}>
+                  <h4 className={style.font.grotesk.medium + " text-[var(--color-light-opacity100)] text-[1.2rem] mb-3"}>Schedule</h4>
+                  <div className="space-y-3">
                     <div className="border-b border-gray-600">
                       <div className="flex justify-between items-center py-3">
-                        <span className="text-white font-medium">Kickoff & Teambuilding</span>
-                        <span className="text-zinc-400 text-sm">10:00 - 11:00</span>
+                        <span className={style.font.grotesk.light + " text-[var(--color-light-opacity100)] text-[1rem]"}>Kickoff & Teambuilding</span>
+                        <span className={style.font.mono.text + " text-[var(--color-white-opacity50)] text-[0.9rem]"}>10:00 - 11:00</span>
                       </div>   
                     </div>
                     <div className="border-b border-gray-600">
                       <div className="flex justify-between items-center py-3">
-                        <span className="text-white font-medium">Development</span>
-                        <span className="text-zinc-400 text-sm">11:00 - 15:00</span>
+                        <span className={style.font.grotesk.light + " text-[var(--color-light-opacity100)] text-[1rem]"}>Development</span>
+                        <span className={style.font.mono.text + " text-[var(--color-white-opacity50)] text-[0.9rem]"}>11:00 - 15:00</span>
                       </div> 
                     </div>
                     <div className="border-b border-gray-600">
                       <div className="flex justify-between items-center py-3">
-                        <span className="text-white font-medium">Pitch, Judging & Celebration</span>
-                        <span className="text-zinc-400 text-sm">15:00 - 17:00</span>
+                        <span className={style.font.grotesk.light + " text-[var(--color-light-opacity100)] text-[1rem]"}>Pitch, Judging & Celebration</span>
+                        <span className={style.font.mono.text + " text-[var(--color-white-opacity50)] text-[0.9rem]"}>15:00 - 17:00</span>
                       </div> 
                     </div>
                   </div>
@@ -280,7 +280,7 @@ export default function JunctionDashboard() {
 
           {/* View All Events Button */}
           <div className="mt-8 flex justify-center">
-            <MainButton variant="gray" showIcon="" size="default" onClick={() => router.push('/events')}>
+            <MainButton variant="gray" showIcon={false} size="default" onClick={() => router.push('/events')}>
               View All Events
             </MainButton>
           </div>

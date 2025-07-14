@@ -180,7 +180,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             </div>
           </div>
 
-          <div className="pt-2 pb-4 flex-1 flex flex-col justify-between">
+          <div className="pt-2 pb-4 flex-1 flex flex-col justify-balanced">
             <div className="flex items-center space-x-2 py-1">
               <Image src="/icons/calendar_check.svg" alt="Calendar Check" width={20} height={20} />
               <span className={style.font.grotesk.light + " text-[var(--color-white-opacity70)] text-sm"}>

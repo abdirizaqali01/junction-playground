@@ -1,11 +1,12 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { initializeCSSVariables } from '@/styles/design-system'
 import { MainButton } from '@/components/attachables/main-button'
 import React, { useState, useEffect } from 'react'
 import { Footer } from "@/components/footer"
 import Navbar from '@/components/navi'
+import * as style from '@/styles/design-system'
+import { initializeCSSVariables } from '@/styles/design-system'
 import { EventCard, Event } from '@/components/event-card' // Updated import path to match your current code
 
 export default function EventsPage() {
@@ -157,7 +158,7 @@ export default function EventsPage() {
         <div className="w-[95%] lg:w-[80%] mx-auto pt-[150px]">
           
           {/* Search Bar - Centered */}
-          <div className="mb-8 flex font-space-grotesk justify-center">
+          <div className="mb-10 flex font-space-grotesk justify-center">
             <div className="relative max-w-2xl w-full">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <svg className="h-5 w-5 text-[var(--color-light-opacity60)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +170,7 @@ export default function EventsPage() {
                 placeholder="Search Hackathons"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-12 pr-4 py-3 border border-[var(--color-white-opacity20)] text-sm rounded-md bg-[var(--color-white-opacity5)] text-[var(--color-light-opacity100)] placeholder-[var(--color-light-opacity60)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-opacity100)] focus:border-transparent text-left"
+                className="block w-full pl-12 pr-4 py-3 border border-[var(--color-white-opacity20)] text-sm rounded-md bg-[var(--color-white-opacity5)] text-[var(--color-light-opacity100)] placeholder-[var(--color-light-opacity60)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-opacity100)] focus:border-transparent text-left"
               />
             </div>
           </div>
@@ -178,8 +179,8 @@ export default function EventsPage() {
           {activeEvents.length > 0 && (
             <div className="mb-12">
               <div className="relative mb-6 overflow-hidden">
-                <h2 className="text-2xl font-semibold bg-gradient-to-r from-[var(--color-primary-opacity100)] from-20% via-[var(--color-primary-opacity100)] via-40% to-transparent to-80% bg-clip-text text-transparent">
-                  Upcoming Events ({activeEvents.length})
+                <h2 className={style.font.grotesk.heavy + " text-[1.8rem] text-[var(--color-primary-opacity100)]"}>
+                  Upcoming Events <span className={style.font.mono.text + " text-[var(--color-white-opacity40)] text-[1.2rem]"}>[{activeEvents.length}]</span>
                 </h2>
               </div>
               
@@ -204,8 +205,8 @@ export default function EventsPage() {
           {pastEvents.length > 0 && (
             <div className="mb-12">
               <div className="relative mb-6 overflow-hidden">
-                <h2 className="text-2xl font-semibold bg-gradient-to-r from-[var(--color-light-opacity60)] from-20% via-[var(--color-light-opacity60)] via-40% to-transparent to-80% bg-clip-text text-transparent">
-                  Past Events ({pastEvents.length})
+                <h2 className={style.font.grotesk.heavy + " text-[1.8rem] text-[var(--color-primary-opacity100)] flex items-center gap-2"}>
+                  Past Events <span className={style.font.mono.text + " text-[var(--color-white-opacity40)] text-[1.2rem]"}>[{pastEvents.length}]</span>
                 </h2>
               </div>
               
