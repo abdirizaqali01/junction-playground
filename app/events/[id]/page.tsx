@@ -534,13 +534,14 @@ export default function EventDetailPage() {
                     
                     {/* Buttons */}
                     <div className="space-y-3">
-                      <MainButton 
-                        variant="default"
-                        className="w-full justify-center"
-                        showIcon={false}
-                      >
-                        Event ID
-                      </MainButton>
+                    <MainButton 
+                      variant="default"
+                      className="w-full justify-center"
+                      showIcon={false}
+                      onClick={() => router.push(`/events/${eventId}/idpage`)}
+                    >
+                      Event ID
+                    </MainButton>
                       <MainButton 
                         variant="outlineGreen"
                         className="w-full justify-center"
