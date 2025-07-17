@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import { Footer } from "@/components/footer"
 import { MainButton } from "@/components/attachables/main-button"
+import { useLoading } from '@/components/loading-context'
 import * as style from '@/styles/design-system'
-import { initializeCSSVariables } from '@/styles/design-system'
 
 const userProfile = {
   name: 'Junction Hack',
@@ -58,34 +58,35 @@ const announcementsData = [
 
 export default function EventDashboard() {
   const router = useRouter()
-
-  //-------------------------------- DESIGN SYSTEM ACTUATOR --------------------------------//
-  useEffect(() => {
-    initializeCSSVariables();
-  }, []);
+  const { setLoading } = useLoading()
 
   const handleBackToHome = () => {
+    setLoading('back-to-home', true)
     router.push('/dash')
   }
 
   const handleEditSubmission = () => {
+    setLoading('edit-submission', true)
     router.push('/events/[id]/submissions')
   }
 
   const handleViewChallenges = () => {
+    setLoading('view-challenges', true)
     router.push('/events/[id]/challenges')
   }
 
   const handleBookMeeting = () => {
+    setLoading('book-meeting', true)
     router.push('/events/[id]/meetings')
   }
 
   const handleHackerpack = () => {
+    setLoading('hackerpack', true)
     router.push('/events/[id]/hackerpack')
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
+    <div className={`min-h-screen text-[${style.colors.light.opacity100}] flex`} style={{ backgroundColor: style.colors.dark.opacity100 }}>
       <Sidebar
         userProfile={userProfile}
         backToHomeLabel="Back To Home"
@@ -97,7 +98,7 @@ export default function EventDashboard() {
       <div className="flex-1 overflow-auto transition-all duration-300 ml-[250px]">
         <div className="p-4 lg:p-6 pt-[3vh]">
           {/* Header */}
-          <h1 className={style.font.grotesk.heavy +" text-3xl lg:text-4xl text-[var(--color-light-opacity100)] mb-4 lg:mb-6"}>
+          <h1 className={`${style.font.grotesk.heavy} text-3xl lg:text-4xl mb-4 lg:mb-6`} style={{ color: style.colors.light.opacity100 }}>
             Dashboard
           </h1>
 
@@ -107,14 +108,14 @@ export default function EventDashboard() {
             {/* Left Column - Main content */}
             <div className="lg:col-span-7 space-y-4 lg:space-y-5">
               {/* Your Submission Card - Responsive sizing */}
-              <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-primary-opacity40)] rounded-xl p-4 lg:p-8 relative overflow-hidden">
+              <div className={`${style.box.primary.bottom} p-4 lg:p-8 relative overflow-hidden`}>
                 <div className="flex flex-col lg:flex-row items-start gap-4 lg:gap-8">
                   {/* Left side - Responsive image placeholder with Draft badge */}
-                  <div className="relative w-full lg:w-40 h-32 lg:h-40 bg-[var(--color-light-opacity20)] rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-[var(--color-light-opacity30)] rounded-full"></div>
+                  <div className="relative w-full lg:w-40 h-32 lg:h-40 rounded-lg flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: style.colors.light.opacity20 }}>
+                    <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-full" style={{ backgroundColor: style.colors.light.opacity30 }}></div>
                     {/* Draft status badge on top of image */}
                     <div className="absolute top-2 lg:top-3 left-2 lg:left-3">
-                      <span className="px-2 lg:px-3 py-1 bg-[var(--color-alerts-opacity100)] text-[var(--color-light-opacity100)] text-xs font-medium rounded-full font-space-mono">
+                      <span className={`px-2 lg:px-3 py-1 text-xs font-medium rounded-full ${style.font.mono.text}`} style={{ backgroundColor: style.colors.alerts.opacity100, color: style.colors.light.opacity100 }}>
                         {submissionData.status}
                       </span>
                     </div>
@@ -125,10 +126,10 @@ export default function EventDashboard() {
                     {/* Top row - Title and Edit button aligned */}
                     <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-4 lg:mb-6">
                       <div className="mb-4 lg:mb-0">
-                        <h2 className={style.font.grotesk.heavy +" text-2xl lg:text-3xl text-[var(--color-light-opacity100)] mb-2"}>
+                        <h2 className={`${style.font.grotesk.heavy} text-2xl lg:text-3xl mb-2`} style={{ color: style.colors.light.opacity100 }}>
                           Your Submission
                         </h2>
-                        <p className={style.font.mono.text+ " text-[var(--color-light-opacity60)] text-base lg:text-lg"}>
+                        <p className={`${style.font.mono.text} text-base lg:text-lg`} style={{ color: style.colors.light.opacity60 }}>
                           {submissionData.title}
                         </p>
                       </div>
@@ -143,23 +144,23 @@ export default function EventDashboard() {
                     </div>
 
                     {/* Combined card for deadlines - positioned at bottom */}
-                    <div className="bg-[var(--color-white-opacity10)] rounded-lg p-3 lg:p-4">
+                    <div className="rounded-lg p-3 lg:p-4" style={{ backgroundColor: style.colors.white.opacity10 }}>
                       {/* Upcoming Deadlines header */}
                       <div className="pb-2">
-                        <h3 className={style.font.grotesk.medium + " text-[var(--color-light-opacity100)] text-sm lg:text-base"}>
+                        <h3 className={`${style.font.grotesk.medium} text-sm lg:text-base`} style={{ color: style.colors.light.opacity100 }}>
                           Upcoming Deadlines
                         </h3>
                       </div>
                       
                       {/* White separator line */}
-                      <div className="border-t border-[var(--color-white-opacity20)] my-3"></div>
+                      <div className="my-3" style={{ borderTop: `1px solid ${style.colors.white.opacity20}` }}></div>
                       
                       {/* Draft Submission row */}
                       <div className="flex justify-between items-center pt-2">
-                        <span className={style.font.mono.text+ " text-[var(--color-light-opacity100)] text-sm lg:text-base"}>
+                        <span className={`${style.font.mono.text} text-sm lg:text-base`} style={{ color: style.colors.light.opacity100 }}>
                           Draft Submission
                         </span>
-                        <span className={style.font.mono.text+ " text-[var(--color-light-opacity60)] text-sm lg:text-base"}>
+                        <span className={`${style.font.mono.text} text-sm lg:text-base`} style={{ color: style.colors.light.opacity60 }}>
                           Today at 23:59
                         </span>
                       </div>
@@ -169,22 +170,22 @@ export default function EventDashboard() {
               </div>
 
               {/* Schedule Section - Fixed height with scrolling */}
-              <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity10)] rounded-xl p-4 lg:p-5 h-64 flex flex-col">
-                <h2 className={style.font.grotesk.heavy +" text-lg lg:text-xl text-[var(--color-light-opacity100)] mb-3 lg:mb-4 flex-shrink-0"}>
+              <div className={`${style.box.gray.bottom} p-4 lg:p-5 h-64 flex flex-col`}>
+                <h2 className={`${style.font.grotesk.heavy} text-lg lg:text-xl mb-3 lg:mb-4 flex-shrink-0`} style={{ color: style.colors.light.opacity100 }}>
                   Schedule
                 </h2>
                 <div className="space-y-2 lg:space-y-3 flex-1 overflow-y-auto">
                   {scheduleData.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between py-2 border-b border-[var(--color-white-opacity10)] last:border-b-0">
+                    <div key={index} className="flex items-center justify-between py-2 last:border-b-0" style={{ borderBottom: `1px solid ${style.colors.white.opacity10}` }}>
                       <div className="flex items-center space-x-2 lg:space-x-3">
-                        <span className={style.font.mono.text+ " text-[var(--color-light-opacity60)] text-xs font-medium"}>
+                        <span className={`${style.font.mono.text} text-xs font-medium`} style={{ color: style.colors.light.opacity60 }}>
                           {item.day}
                         </span>
-                        <span className={style.font.mono.text+ " text-[var(--color-light-opacity100)] font-medium text-xs lg:text-sm"}>
+                        <span className={`${style.font.mono.text} font-medium text-xs lg:text-sm`} style={{ color: style.colors.light.opacity100 }}>
                           {item.event}
                         </span>
                       </div>
-                      <span className={style.font.mono.text+ " text-[var(--color-light-opacity60)] text-xs"}>
+                      <span className={`${style.font.mono.text} text-xs`} style={{ color: style.colors.light.opacity60 }}>
                         {item.time}
                       </span>
                     </div>
@@ -195,23 +196,23 @@ export default function EventDashboard() {
 
             {/* Right Column - Announcements (constrained height to match left column) */}
             <div className="lg:col-span-3">
-              <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity10)] rounded-xl p-4 lg:p-5 flex flex-col max-h-[calc(16rem+20rem+1rem)]">
-                <h2 className={style.font.grotesk.heavy +" text-lg lg:text-xl text-[var(--color-light-opacity100)] mb-3 lg:mb-4 flex-shrink-0"}>
+              <div className={`${style.box.gray.bottom} p-4 lg:p-5 flex flex-col max-h-[calc(16rem+20rem+1rem)]`}>
+                <h2 className={`${style.font.grotesk.heavy} text-lg lg:text-xl mb-3 lg:mb-4 flex-shrink-0`} style={{ color: style.colors.light.opacity100 }}>
                   Announcements
                 </h2>
                 
                 <div className="space-y-3 flex-1 overflow-y-auto min-h-0">
                   {announcementsData.map((announcement) => (
-                    <div key={announcement.id} className="bg-[var(--color-white-opacity10)] rounded-lg p-3 flex-shrink-0">
+                    <div key={announcement.id} className="rounded-lg p-3 flex-shrink-0" style={{ backgroundColor: style.colors.white.opacity10 }}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className={style.font.mono.text+ " text-[var(--color-light-opacity100)] font-medium text-xs"}>
+                        <span className={`${style.font.mono.text} font-medium text-xs`} style={{ color: style.colors.light.opacity100 }}>
                           {announcement.author}
                         </span>
-                        <span className={style.font.mono.text+ " text-[var(--color-light-opacity60)] text-xs"}>
+                        <span className={`${style.font.mono.text} text-xs`} style={{ color: style.colors.light.opacity60 }}>
                           {announcement.time}
                         </span>
                       </div>
-                      <p className={style.font.mono.text+ " text-[var(--color-light-opacity60)] text-xs leading-relaxed"}>
+                      <p className={`${style.font.mono.text} text-xs leading-relaxed`} style={{ color: style.colors.light.opacity60 }}>
                         {announcement.content}
                       </p>
                     </div>
@@ -223,23 +224,23 @@ export default function EventDashboard() {
 
           {/* Ongoing Side Events - Dynamic sizing */}
           <div className="mb-4 lg:mb-6">
-            <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-primary-opacity40)] rounded-xl p-3 lg:p-4">
+            <div className={`${style.box.grayPrimary} p-3 lg:p-4`}>
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 lg:gap-0">
                 <div className="flex-1">
-                  <span className={style.font.mono.text+ " text-[var(--color-primary-opacity100)] font-medium text-sm"}>
+                  <span className={`${style.font.mono.text} font-medium text-sm`} style={{ color: style.colors.primary.opacity100 }}>
                     Ongoing Side Events
                   </span>
                   <div className="flex items-center space-x-4 mt-1">
                     {sideEventsData.map((event, index) => (
                       <div key={index} className="flex items-center space-x-2">
-                        <span className={style.font.mono.text+ " text-[var(--color-light-opacity60)] text-sm"}>
+                        <span className={`${style.font.mono.text} text-sm`} style={{ color: style.colors.light.opacity60 }}>
                           {event.name}
                         </span>
                       </div>
                     ))}
                   </div>
                 </div>
-                <span className={style.font.mono.text+ " text-[var(--color-primary-opacity60)] text-sm lg:text-right"}>
+                <span className={`${style.font.mono.text} text-sm lg:text-right`} style={{ color: style.colors.primary.opacity60 }}>
                   Stage Area
                 </span>
               </div>
@@ -248,7 +249,7 @@ export default function EventDashboard() {
 
           {/* Quick Actions - Responsive layout */}
           <div className="mb-4 lg:mb-6">
-            <h2 className={style.font.grotesk.heavy +" text-lg lg:text-xl text-[var(--color-light-opacity100)] mb-3 lg:mb-4"}>
+            <h2 className={`${style.font.grotesk.heavy} text-lg lg:text-xl mb-3 lg:mb-4`} style={{ color: style.colors.light.opacity100 }}>
               Quick Actions
             </h2>
             

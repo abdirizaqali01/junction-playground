@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import { MainButton } from "@/components/attachables/main-button"
+import { useLoading } from '@/components/loading-context'
 import * as style from '@/styles/design-system'
-import { initializeCSSVariables } from '@/styles/design-system'
 
 const userProfile = {
   name: 'Junction Hack',
@@ -17,15 +17,11 @@ const userProfile = {
 export default function TeamCandidatesPage() {
   const router = useRouter()
   const params = useParams()
+  const { setLoading } = useLoading()
   const eventId = params?.id as string
   
   const [activeTab, setActiveTab] = useState('candidates')
   const [hasApplications, setHasApplications] = useState(true) // Change to true to show applications
-
-  //-------------------------------- DESIGN SYSTEM ACTUATOR --------------------------------//
-  useEffect(() => {
-    initializeCSSVariables();
-  }, []);
 
   // Mock applications data
   const applications = Array(6).fill(null).map((_, index) => ({
@@ -36,6 +32,7 @@ export default function TeamCandidatesPage() {
   }))
 
   const handleBackToHome = () => {
+    setLoading('back-to-dashboard', true)
     router.push(`/events/${eventId}/dash`)
   }
 
@@ -43,27 +40,50 @@ export default function TeamCandidatesPage() {
     setActiveTab(tabId)
     switch(tabId) {
       case 'all-teams':
+        setLoading('tab-all-teams', true)
         router.push(`/events/${eventId}/teams`)
         break
       case 'my-team':
+        setLoading('tab-my-team', true)
         router.push(`/events/${eventId}/teams/my-team`)
         break
       case 'candidates':
+        setLoading('tab-candidates', true)
         router.push(`/events/${eventId}/teams/candidates`)
         break
     }
   }
 
+  const handleViewChallenges = () => {
+    setLoading('view-challenges', true)
+    router.push(`/events/${eventId}/challenges`)
+  }
+
   const handleAcceptApplication = (applicationId: number) => {
+    setLoading(`accept-${applicationId}`, true)
     console.log('Accept application:', applicationId)
+    // Simulate API call
+    setTimeout(() => {
+      setLoading(`accept-${applicationId}`, false)
+    }, 1000)
   }
 
   const handleDeclineApplication = (applicationId: number) => {
+    setLoading(`decline-${applicationId}`, true)
     console.log('Decline application:', applicationId)
+    // Simulate API call
+    setTimeout(() => {
+      setLoading(`decline-${applicationId}`, false)
+    }, 1000)
   }
 
   const handleViewFullApplication = (applicationId: number) => {
+    setLoading(`view-app-${applicationId}`, true)
     console.log('View full application:', applicationId)
+    // Simulate navigation or modal opening
+    setTimeout(() => {
+      setLoading(`view-app-${applicationId}`, false)
+    }, 800)
   }
 
   return (
@@ -107,7 +127,7 @@ export default function TeamCandidatesPage() {
             </div>
             
             <MainButton 
-              onClick={() => router.push(`/events/${eventId}/challenges`)}
+              onClick={handleViewChallenges}
               variant="outlineGray"
               size="sm"
               className="w-40 text-center justify-center"
@@ -123,11 +143,11 @@ export default function TeamCandidatesPage() {
               {applications.map((application) => (
                 <div
                   key={application.id}
-                  className="bg-[var(--color-white-opacity10)] rounded-xl overflow-hidden border border-[var(--color-white-opacity15)] w-full min-h-fit flex flex-col flex-shrink-0 p-8"
+                  className={`${style.box.gray.bottom} overflow-hidden w-full min-h-fit flex flex-col flex-shrink-0 p-8`}
                 >
                   {/* Profile Section */}
                   <div className="flex items-center gap-4 mb-12">
-                    <div className="w-16 h-16 bg-[var(--color-light-opacity40)] rounded-full flex items-center justify-center flex-shrink-0">
+                    <div className={`w-16 h-16 bg-[var(--color-light-opacity40)] ${style.border.radius.full} flex items-center justify-center flex-shrink-0`}>
                       <svg className="w-8 h-8 text-[var(--color-light-opacity60)]" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                         <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
@@ -152,7 +172,7 @@ export default function TeamCandidatesPage() {
                   {/* Applied For Section */}
                   <div className="mb-12 flex-1">
                     <p className={`${style.font.mono.text} text-[var(--color-light-opacity100)] text-base mb-6`}>Applied for</p>
-                    <span className={`${style.font.mono.text} px-6 py-3 bg-transparent border border-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] rounded-full text-sm`}>
+                    <span className={`${style.font.mono.text} px-6 py-3 bg-transparent border border-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] ${style.border.radius.full} text-sm`}>
                       {application.role}
                     </span>
                   </div>
@@ -163,7 +183,7 @@ export default function TeamCandidatesPage() {
                       onClick={() => handleAcceptApplication(application.id)}
                       variant="primary"
                       size="default"
-                      className="flex-1 rounded-full text-center justify-center"
+                      className={`flex-1 ${style.border.radius.full} text-center justify-center`}
                       showIcon={false}
                     >
                       Accept
@@ -172,7 +192,7 @@ export default function TeamCandidatesPage() {
                       onClick={() => handleDeclineApplication(application.id)}
                       variant="outlineGreen"
                       size="default"
-                      className="flex-1 rounded-full text-center justify-center"
+                      className={`flex-1 ${style.border.radius.full} text-center justify-center`}
                       showIcon={false}
                     >
                       Decline

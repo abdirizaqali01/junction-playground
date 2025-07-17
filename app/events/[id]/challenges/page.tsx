@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import { MainButton } from '@/components/attachables/main-button'
+import { useLoading } from '@/components/loading-context'
+import Loading from '@/components/loading'
 import * as style from '@/styles/design-system'
-import { initializeCSSVariables } from '@/styles/design-system'
 
 interface Challenge {
   challenge_id: number
@@ -38,91 +39,150 @@ const userProfile = {
 
 export default function ChallengesPage() {
   const router = useRouter()
+  const { setLoading } = useLoading()
   const [selectedFilter, setSelectedFilter] =
     useState<'Main Challenges' | 'Side Challenges'>('Main Challenges')
-  const [activeTrack, setActiveTrack] = useState('Artificial Intelligence')
+  const [activeTrack, setActiveTrack] = useState('')
   const [challenges, setChallenges] = useState<ChallengeWithDetails[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLocalLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // DESIGN-SYSTEM ACTUATOR
-  useEffect(() => initializeCSSVariables(), [])
+  // Track active section for navigation
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = document.querySelectorAll('[id^="track-"]')
+      let currentActive = ''
+      
+      sections.forEach((section) => {
+        const rect = section.getBoundingClientRect()
+        const sectionTop = rect.top
+        const sectionHeight = rect.height
+        
+        // Check if section is in viewport (considering header offset)
+        if (sectionTop <= 200 && sectionTop + sectionHeight > 200) {
+          const trackId = section.id.replace('track-', '').replace(/-/g, ' ')
+          // Convert back to proper case
+          currentActive = trackId.split(' ').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1)
+          ).join(' ')
+        }
+      })
+      
+      if (currentActive && currentActive !== activeTrack) {
+        setActiveTrack(currentActive)
+      }
+    }
 
-  const handleBackToHome = () => router.push('/')
+    if (selectedFilter === 'Main Challenges') {
+      window.addEventListener('scroll', handleScroll)
+      handleScroll() // Check initial position
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [selectedFilter, activeTrack])
+
+  const handleBackToHome = () => {
+    setLoading('back-to-home', true)
+    router.push('/')
+  }
 
   const handleChallengeClick = (ch: ChallengeWithDetails) => {
     if (ch.event?.event_id && ch.challenge_id) {
+      setLoading(`challenge-${ch.challenge_id}`, true)
       router.push(`/events/${ch.event.event_id}/challenges/${ch.challenge_id}`)
     } else {
       console.error('Missing event_id or challenge_id for navigation')
     }
   }
 
-  //DATA FETCHING 
+  //DATA FETCHING - OPTIMIZED FOR SPEED
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
-        setLoading(true)
+        setLocalLoading(true)
         setError(null)
 
-        const eventsResponse = await fetch('/api/proxy/events', {
+        // Start all API calls immediately in parallel
+        const eventsResponse = fetch('/api/proxy/events', {
           headers: { 'Content-Type': 'application/json' }
         })
-        if (!eventsResponse.ok)
-          throw new Error(`Failed to fetch events: ${eventsResponse.status}`)
 
-        const events = await eventsResponse.json()
-        const eventsArray = Array.isArray(events) ? events : [events]
+        const events = await eventsResponse
+        if (!events.ok) {
+          throw new Error(`Failed to fetch events: ${events.status}`)
+        }
 
-        const all: ChallengeWithDetails[] = []
+        const eventsData = await events.json()
+        const eventsArray = Array.isArray(eventsData) ? eventsData : [eventsData]
 
-        for (const event of eventsArray) {
+        // Fetch all challenges and organizations in parallel
+        const challengePromises = eventsArray.map(async (event) => {
           try {
-            const res = await fetch(
+            const challengesRes = await fetch(
               `/api/proxy/events/${event.event_id}/challenges`,
               { headers: { 'Content-Type': 'application/json' } }
             )
-            if (res.ok) {
-              const data = await res.json()
-              const arr = Array.isArray(data) ? data : [data]
-              all.push(
-                ...arr.map(ch => ({
-                  ...ch,
-                  event: { event_id: event.event_id, name: event.name }
-                }))
-              )
+            if (challengesRes.ok) {
+              const challengesData = await challengesRes.json()
+              const challengesArray = Array.isArray(challengesData) ? challengesData : [challengesData]
+              return challengesArray.map(ch => ({
+                ...ch,
+                event: { event_id: event.event_id, name: event.name }
+              }))
             }
+            return []
           } catch {
-            console.log(`No challenges for event ${event.event_id}`)
+            return []
           }
-        }
+        })
 
-        const withOrgs = await Promise.all(
-          all.map(async ch => {
-            if (ch.organization_id) {
-              try {
-                const orgRes = await fetch(
-                  `/api/proxy/organizations/${ch.organization_id}`,
-                  { headers: { 'Content-Type': 'application/json' } }
-                )
-                if (orgRes.ok) {
-                  const org = await orgRes.json()
-                  return { ...ch, organization: org }
-                }
-              } catch {
-                console.warn(`Failed to fetch org ${ch.organization_id}`)
-              }
+        // Wait for all challenge requests to complete
+        const allChallengeArrays = await Promise.all(challengePromises)
+        const allChallenges = allChallengeArrays.flat()
+
+        // Get unique organization IDs
+        const orgIds = [...new Set(allChallenges.map(ch => ch.organization_id).filter(Boolean))]
+        
+        // Fetch all organizations in parallel
+        const orgPromises = orgIds.map(async (orgId) => {
+          try {
+            const orgRes = await fetch(
+              `/api/proxy/organizations/${orgId}`,
+              { headers: { 'Content-Type': 'application/json' } }
+            )
+            if (orgRes.ok) {
+              const org = await orgRes.json()
+              return { id: orgId, data: org }
             }
-            return ch
-          })
-        )
+            return null
+          } catch {
+            return null
+          }
+        })
 
-        setChallenges(withOrgs)
+        const orgResults = await Promise.all(orgPromises)
+        const orgsMap = new Map()
+        orgResults.forEach(result => {
+          if (result) {
+            orgsMap.set(result.id, result.data)
+          }
+        })
+
+        // Attach organization data to challenges
+        const challengesWithOrgs = allChallenges.map(ch => ({
+          ...ch,
+          organization: ch.organization_id ? orgsMap.get(ch.organization_id) : undefined
+        }))
+
+        setChallenges(challengesWithOrgs)
       } catch (err) {
-        console.error(err)
+        console.error('API Error:', err)
         setError(err instanceof Error ? err.message : 'Failed to fetch challenges')
+        setChallenges([])
       } finally {
-        setLoading(false)
+        setLocalLoading(false)
       }
     }
 
@@ -130,9 +190,9 @@ export default function ChallengesPage() {
   }, [])
 
   // LOADING & ERROR STATES
-  if (loading)
+  if (loading) {
     return (
-      <div className="min-h-screen bg-black text-white flex">
+      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
         <Sidebar
           userProfile={userProfile}
           backToHomeLabel="Back To Home"
@@ -140,19 +200,15 @@ export default function ChallengesPage() {
           showImagePlaceholder
         />
         <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
-          <div className="flex justify-center items-center h-64">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400 mx-auto mb-4" />
-              <p className={`${style.font.mono.text} text-white/60`}>Loading challenges...</p>
-            </div>
-          </div>
+          <Loading message="Loading challenges..." />
         </div>
       </div>
     )
+  }
 
   if (error)
     return (
-      <div className="min-h-screen bg-black text-white flex">
+      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
         <Sidebar
           userProfile={userProfile}
           backToHomeLabel="Back To Home"
@@ -162,7 +218,7 @@ export default function ChallengesPage() {
         <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
-              <p className={`${style.font.mono.text} text-red-500 mb-4`}>
+              <p className={`${style.font.mono.text} text-[var(--color-alerts-opacity100)] mb-4`}>
                 Error loading challenges: {error}
               </p>
               <MainButton onClick={() => window.location.reload()} variant="primary">
@@ -188,7 +244,7 @@ export default function ChallengesPage() {
 
   // UI
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
       <Sidebar
         userProfile={userProfile}
         backToHomeLabel="Back To Home"
@@ -207,9 +263,11 @@ export default function ChallengesPage() {
                     .getElementById(`track-${track.replace(/\s+/g, '-').toLowerCase()}`)
                     ?.scrollIntoView({ behavior: 'smooth' })
                 }
-                className={`flex items-center justify-end text-xs transition-all duration-200 w-32 ${style.font.mono.text} ${
-                  activeTrack === track ? 'text-white font-medium' : 'text-white/40 hover:text-white/60'
-                }`}
+                className={`flex items-center justify-end text-xs ${style.perf.transition.smooth} w-32 ${style.font.mono.text}`}
+                style={{ 
+                  color: activeTrack === track ? style.colors.light.opacity100 : style.colors.light.opacity40,
+                  fontWeight: activeTrack === track ? '500' : '400'
+                }}
               >
                 <div className="text-right mr-2">
                   {track.split(' ').length > 1 ? (
@@ -231,8 +289,8 @@ export default function ChallengesPage() {
 
       {/* MAIN CONTENT*/}
       <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
-        <div className="bg-black border-b border-white/10 px-8 py-8">
-          <h1 className={`${style.font.grotesk.heavy} text-3xl text-white mb-8`}>Challenges</h1>
+        <div className="bg-[var(--color-dark-opacity100)] border-b border-[var(--color-white-opacity10)] px-8 py-8">
+          <h1 className={`${style.font.grotesk.heavy} text-3xl text-[var(--color-light-opacity100)] mb-8`}>Challenges</h1>
 
           {/* FILTER TABS */}
           <div className="flex gap-2">
@@ -242,11 +300,11 @@ export default function ChallengesPage() {
                 <button
                   key={filter}
                   onClick={() => setSelectedFilter(filter)}
-                  className={`${style.font.mono.text} text-sm rounded-lg px-5 py-2 border transition-all duration-150
+                  className={`${style.font.mono.text} text-sm ${style.border.radius.middle} px-5 py-2 border ${style.perf.transition.fast}
                     ${
                       active
-                        ? 'bg-white text-black border-transparent shadow'
-                        : 'bg-transparent text-white/60 border-white/15 hover:bg-white/5'
+                        ? 'bg-[var(--color-light-opacity100)] text-[var(--color-dark-opacity100)] border-transparent shadow'
+                        : 'bg-transparent text-[var(--color-light-opacity60)] border-[var(--color-white-opacity15)] hover:bg-[var(--color-white-opacity5)]'
                     }`}
                 >
                   {filter}
@@ -261,7 +319,7 @@ export default function ChallengesPage() {
           <div className="flex-1 p-8">
             {challenges.length === 0 ? (
               <div className="text-center py-12">
-                <p className={`${style.font.mono.text} text-white/60 text-lg`}>
+                <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-lg`}>
                   No challenges found.
                 </p>
               </div>
@@ -269,48 +327,48 @@ export default function ChallengesPage() {
               <div className="space-y-8">
                 {Object.entries(grouped).map(([track, list]) => (
                   <div key={track} id={`track-${track.replace(/\s+/g, '-').toLowerCase()}`}>
-                    <h2 className={`${style.font.grotesk.medium} text-green-400 text-lg mb-4`}>{track}</h2>
+                    <h2 className={`${style.font.grotesk.medium} text-[var(--color-primary-opacity100)] text-lg mb-4`}>{track}</h2>
                     <div className="space-y-3 mr-16">
                       {list.map(ch => (
                         <div
                           key={ch.challenge_id}
-                          className="bg-white/5 border border-white/10 rounded-xl overflow-hidden w-[95%] cursor-pointer hover:bg-white/10 transition-colors duration-200"
+                          className={`${style.border.radius.outer} overflow-hidden w-[95%] cursor-pointer bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] hover:bg-[var(--color-white-opacity10)] ${style.perf.transition.smooth}`}
                           onClick={() => handleChallengeClick(ch)}
                         >
                           <div className="p-6">
                             <div className="flex items-start gap-6">
-                              <div className="w-40 h-40 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-white font-bold text-3xl flex-shrink-0">
+                              <div className={`w-40 h-40 ${style.border.radius.outer} flex items-center justify-center text-[var(--color-light-opacity100)] text-3xl font-bold flex-shrink-0 bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)]`}>
                                 CO
                               </div>
                               <div className="flex-1 min-w-0 py-1">
-                                <div className={`${style.font.mono.text} text-xs text-white/60 mb-2`}>
+                                <div className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)] mb-2`}>
                                   {ch.organization?.name || 'General'}
                                 </div>
-                                <h3 className={`${style.font.grotesk.main} text-2xl text-white mb-3 leading-tight`}>
+                                <h3 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-3 leading-tight`}>
                                   {ch.name}
                                 </h3>
                                 <div className="flex items-center gap-3 mb-4">
-                                  <span className={`${style.font.mono.text} px-2 py-1 bg-black/50 rounded text-xs text-white/80`}>
+                                  <span className={`${style.font.mono.text} px-2 py-1 ${style.border.radius.inner} text-xs bg-[var(--color-dark-opacity50)] text-[var(--color-light-opacity80)]`}>
                                     AI
                                   </span>
-                                  <span className={`${style.font.mono.text} px-2 py-1 bg-black/50 rounded text-xs text-white/80`}>
+                                  <span className={`${style.font.mono.text} px-2 py-1 ${style.border.radius.inner} text-xs bg-[var(--color-dark-opacity50)] text-[var(--color-light-opacity80)]`}>
                                     Machine Learning
                                   </span>
-                                  <span className={`${style.font.mono.text} px-2 py-1 bg-black/50 rounded text-xs text-white/80`}>
+                                  <span className={`${style.font.mono.text} px-2 py-1 ${style.border.radius.inner} text-xs bg-[var(--color-dark-opacity50)] text-[var(--color-light-opacity80)]`}>
                                     Data Science
                                   </span>
                                 </div>
-                                <div className="w-full h-px bg-white/10 mb-4" />
+                                <div className="w-full h-px bg-[var(--color-white-opacity10)] mb-4" />
                                 <div className="pb-1">
                                   <div className="flex items-center gap-6 pb-1">
-                                    <span className={`${style.font.mono.text} text-xs font-medium text-white`}>
+                                    <span className={`${style.font.mono.text} text-xs font-medium text-[var(--color-light-opacity100)]`}>
                                       Prizes
                                     </span>
-                                    <span className={`${style.font.mono.text} text-xs text-white/60`}>TBD</span>
+                                    <span className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)]`}>TBD</span>
                                   </div>
                                   <div className="flex items-center gap-6 pb-1">
-                                    <span className={`${style.font.mono.text} text-xs font-medium text-white`}>Event</span>
-                                    <span className={`${style.font.mono.text} text-xs text-white/60`}>
+                                    <span className={`${style.font.mono.text} text-xs font-medium text-[var(--color-light-opacity100)]`}>Event</span>
+                                    <span className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)]`}>
                                       {ch.event?.name || 'Unknown Event'}
                                     </span>
                                   </div>
@@ -329,43 +387,43 @@ export default function ChallengesPage() {
                 {displayed.map(ch => (
                   <div
                     key={ch.challenge_id}
-                    className="bg-white/10 border border-white/10 rounded-xl overflow-hidden cursor-pointer hover:bg-white/20 transition-colors duration-200"
+                    className={`${style.border.radius.outer} overflow-hidden cursor-pointer bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity10)] hover:bg-[var(--color-white-opacity20)] ${style.perf.transition.smooth}`}
                     onClick={() => handleChallengeClick(ch)}
                   >
                     <div className="p-6 flex flex-col h-full">
                       <div className="flex items-start gap-4 mb-6">
-                        <div className="w-40 h-40 bg-transparent border border-white/10 rounded flex items-center justify-center text-white font-bold text-3xl flex-shrink-0">
+                        <div className={`w-40 h-40 ${style.border.radius.inner} flex items-center justify-center text-[var(--color-light-opacity100)] text-3xl font-bold flex-shrink-0 bg-transparent border border-[var(--color-white-opacity10)]`}>
                           CO
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className={`${style.font.mono.text} text-xs text-white/60 mb-1`}>
+                          <div className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)] mb-1`}>
                             {ch.organization?.name || 'General'}
                           </div>
-                          <h3 className={`${style.font.grotesk.medium} text-xl text-green-400 leading-tight mb-3`}>
+                          <h3 className={`${style.font.grotesk.medium} text-xl text-[var(--color-primary-opacity100)] leading-tight mb-3`}>
                             {ch.name}
                           </h3>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className={`${style.font.mono.text} px-2 py-1 bg-black/50 rounded text-xs text-white/80`}>
+                            <span className={`${style.font.mono.text} px-2 py-1 ${style.border.radius.inner} text-xs bg-[var(--color-dark-opacity50)] text-[var(--color-light-opacity80)]`}>
                               AI
                             </span>
-                            <span className={`${style.font.mono.text} px-2 py-1 bg-black/50 rounded text-xs text-white/80`}>
+                            <span className={`${style.font.mono.text} px-2 py-1 ${style.border.radius.inner} text-xs bg-[var(--color-dark-opacity50)] text-[var(--color-light-opacity80)]`}>
                               Machine Learning
                             </span>
-                            <span className={`${style.font.mono.text} px-2 py-1 bg-black/50 rounded text-xs text-white/80`}>
+                            <span className={`${style.font.mono.text} px-2 py-1 ${style.border.radius.inner} text-xs bg-[var(--color-dark-opacity50)] text-[var(--color-light-opacity80)]`}>
                               Data Science
                             </span>
                           </div>
                         </div>
                       </div>
                       <div className="flex-1" />
-                      <div className="pt-4 border-t border-white/10 space-y-2">
+                      <div className="pt-4 border-t border-[var(--color-white-opacity10)] space-y-2">
                         <div className="flex items-center gap-6 pb-1">
-                          <span className={`${style.font.mono.text} text-xs font-medium text-white`}>Prizes</span>
-                          <span className={`${style.font.mono.text} text-xs text-white/60`}>TBD</span>
+                          <span className={`${style.font.mono.text} text-xs font-medium text-[var(--color-light-opacity100)]`}>Prizes</span>
+                          <span className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)]`}>TBD</span>
                         </div>
                         <div className="flex items-center gap-6 pb-1">
-                          <span className={`${style.font.mono.text} text-xs font-medium text-white`}>Event</span>
-                          <span className={`${style.font.mono.text} text-xs text-white/60`}>
+                          <span className={`${style.font.mono.text} text-xs font-medium text-[var(--color-light-opacity100)]`}>Event</span>
+                          <span className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)]`}>
                             {ch.event?.name || 'Unknown Event'}
                           </span>
                         </div>

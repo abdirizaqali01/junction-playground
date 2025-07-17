@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import { useLoading } from '@/components/loading-context'
+import { LoadingButton, SidebarNavButton } from '@/components/loading-button'
 
 interface NavigationItem {
   id: string
@@ -10,11 +12,13 @@ interface NavigationItem {
   href: string
   isActive?: boolean
 }
+
 interface NavigationSection {
   id: string
   title: string
   items: NavigationItem[]
 }
+
 interface UserProfile {
   name: string
   email: string
@@ -22,16 +26,18 @@ interface UserProfile {
   initials: string
   avatarColor?: string
 }
+
 interface SidebarProps {
-  navigationSections?: NavigationSection[] // Made optional
-  userProfile?: UserProfile // Made optional
+  navigationSections?: NavigationSection[]
+  userProfile?: UserProfile
   backToHomeLabel?: string
   onBackToHome?: () => void
   className?: string
   showImagePlaceholder?: boolean
   imagePlaceholder?: React.ReactNode
-  eventId?: string // Add eventId prop to handle dynamic routing
+  eventId?: string
 }
+
 type SidebarState = 'expanded' | 'icons'
 
 const IconHome = (
@@ -39,23 +45,27 @@ const IconHome = (
     <path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-4.5a1 1 0 0 1-1-1v-5.5h-5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
   </svg>
 )
+
 const IconList = (
   <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/>
     <circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/>
   </svg>
 )
+
 const IconUsers = (
   <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
     <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
   </svg>
 )
+
 const IconLayers = (
   <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
     <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
   </svg>
 )
+
 const ChevronLeft = (
   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="15 18 9 12 15 6"/>
@@ -157,36 +167,41 @@ const defaultUserProfile: UserProfile = {
 }
 
 export default function Sidebar({
-  navigationSections = defaultNavigationSections, // Use default if not provided
-  userProfile = defaultUserProfile, // Use default if not provided
+  navigationSections = defaultNavigationSections,
+  userProfile = defaultUserProfile,
   backToHomeLabel = 'Back To dashboard',
   onBackToHome,
   className = '',
   showImagePlaceholder = true,
   imagePlaceholder,
-  eventId, // New prop for dynamic routing
+  eventId,
 }: SidebarProps) {
   const [sidebarState, setSidebarState] = useState<SidebarState>('expanded')
   const [showProfilePopup, setShowProfilePopup] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const pathname = usePathname()
+  const { setLoading, isLoading } = useLoading()
 
-  // Extract eventId from pathname if not provided as prop
-  const getEventId = () => {
+  const handleSidebarToggle = () => {
+    setSidebarState((s: SidebarState) => (s === 'expanded' ? 'icons' : 'expanded'))
+  }
+
+  // Get event ID from props or pathname
+  const getEventId = (): string | null => {
     if (eventId) return eventId
     
     // Extract from pathname like /events/[id]/dash
     const pathSegments = pathname.split('/')
-    const eventsIndex = pathSegments.findIndex(segment => segment === 'events')
+    const eventsIndex = pathSegments.findIndex((segment: string) => segment === 'events')
     if (eventsIndex !== -1 && pathSegments[eventsIndex + 1]) {
       return pathSegments[eventsIndex + 1]
     }
     return null
   }
 
-  // Map pathnames to navigation item IDs - FIXED VERSION
-  const getActiveItemId = () => {
+  // Map pathnames to navigation item IDs
+  const getActiveItemId = (): string => {
     const pathToIdMap: Record<string, string> = {
       '/dash': 'dashboard',
       '/challenges': 'challenges',
@@ -202,7 +217,7 @@ export default function Sidebar({
     
     // First check if the full pathname (after /events/[id]) matches
     const pathSegments = pathname.split('/')
-    const eventsIndex = pathSegments.findIndex(segment => segment === 'events')
+    const eventsIndex = pathSegments.findIndex((segment: string) => segment === 'events')
     
     if (eventsIndex !== -1) {
       // Get the path after /events/[id]
@@ -232,46 +247,21 @@ export default function Sidebar({
 
   // Update navigation sections to set active state dynamically
   const activeItemId = getActiveItemId()
-  const updatedNavigationSections = navigationSections.map(section => ({
+  const updatedNavigationSections = navigationSections.map((section: NavigationSection) => ({
     ...section,
-    items: section.items.map(item => ({
+    items: section.items.map((item: NavigationItem) => ({
       ...item,
-      isActive: item.id === activeItemId
+      isActive: item.id === activeItemId,
+      href: getEventId() ? `/events/${getEventId()}/${
+        item.id === 'dashboard' ? 'dash' :
+        item.id === 'project-submission' ? 'submissions' :
+        item.id === 'mentor-meetings' ? 'meetings' :
+        item.id === 'review-projects' ? 'reviews' :
+        item.id === 'finalist-voting' ? 'voting' :
+        item.id === 'team' ? 'teams' : item.id
+      }` : item.href
     }))
   }))
-
-  const handleSidebarToggle = () => {
-    setSidebarState(s => (s === 'expanded' ? 'icons' : 'expanded'))
-  }
-
-  const handleNavigation = (href: string, id: string) => {
-    const currentEventId = getEventId()
-    
-    if (!currentEventId) {
-      console.error('No event ID found for navigation')
-      return
-    }
-
-    // Map specific navigation items to their routes
-    const routeMap: Record<string, string> = {
-      dashboard: 'dash',
-      challenges: 'challenges',
-      team: 'teams',
-      hackerpack: 'hackerpack',
-      'project-submission': 'submissions',
-      'mentor-meetings': 'meetings',
-      'review-projects': 'reviews',
-      'finalist-voting': 'voting',
-    }
-
-    const route = routeMap[id.toLowerCase()]
-    if (route) {
-      router.push(`/events/${currentEventId}/${route}`)
-    } else {
-      // Fallback to original href if no mapping found
-      router.push(href)
-    }
-  }
 
   const handleProfileClick = () => {
     setShowProfilePopup(!showProfilePopup)
@@ -288,6 +278,8 @@ export default function Sidebar({
 
   const handleProfileMenuClick = (action: string) => {
     setShowProfilePopup(false)
+    setLoading(`profile-${action}`, true)
+    
     // Handle different profile menu actions
     switch (action) {
       case 'profile':
@@ -300,10 +292,12 @@ export default function Sidebar({
         router.push('/settings')
         break
       case 'language':
-        // Handle language settings
+        // Handle language settings - clear loading after delay since no navigation
+        setTimeout(() => setLoading(`profile-${action}`, false), 500)
         break
       case 'signout':
-        // Handle sign out
+        // Handle sign out - clear loading after delay since no navigation
+        setTimeout(() => setLoading(`profile-${action}`, false), 800)
         break
     }
   }
@@ -343,24 +337,28 @@ export default function Sidebar({
       {/* HEADER */}
       <div className="p-4 flex items-center justify-between">
         {sidebarState === 'expanded' && (
-          <button
+          <LoadingButton
             onClick={handleBackToHome}
+            loadingKey="sidebar-back-home"
+            variant="ghost"
+            size="sm"
             className="flex items-center gap-2 bg-white/10 hover:bg-white/20 rounded px-3 py-1
-                       text-white/40 hover:text-white/60 text-sm font-medium"
+                       text-white/40 hover:text-white/60 text-sm font-medium transition-all duration-200
+                       active:bg-white/5 border-0"
+            icon={ChevronLeft}
           >
-            {ChevronLeft}
             {backToHomeLabel}
-          </button>
+          </LoadingButton>
         )}
 
         <button 
           onClick={handleSidebarToggle} 
-          className={`text-white/90 hover:text-white transition-colors ${
+          className={`text-white/90 hover:text-white transition-all duration-200 active:scale-95 p-2 rounded-lg hover:bg-white/10 ${
             sidebarState === 'icons' ? 'mx-auto' : 'ml-auto'
           }`} 
           title="Toggle sidebar"
         >
-          <div className="w-[15px] h-[15px] flex items-center justify-center">
+          <div className="w-4 h-4 flex items-center justify-center">
             {IconCollapse}
           </div>
         </button>
@@ -373,31 +371,36 @@ export default function Sidebar({
 
       {/* Navigation */}
       <nav className="flex-1 px-4 overflow-y-auto">
-        {updatedNavigationSections.map(section => (
+        {updatedNavigationSections.map((section: NavigationSection) => (
           <div key={section.id} className="mb-6">
             {sidebarState === 'expanded' && (
-              <div className="pl-[19px] text-xs font-semibold text-white/60 mb-3">
+              <div className="pl-[19px] text-xs font-semibold text-white/60 mb-3 uppercase tracking-wider">
                 {section.title}
               </div>
             )}
 
-            {section.items.map(item => (
-              <button
-                key={item.id}
-                onClick={() => handleNavigation(item.href, item.id)}
-                className={`w-full flex items-center px-3 py-2 text-sm rounded-[6px] mb-1 transition-colors text-left
-                  ${item.isActive ? 'text-white/85 bg-white/15'
-                                  : 'text-white/75 hover:text-white hover:bg-white/10'}`}
-                title={item.label}
-              >
-                <div className="w-[15px] h-[15px] mr-3 flex-shrink-0">{item.icon}</div>
-                {sidebarState === 'expanded' && (
-                  <span className="font-medium">
-                    {item.label}
-                  </span>
-                )}
-              </button>
-            ))}
+            <div className="space-y-1">
+              {section.items.map((item: NavigationItem) => (
+                <SidebarNavButton
+                  key={item.id}
+                  href={item.href}
+                  isActive={item.isActive}
+                  icon={<div className="w-[15px] h-[15px] flex items-center justify-center">{item.icon}</div>}
+                  loadingKey={`sidebar-${item.id}`}
+                  sidebarExpanded={sidebarState === 'expanded'}
+                  className={`
+                    w-full flex items-center px-3 py-2 text-sm rounded-[6px] transition-all duration-200 text-left
+                    ${item.isActive 
+                      ? 'text-white/85 bg-white/15' 
+                      : 'text-white/75 hover:text-white hover:bg-white/10'
+                    }
+                    font-medium border-0 justify-start gap-3
+                  `}
+                >
+                  {item.label}
+                </SidebarNavButton>
+              ))}
+            </div>
           </div>
         ))}
       </nav>
@@ -409,14 +412,15 @@ export default function Sidebar({
             <div className="bg-white/5 border border-white/5 rounded-lg p-1">
               <button 
                 onClick={handleProfileClick}
-                className="w-full flex items-center hover:bg-white/5 rounded-lg p-2 transition-colors"
+                className="w-full flex items-center hover:bg-white/5 rounded-lg p-2 transition-all duration-200
+                           active:scale-95"
               >
                 <div 
                   className={`w-12 h-12 ${userProfile.avatarColor || 'bg-green-600'} rounded-lg flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}
                 >
                   {userProfile.avatar || userProfile.initials}
                 </div>
-                <div className="ml-3 min-w-0 flex-1">
+                <div className="ml-3 min-w-0 flex-1 text-left">
                   <div className="text-sm font-medium text-white truncate">
                     {userProfile.name}
                   </div>
@@ -429,7 +433,8 @@ export default function Sidebar({
           ) : (
             <button 
               onClick={handleProfileClick}
-              className="w-full flex items-center justify-center px-3 py-2 text-sm rounded-[6px] transition-colors text-white/75 hover:text-white hover:bg-white/10"
+              className="w-full flex items-center justify-center px-3 py-2 text-sm rounded-[6px] transition-all duration-200
+                         text-white/75 hover:text-white hover:bg-white/10 active:scale-95"
               title={userProfile.name}
             >
               <div 
@@ -443,39 +448,59 @@ export default function Sidebar({
 
         {/* Profile Popup */}
         {showProfilePopup && sidebarState === 'expanded' && (
-          <div className="absolute bottom-full left-4 right-4 mb-2 bg-[#2a2a2a] border border-white/50 rounded-lg shadow-xl overflow-hidden z-50">
+          <div className="absolute bottom-full left-4 right-4 mb-2 bg-[#2a2a2a] border border-white/50 rounded-lg shadow-2xl overflow-hidden z-50">
             <div className="py-2">
-              <button
+              <LoadingButton
                 onClick={() => handleProfileMenuClick('profile')}
-                className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                loadingKey="profile-profile"
+                variant="ghost"
+                size="sm"
+                className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
+                           transition-all duration-200 justify-start border-0 rounded-none"
               >
                 Profile
-              </button>
-              <button
+              </LoadingButton>
+              <LoadingButton
                 onClick={() => handleProfileMenuClick('events')}
-                className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                loadingKey="profile-events"
+                variant="ghost"
+                size="sm"
+                className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
+                           transition-all duration-200 justify-start border-0 rounded-none"
               >
                 Organize Events
-              </button>
-              <button
+              </LoadingButton>
+              <LoadingButton
                 onClick={() => handleProfileMenuClick('settings')}
-                className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                loadingKey="profile-settings"
+                variant="ghost"
+                size="sm"
+                className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
+                           transition-all duration-200 justify-start border-0 rounded-none"
               >
                 Settings
-              </button>
-              <button
+              </LoadingButton>
+              <LoadingButton
                 onClick={() => handleProfileMenuClick('language')}
-                className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                loadingKey="profile-language"
+                variant="ghost"
+                size="sm"
+                className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
+                           transition-all duration-200 justify-start border-0 rounded-none"
               >
                 Language
-              </button>
+              </LoadingButton>
               <div className="border-t border-white/10 my-1"></div>
-              <button
+              <LoadingButton
                 onClick={() => handleProfileMenuClick('signout')}
-                className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+                loadingKey="profile-signout"
+                variant="ghost"
+                size="sm"
+                className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 
+                           transition-all duration-200 justify-start border-0 rounded-none"
               >
                 Sign Out
-              </button>
+              </LoadingButton>
             </div>
           </div>
         )}

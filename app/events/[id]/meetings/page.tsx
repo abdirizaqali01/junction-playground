@@ -4,14 +4,10 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import { MainButton } from '@/components/attachables/main-button'
+import { useLoading } from '@/components/loading-context'
+import Loading from '@/components/loading'
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
-import { 
-  initializeCSSVariables, 
-  colors, 
-  font, 
-  box, 
-  border 
-} from '@/styles/design-system'
+import * as style from '@/styles/design-system'
 
 // Types for better TypeScript support
 interface Challenge {
@@ -34,21 +30,17 @@ export default function MentorMeetingsPage() {
   const [selectedMentor, setSelectedMentor] = useState('Mentor 1')
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('0-0')
   const [challenges, setChallenges] = useState<Challenge[]>([])
-  const [loading, setLoading] = useState(true)
+  const [localLoading, setLocalLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const params = useParams()
-
-  // Initialize design system variables
-  useEffect(() => {
-    initializeCSSVariables();
-  }, []);
+  const { setLoading } = useLoading()
 
   // Fetch challenges from API
   useEffect(() => {
     const fetchChallenges = async () => {
       try {
-        setLoading(true)
+        setLocalLoading(true)
         setError(null)
         
         // Get eventId from URL parameters
@@ -76,7 +68,7 @@ export default function MentorMeetingsPage() {
         // Fallback to empty array
         setChallenges([])
       } finally {
-        setLoading(false)
+        setLocalLoading(false)
       }
     }
 
@@ -84,6 +76,7 @@ export default function MentorMeetingsPage() {
   }, [params?.id])
 
   const handleBackToHome = () => {
+    setLoading('back-to-home', true)
     router.push('/dash')
   }
 
@@ -108,7 +101,36 @@ export default function MentorMeetingsPage() {
   }
 
   const handleMoreTimeSlots = () => {
+    setLoading('more-time-slots', true)
     console.log('Show more time slots')
+    
+    // Simulate API call
+    setTimeout(() => {
+      setLoading('more-time-slots', false)
+    }, 1000)
+  }
+
+  const handleBookMeeting = () => {
+    setLoading('book-meeting', true)
+    
+    // Handle booking logic here
+    const selectedChallengeData = challenges?.find((c: Challenge) => 
+      getChallengeValue(c) === selectedChallenge
+    )
+    
+    console.log('Booking meeting:', {
+      challenge: selectedChallenge,
+      challengeData: selectedChallengeData,
+      mentor: selectedMentor,
+      timeSlot: selectedTimeSlot,
+      eventId: params?.id
+    })
+    
+    // Simulate API call
+    setTimeout(() => {
+      setLoading('book-meeting', false)
+      alert('Meeting booked successfully!')
+    }, 1500)
   }
 
   // Helper function to get challenge name
@@ -121,6 +143,22 @@ export default function MentorMeetingsPage() {
   const getChallengeValue = (challenge: Challenge): string => {
     if (typeof challenge === 'string') return challenge
     return String(challenge.challenge_id || challenge.id || challenge.name || challenge.title || '')
+  }
+
+  if (localLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
+        <Sidebar
+          userProfile={userProfile}
+          backToHomeLabel="Back To Home"
+          onBackToHome={handleBackToHome}
+          showImagePlaceholder={true}
+        />
+        <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
+          <Loading message="Loading mentor meetings..." />
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -138,17 +176,17 @@ export default function MentorMeetingsPage() {
         <div className="flex-1 p-6 pt-[4%] max-w-3xl mx-auto w-full">
           {/* Page Title and Description */}
           <div className="mb-8 text-center mt-16">
-            <h1 className={`text-4xl ${font.grotesk.heavy} text-[var(--color-light-opacity100)] mb-4`}>
+            <h1 className={`text-4xl ${style.font.grotesk.heavy} text-[var(--color-light-opacity100)] mb-4`}>
               Meetings
             </h1>
-            <p className={`text-[var(--color-light-opacity60)] text-base ${font.grotesk.light}`}>
+            <p className={`text-[var(--color-light-opacity60)] text-base ${style.font.grotesk.light}`}>
               Book a meeting with partners to learn more about their challenge
             </p>
           </div>
 
           {/* Error Display */}
           {error && (
-            <div className="mb-4 p-3 bg-[var(--color-alerts-opacity10)] border border-[var(--color-alerts-opacity40)] rounded-[10px] text-[var(--color-alerts-opacity100)] text-sm">
+            <div className={`mb-4 p-3 bg-[var(--color-alerts-opacity10)] border border-[var(--color-alerts-opacity40)] ${style.border.radius.outer} text-[var(--color-alerts-opacity100)] text-sm`}>
               Error loading challenges: {error}
             </div>
           )}
@@ -160,11 +198,11 @@ export default function MentorMeetingsPage() {
               <select
                 value={selectedChallenge}
                 onChange={(e) => setSelectedChallenge(e.target.value)}
-                disabled={loading || !challenges?.length}
-                className={`w-full ${box.gray.bottom} px-4 py-3 text-[var(--color-light-opacity100)] text-base appearance-none cursor-pointer focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${font.mono.text}`}
+                disabled={localLoading || !challenges?.length}
+                className={`w-full ${style.box.gray.bottom} px-4 py-3 text-[var(--color-light-opacity100)] text-base appearance-none cursor-pointer focus:outline-none focus:border-[var(--color-primary-opacity100)] ${style.perf.transition.fast} disabled:opacity-50 disabled:cursor-not-allowed ${style.font.mono.text}`}
               >
                 <option value="">
-                  {loading ? 'Loading challenges...' : 
+                  {localLoading ? 'Loading challenges...' : 
                    !challenges?.length ? 'No challenges available' : 
                    'Select a challenge'}
                 </option>
@@ -174,7 +212,7 @@ export default function MentorMeetingsPage() {
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-light-opacity40)] pointer-events-none" />
+              <ChevronDown className={`absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-light-opacity40)] pointer-events-none ${style.perf.transition.fast}`} />
             </div>
 
             {/* Mentor Dropdown */}
@@ -182,7 +220,7 @@ export default function MentorMeetingsPage() {
               <select
                 value={selectedMentor}
                 onChange={(e) => setSelectedMentor(e.target.value)}
-                className={`w-full ${box.gray.bottom} px-4 py-3 text-[var(--color-light-opacity100)] text-base appearance-none cursor-pointer focus:outline-none focus:border-[var(--color-primary-opacity100)] transition-colors ${font.mono.text}`}
+                className={`w-full ${style.box.gray.bottom} px-4 py-3 text-[var(--color-light-opacity100)] text-base appearance-none cursor-pointer focus:outline-none focus:border-[var(--color-primary-opacity100)] ${style.perf.transition.fast} ${style.font.mono.text}`}
               >
                 <option value="">Mentor</option>
                 {mentors.map((mentor, index) => (
@@ -191,7 +229,7 @@ export default function MentorMeetingsPage() {
                   </option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-light-opacity40)] pointer-events-none" />
+              <ChevronDown className={`absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-light-opacity40)] pointer-events-none ${style.perf.transition.fast}`} />
             </div>
           </div>
 
@@ -199,12 +237,12 @@ export default function MentorMeetingsPage() {
           {selectedMentor && (
             <div className="mb-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className={`text-xl ${font.grotesk.main} text-[var(--color-light-opacity100)]`}>
+                <h2 className={`text-xl ${style.font.grotesk.main} text-[var(--color-light-opacity100)]`}>
                   Available times
                 </h2>
                 <button 
                   onClick={handleMoreTimeSlots}
-                  className={`text-[var(--color-primary-opacity100)] text-sm hover:text-[var(--color-primary-opacity60)] transition-colors flex items-center ${font.grotesk.medium}`}
+                  className={`text-[var(--color-primary-opacity100)] text-sm hover:text-[var(--color-primary-opacity60)] ${style.perf.transition.fast} flex items-center ${style.font.grotesk.medium}`}
                 >
                   More time slots
                   <ChevronLeft className="w-4 h-4 ml-2" />
@@ -213,11 +251,11 @@ export default function MentorMeetingsPage() {
               </div>
 
               {/* Time Slots Grid */}
-              <div className={`${box.gray.bottom} p-6`}>
+              <div className={`${style.box.gray.bottom} p-6`}>
                 <div className="grid grid-cols-4 gap-6">
                   {days.map((day, dayIndex) => (
                     <div key={dayIndex} className="space-y-3">
-                      <h3 className={`text-[var(--color-light-opacity100)] ${font.grotesk.main} text-center text-base`}>
+                      <h3 className={`text-[var(--color-light-opacity100)] ${style.font.grotesk.main} text-center text-base`}>
                         {day.name}
                       </h3>
                       <div className="space-y-2">
@@ -225,9 +263,9 @@ export default function MentorMeetingsPage() {
                           <button
                             key={slotIndex}
                             onClick={() => handleTimeSlotClick(dayIndex, slotIndex)}
-                            className={`w-full py-2 px-3 ${border.radius.middle} text-xs ${font.mono.text} transition-all duration-200 ${
+                            className={`w-full py-2 px-3 ${style.border.radius.middle} text-xs ${style.font.mono.text} ${style.perf.transition.fast} ${
                               selectedTimeSlot === `${dayIndex}-${slotIndex}`
-                                ? `${box.gray.middle} text-[var(--color-light-opacity100)] border-[var(--color-light-opacity50)]`
+                                ? `${style.box.gray.middle} text-[var(--color-light-opacity100)] border-[var(--color-light-opacity50)]`
                                 : 'bg-transparent text-[var(--color-light-opacity60)] hover:bg-[var(--color-white-opacity10)] border border-transparent'
                             }`}
                           >
@@ -246,20 +284,8 @@ export default function MentorMeetingsPage() {
                   <MainButton
                     variant="primary"
                     size="lg"
-                    onClick={() => {
-                      // Handle booking logic here
-                      const selectedChallengeData = challenges?.find((c: Challenge) => 
-                        getChallengeValue(c) === selectedChallenge
-                      )
-                      
-                      console.log('Booking meeting:', {
-                        challenge: selectedChallenge,
-                        challengeData: selectedChallengeData,
-                        mentor: selectedMentor,
-                        timeSlot: selectedTimeSlot,
-                        eventId: params?.id
-                      })
-                    }}
+                    onClick={handleBookMeeting}
+                    className={`${style.perf.transition.fast} transform hover:scale-105`}
                   >
                     Book Meeting
                   </MainButton>

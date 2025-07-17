@@ -1,11 +1,11 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 import Sidebar from '@/components/sidebar'
 import { MainButton } from "@/components/attachables/main-button"
+import { useLoading } from '@/components/loading-context'
+import Loading from '@/components/loading'
 import * as style from '@/styles/design-system'
-import { initializeCSSVariables } from '@/styles/design-system'
 import { useChallengeWithDetails } from '@/app/hooks/useApi'
 
 interface Challenge {
@@ -36,26 +36,46 @@ interface ChallengeData {
   }
 }
 
+const userProfile = {
+  name: 'Junction Hack',
+  email: 'ju@hackjunction.com',
+  initials: 'JU',
+  avatarColor: 'bg-green-600'
+}
+
 export default function ChallengeDetailPage({ params }: { params: { id: string; challengeId: string } }) {
   const router = useRouter()
+  const { setLoading } = useLoading()
   const { data: challengeData, loading, error } = useChallengeWithDetails(params.challengeId)
 
-  //-------------------------------- DESIGN SYSTEM ACTUATOR --------------------------------//
-  useEffect(() => {
-    initializeCSSVariables();
-  }, []);
+  const handleBackToChallenges = () => {
+    // Use the event ID from params to maintain correct route structure
+    setLoading('back-to-challenges', true)
+    router.push(`/events/${params.id}/challenges`)
+  }
+
+  const handleBackToHome = () => {
+    setLoading('back-to-home', true)
+    router.push('/dash')
+  }
+
+  const handleApplyToChallenge = () => {
+    setLoading('apply-challenge', true)
+    // Add your application logic here
+    console.log('Applying to challenge:', challengeData?.challenge.name)
+  }
 
   if (loading) {
     return (
       <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
-        <Sidebar />
+        <Sidebar
+          userProfile={userProfile}
+          backToHomeLabel="Back To Home"
+          onBackToHome={handleBackToHome}
+          showImagePlaceholder={true}
+        />
         <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 pt-[3%] ml-[250px]">
-          <div className="flex justify-center items-center h-64">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary-opacity100)] mx-auto mb-4"></div>
-              <p className={style.font.mono.text + " text-[var(--color-light-opacity60)]"}>Loading challenge...</p>
-            </div>
-          </div>
+          <Loading message="Loading challenge..." />
         </div>
       </div>
     )
@@ -64,11 +84,16 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
   if (error || !challengeData) {
     return (
       <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
-        <Sidebar />
+        <Sidebar
+          userProfile={userProfile}
+          backToHomeLabel="Back To Home"
+          onBackToHome={handleBackToHome}
+          showImagePlaceholder={true}
+        />
         <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 pt-[3%] ml-[250px]">
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
-              <p className={style.font.mono.text + " text-[var(--color-alerts-opacity100)] mb-4"}>
+              <p className={`${style.font.mono.text} text-[var(--color-alerts-opacity100)] mb-4`}>
                 Error loading challenge: {error || 'Challenge not found'}
               </p>
               <MainButton 
@@ -85,16 +110,16 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
     )
   }
 
-  const handleBackToChallenges = () => {
-    // Use the event ID from params to maintain correct route structure
-    router.push(`/events/${params.id}/challenges`)
-  }
-
   const { challenge, organization, event } = challengeData as ChallengeData
 
   return (
     <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
-      <Sidebar />
+      <Sidebar
+        userProfile={userProfile}
+        backToHomeLabel="Back To Home"
+        onBackToHome={handleBackToHome}
+        showImagePlaceholder={true}
+      />
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 pt-[3%] ml-[250px]">
@@ -116,17 +141,17 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
 
         {/* Hero Banner Card with Rounded Corners */}
         <div className="px-8 pt-6">
-          <div className="relative h-64 bg-gradient-to-r from-[var(--color-secondary-opacity100)] via-[var(--color-primary-opacity100)] to-[var(--color-primary-opacity60)] flex items-end overflow-hidden rounded-xl">
+          <div className={`relative h-64 bg-gradient-to-r from-[var(--color-secondary-opacity100)] via-[var(--color-primary-opacity100)] to-[var(--color-primary-opacity60)] flex items-end overflow-hidden ${style.border.radius.outer}`}>
             {/* Blurred Background */}
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-secondary-opacity100)] via-[var(--color-primary-opacity100)] to-[var(--color-primary-opacity60)] filter blur-sm"></div>
             <div className="absolute inset-0 bg-[var(--color-dark-opacity40)]"></div>
             
             {/* Text Content - Bottom Left */}
             <div className="relative z-10 p-6 pb-6">
-              <div className={style.font.mono.text + " text-sm text-[var(--color-light-opacity100)] mb-2"}>
+              <div className={`${style.font.mono.text} text-sm text-[var(--color-light-opacity100)] mb-2`}>
                 {organization.name}
               </div>
-              <h1 className={style.font.grotesk.heavy + " text-3xl text-[var(--color-light-opacity100)]"}>
+              <h1 className={`${style.font.grotesk.heavy} text-3xl text-[var(--color-light-opacity100)]`}>
                 {challenge.name}
               </h1>
             </div>
@@ -139,12 +164,12 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
               {/* The Challenge Section */}
-              <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity15)] rounded-xl p-8">
-                <h2 className={style.font.grotesk.main + " text-2xl text-[var(--color-light-opacity100)] mb-6"}>
+              <div className={`${style.box.gray.bottom} p-8`}>
+                <h2 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-6`}>
                   The Challenge
                 </h2>
                 
-                <div className={style.font.mono.text + " space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed"}>
+                <div className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
                   <p>
                     {challenge.description || 'No description available for this challenge.'}
                   </p>
@@ -152,12 +177,12 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
               </div>
 
               {/* Insight */}
-              <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity15)] rounded-xl p-8">
-                <h2 className={style.font.grotesk.main + " text-2xl text-[var(--color-light-opacity100)] mb-6"}>
+              <div className={`${style.box.gray.bottom} p-8`}>
+                <h2 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-6`}>
                   Insight
                 </h2>
                 
-                <div className={style.font.mono.text + " space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed"}>
+                <div className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
                   <p>
                     <span>TBD</span>
                   </p>
@@ -170,12 +195,12 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
               </div>
 
               {/* What We'll Bring */}
-              <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity15)] rounded-xl p-8">
-                <h2 className={style.font.grotesk.main + " text-2xl text-[var(--color-light-opacity100)] mb-6"}>
+              <div className={`${style.box.gray.bottom} p-8`}>
+                <h2 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-6`}>
                   What We'll Bring
                 </h2>
                 
-                <div className={style.font.mono.text + " space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed"}>
+                <div className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
                   <p>
                     <span>TBD</span>
                   </p>
@@ -191,12 +216,12 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Organization Info Card */}
-              <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity15)] rounded-xl p-6">
-                <h3 className={style.font.grotesk.main + " text-xl text-[var(--color-light-opacity100)] mb-4"}>
+              <div className={`${style.box.gray.bottom} p-6`}>
+                <h3 className={`${style.font.grotesk.main} text-xl text-[var(--color-light-opacity100)] mb-4`}>
                   {organization.name}
                 </h3>
                 
-                <div className={style.font.mono.text + " text-sm text-[var(--color-light-opacity60)] leading-relaxed"}>
+                <div className={`${style.font.mono.text} text-sm text-[var(--color-light-opacity60)] leading-relaxed`}>
                   {organization.description ? (
                     <p className="mb-4">{organization.description}</p>
                   ) : (
@@ -212,7 +237,7 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
                         href={organization.website_url} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="text-[var(--color-primary-opacity100)] hover:text-[var(--color-primary-opacity60)] transition-colors"
+                        className={`text-[var(--color-primary-opacity100)] hover:text-[var(--color-primary-opacity60)] ${style.perf.transition.fast}`}
                       >
                         Visit Website →
                       </a>
@@ -222,14 +247,14 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
               </div>
 
               {/* Ongoing Criteria */}
-              <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity15)] rounded-xl p-6">
-                <h3 className={style.font.grotesk.main + " text-xl text-[var(--color-light-opacity100)] mb-4"}>
+              <div className={`${style.box.gray.bottom} p-6`}>
+                <h3 className={`${style.font.grotesk.main} text-xl text-[var(--color-light-opacity100)] mb-4`}>
                   Ongoing Criteria
                 </h3>
                 
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className={style.font.mono.text + " space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed"}>
+                    <span className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
                       TBD
                     </span>
                   </div>
@@ -237,12 +262,12 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
               </div>
 
               {/* Prizes */}
-              <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity15)] rounded-xl p-6">
-                <h3 className={style.font.grotesk.main + "  text-xl text-[var(--color-light-opacity100)] mb-4"}>
+              <div className={`${style.box.gray.bottom} p-6`}>
+                <h3 className={`${style.font.grotesk.main} text-xl text-[var(--color-light-opacity100)] mb-4`}>
                   Prizes
                 </h3>
                 <div className="flex justify-between">
-                  <span className={style.font.mono.text + " space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed"}>
+                  <span className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
                     TBD
                   </span>
                 </div>
@@ -254,6 +279,7 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
                   variant="primary"
                   size="lg"
                   className="w-full"
+                  onClick={handleApplyToChallenge}
                 >
                   Apply to Challenge
                 </MainButton>

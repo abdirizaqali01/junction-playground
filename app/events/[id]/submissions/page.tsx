@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import { MainButton } from '@/components/attachables/main-button'
+import { useLoading } from '@/components/loading-context'
 import { Upload, Play, ChevronDown, Check, X, Eye } from 'lucide-react'
-import { initializeCSSVariables } from '@/styles/design-system'
+import * as style from '@/styles/design-system'
 
 const userProfile = {
   name: 'Junction Hack',
@@ -24,12 +25,12 @@ const SubmitModal = ({ isOpen, onClose, onConfirm }: {
 
   return (
     <div className="fixed inset-0 bg-[var(--color-dark-opacity80)] flex items-center justify-center z-50 transition-all duration-300">
-      <div className="bg-[var(--color-dark-opacity100)] border-2 border-[var(--color-light-opacity20)] rounded-[10px] p-6 max-w-md w-full mx-4 transform transition-all duration-300 scale-100 opacity-100">
+      <div className={`${style.box.gray.bottom} p-6 max-w-md w-full mx-4 transform transition-all duration-300 scale-100 opacity-100`}>
         <div className="text-center mb-4">
-          <h3 className="text-lg font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-3">
+          <h3 className={`${style.font.grotesk.main} text-lg text-[var(--color-light-opacity100)] mb-3`}>
             Final Submit your project?
           </h3>
-          <p className="text-[var(--color-light-opacity60)] leading-relaxed font-space-grotesk font-[300] text-sm">
+          <p className={`${style.font.grotesk.light} text-[var(--color-light-opacity60)] leading-relaxed text-sm`}>
             You won't be able to undo this, a final submission will be the final submission. If you'd like to keep editing, press cancel. Otherwise, SUBMIT!
           </p>
         </div>
@@ -90,7 +91,7 @@ const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }: {
 
   return (
     <div 
-      className={`transition-all duration-500 ease-out transform ${
+      className={`${style.perf.transition.slow} transform ${
         animationPhase === 'removing' && isCompleted
           ? 'opacity-0 scale-95 max-h-0 mb-0 overflow-hidden pointer-events-none' 
           : animationPhase === 'returning'
@@ -103,7 +104,7 @@ const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }: {
         }
       }}
     >
-      <div className={`border rounded-[5px] p-3 transition-all duration-500 ease-out ${
+      <div className={`${style.border.solid} ${style.border.radius.middle} p-3 ${style.perf.transition.slow} ${
         animationPhase === 'filling' || (animationPhase === 'removing' && isCompleted)
           ? 'border-[var(--color-primary-opacity100)] bg-[var(--color-primary-opacity30)]' 
           : animationPhase === 'returning' || animationPhase === 'idle'
@@ -112,16 +113,16 @@ const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }: {
       }`}>
         <div className="mb-2">
           <div className="flex items-center space-x-2">
-            <div className={`w-4 h-4 rounded-[3px] border flex items-center justify-center transition-all duration-500 ease-out ${
+            <div className={`w-4 h-4 ${style.border.radius.inner} border flex items-center justify-center ${style.perf.transition.slow} ${
               animationPhase === 'filling' || (animationPhase === 'removing' && isCompleted)
                 ? 'bg-[var(--color-primary-opacity100)] border-[var(--color-primary-opacity100)] transform scale-110' 
                 : 'border-[var(--color-light-opacity40)] scale-100'
             }`}>
               {(animationPhase === 'filling' || (animationPhase === 'removing' && isCompleted)) && (
-                <Check className="w-3 h-3 text-[var(--color-light-opacity100)] transition-all duration-300 ease-out" />
+                <Check className={`w-3 h-3 text-[var(--color-light-opacity100)] ${style.perf.transition.fast}`} />
               )}
             </div>
-            <h4 className={`font-space-grotesk font-[500] text-sm transition-all duration-500 ease-out ${
+            <h4 className={`${style.font.grotesk.medium} text-sm ${style.perf.transition.slow} ${
               animationPhase === 'filling' || (animationPhase === 'removing' && isCompleted)
                 ? 'text-[var(--color-primary-opacity100)]' 
                 : 'text-[var(--color-light-opacity100)]'
@@ -133,7 +134,7 @@ const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }: {
             </h4>
           </div>
         </div>
-        <p className="text-[var(--color-light-opacity60)] text-xs leading-relaxed font-space-grotesk font-[300]">
+        <p className={`${style.font.grotesk.light} text-[var(--color-light-opacity60)] text-xs leading-relaxed`}>
           {item.key === 'projectName' && 'Enter a clear and descriptive name for your project.'}
           {item.key === 'description' && 'Provide a detailed description of what you built and the problem it solves.'}
           {item.key === 'selectedChallenge' && 'Select which challenge track your project is participating in.'}
@@ -150,13 +151,9 @@ const NextStepItem = ({ item, index, isCompleted, onTransitionEnd }: {
 export default function ProjectSubmissionPage() {
   const router = useRouter()
   const params = useParams()
+  const { setLoading } = useLoading()
   const eventId = params.id
   
-  // Initialize design system variables
-  useEffect(() => {
-    initializeCSSVariables();
-  }, []);
-
   const [formData, setFormData] = useState({
     projectName: 'Energify',
     description: '',
@@ -198,6 +195,8 @@ export default function ProjectSubmissionPage() {
   }, [formData, slackFiles])
 
   const handlePreview = () => {
+    setLoading('preview-submission', true)
+    
     // Prepare form data for preview
     const previewData = {
       projectName: formData.projectName,
@@ -217,6 +216,7 @@ export default function ProjectSubmissionPage() {
   }
 
   const handleBackToHome = () => {
+    setLoading('back-to-home', true)
     router.push('/dash')
   }
 
@@ -297,15 +297,36 @@ export default function ProjectSubmissionPage() {
   }
 
   const handleConfirmSubmit = () => {
+    setLoading('final-submit', true)
     // Handle the actual submission logic here
     console.log('Project submitted!', formData)
     setShowSubmitModal(false)
     setActiveField(null)
-    // You could redirect to a success page or show a success message
+    
+    // Simulate API call
+    setTimeout(() => {
+      setLoading('final-submit', false)
+      // You could redirect to a success page or show a success message
+    }, 2000)
   }
 
   const handleCancelSubmit = () => {
     setShowSubmitModal(false)
+  }
+
+  const handleSaveDraft = () => {
+    setLoading('save-draft', true)
+    console.log('Saving draft...', formData)
+    
+    // Simulate API call
+    setTimeout(() => {
+      setLoading('save-draft', false)
+      setActiveField(null)
+    }, 1000)
+  }
+
+  const handleCancelEdit = () => {
+    setActiveField(null)
   }
 
   const checklistItems = [
@@ -363,7 +384,7 @@ export default function ProjectSubmissionPage() {
           <div className="flex-1 p-6">
             {/* Header */}
             <div className="mb-6 pt-[3%]">
-              <h1 className="text-2xl font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-4">
+              <h1 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-4`}>
                 Project Submission
               </h1>
               
@@ -371,14 +392,14 @@ export default function ProjectSubmissionPage() {
                 <div className="flex items-center space-x-3">
                   <button 
                     onClick={handlePreview}
-                    className="border-[1.5px] border-[var(--color-white-opacity10)] bg-[var(--color-white-opacity10)] text-[var(--color-light-opacity100)] hover:bg-[var(--color-white-opacity30)] font-space-mono tracking-[-0.02rem] font-[400] px-6 py-2 rounded-lg transition-colors flex items-center justify-center space-x-2 flex-shrink-0 text-sm"
+                    className={`${style.box.gray.middle} text-[var(--color-light-opacity100)] hover:bg-[var(--color-white-opacity30)] ${style.font.mono.text} px-6 py-2 ${style.border.radius.middle} ${style.perf.transition.fast} flex items-center justify-center space-x-2 flex-shrink-0 text-sm`}
                   >
                     <Eye className="w-4 h-4" />
                     <span>Preview</span>
                   </button>
                 </div>
 
-                <span className={`px-4 py-2 text-xs font-space-mono font-[400] tracking-[-0.02rem] rounded-full transition-all duration-500 ease-out transform ${
+                <span className={`px-4 py-2 text-xs ${style.font.mono.text} ${style.border.radius.full} ${style.perf.transition.slow} transform ${
                   activeField 
                     ? 'bg-transparent border border-[var(--color-light-opacity30)] text-[var(--color-light-opacity100)] scale-105' 
                     : allFieldsCompleted
@@ -391,7 +412,7 @@ export default function ProjectSubmissionPage() {
             </div>
 
             {/* Form Content */}
-            <div className={`rounded-[10px] p-6 space-y-6 w-full transition-all duration-500 ease-out transform ${
+            <div className={`${style.border.radius.outer} p-6 space-y-6 w-full ${style.perf.transition.slow} transform ${
               allFieldsCompleted 
                 ? 'bg-[var(--color-primary-opacity20)] border border-[var(--color-primary-opacity50)] shadow-lg scale-[1.01]' 
                 : activeField 
@@ -401,7 +422,7 @@ export default function ProjectSubmissionPage() {
               
               {/* Project Name */}
               <div className="space-y-2">
-                <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                <label className={`block text-[var(--color-light-opacity100)] text-sm ${style.font.grotesk.medium}`}>
                   Project Name
                 </label>
                 <input
@@ -411,7 +432,7 @@ export default function ProjectSubmissionPage() {
                   onChange={handleInputChange}
                   onFocus={() => handleFieldFocus('projectName')}
                   onBlur={handleFieldBlur}
-                  className={`w-full bg-[var(--color-white-opacity10)] border rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none transition-all duration-300 ease-out text-sm font-space-mono transform ${
+                  className={`w-full bg-[var(--color-white-opacity10)] border ${style.border.radius.middle} px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none ${style.perf.transition.fast} text-sm ${style.font.mono.text} transform ${
                     activeField === 'projectName' 
                       ? 'border-[var(--color-primary-opacity100)] shadow-md scale-[1.02] bg-[var(--color-white-opacity15)]' 
                       : 'border-[var(--color-light-opacity20)] scale-100'
@@ -423,10 +444,10 @@ export default function ProjectSubmissionPage() {
               {/* Description */}
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                  <label className={`block text-[var(--color-light-opacity100)] text-sm ${style.font.grotesk.medium}`}>
                     Description of what you've built
                   </label>
-                  <span className={`text-xs font-space-mono transition-all duration-300 ${
+                  <span className={`text-xs ${style.font.mono.text} ${style.perf.transition.fast} ${
                     formData.description.length > 250 
                       ? 'text-[var(--color-alerts-opacity100)]' 
                       : formData.description.length > 200
@@ -436,7 +457,7 @@ export default function ProjectSubmissionPage() {
                     {formData.description.length}/300
                   </span>
                 </div>
-                <p className="text-[var(--color-light-opacity60)] text-xs leading-relaxed mb-3 font-space-grotesk font-[300]">
+                <p className={`${style.font.grotesk.light} text-[var(--color-light-opacity60)] text-xs leading-relaxed mb-3`}>
                   Description of maximum 10 lines limit of documents at lorem ipsum dictumst et nisl, mauris phasellus egestas vel tellus rutrum vel, ornare molestie mauris non pulvinar. Turpis neque viverra et auctor fermentum consectetur tortor vitae egestas. Lorem ipsum dolor sit amet consequat pharetra nunc ipsum nam, scelerisque duis ut ridiculus pellentesque et tortor vitae.
                 </p>
                 <textarea
@@ -446,7 +467,7 @@ export default function ProjectSubmissionPage() {
                   onFocus={() => handleFieldFocus('description')}
                   onBlur={handleFieldBlur}
                   rows={5}
-                  className={`w-full bg-[var(--color-white-opacity10)] border rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none transition-all duration-300 ease-out resize-none text-sm font-space-mono transform ${
+                  className={`w-full bg-[var(--color-white-opacity10)] border ${style.border.radius.middle} px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none ${style.perf.transition.fast} resize-none text-sm ${style.font.mono.text} transform ${
                     activeField === 'description' 
                       ? 'border-[var(--color-primary-opacity100)] shadow-md scale-[1.02] bg-[var(--color-white-opacity15)]' 
                       : 'border-[var(--color-light-opacity20)] scale-100'
@@ -454,7 +475,7 @@ export default function ProjectSubmissionPage() {
                   placeholder="Describe your project, the problem it solves, and the technology you used..."
                 />
                 {fieldErrors.description && (
-                  <p className="text-[var(--color-alerts-opacity100)] text-xs mt-1 font-space-grotesk animate-pulse">
+                  <p className={`${style.font.grotesk.light} text-[var(--color-alerts-opacity100)] text-xs mt-1 animate-pulse`}>
                     {fieldErrors.description}
                   </p>
                 )}
@@ -462,10 +483,10 @@ export default function ProjectSubmissionPage() {
 
               {/* Your Challenge */}
               <div className="space-y-2">
-                <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                <label className={`block text-[var(--color-light-opacity100)] text-sm ${style.font.grotesk.medium}`}>
                   Your Challenge
                 </label>
-                <p className="text-[var(--color-light-opacity60)] text-xs mb-3 font-space-grotesk font-[300]">
+                <p className={`${style.font.grotesk.light} text-[var(--color-light-opacity60)] text-xs mb-3`}>
                   Leave a short note and slack channel name participating this work to receive bounty reward! or continue reading official terms.
                 </p>
                 <div className="relative">
@@ -475,7 +496,7 @@ export default function ProjectSubmissionPage() {
                     onChange={handleInputChange}
                     onFocus={() => handleFieldFocus('selectedChallenge')}
                     onBlur={handleFieldBlur}
-                    className={`w-full bg-[var(--color-white-opacity10)] border rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none transition-all duration-300 ease-out appearance-none text-sm font-space-mono transform ${
+                    className={`w-full bg-[var(--color-white-opacity10)] border ${style.border.radius.middle} px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none ${style.perf.transition.fast} appearance-none text-sm ${style.font.mono.text} transform ${
                       activeField === 'selectedChallenge' 
                         ? 'border-[var(--color-primary-opacity100)] shadow-md scale-[1.02] bg-[var(--color-white-opacity15)]' 
                         : 'border-[var(--color-light-opacity20)] scale-100'
@@ -486,22 +507,22 @@ export default function ProjectSubmissionPage() {
                     <option value="sustainability">Sustainability Challenge</option>
                     <option value="fintech">FinTech Challenge</option>
                   </select>
-                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-light-opacity40)] pointer-events-none transition-transform duration-300" />
+                  <ChevronDown className={`absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-[var(--color-light-opacity40)] pointer-events-none ${style.perf.transition.fast}`} />
                 </div>
               </div>
 
               {/* Slack Challenge Participation */}
               <div className="space-y-2">
-                <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                <label className={`block text-[var(--color-light-opacity100)] text-sm ${style.font.grotesk.medium}`}>
                   Slack challenge participation
                 </label>
-                <p className="text-[var(--color-light-opacity60)] text-xs mb-3 font-space-grotesk font-[300]">
+                <p className={`${style.font.grotesk.light} text-[var(--color-light-opacity60)] text-xs mb-3`}>
                   Leave a short note and slack channel name participating this work to receive bounty reward! or continue reading official terms.
                 </p>
                 
                 {/* File Upload Area */}
                 <div
-                  className={`border-2 border-dashed rounded-[5px] p-8 text-center transition-all duration-500 ease-out transform ${
+                  className={`border-2 border-dashed ${style.border.radius.middle} p-8 text-center ${style.perf.transition.slow} transform ${
                     slackFiles.length > 0
                       ? 'border-[var(--color-primary-opacity100)] bg-[var(--color-primary-opacity20)] scale-[1.02]' 
                       : dragActive 
@@ -513,29 +534,29 @@ export default function ProjectSubmissionPage() {
                   onDragOver={handleDragEvents}
                   onDrop={handleDrop}
                 >
-                  <Upload className={`w-6 h-6 mx-auto mb-3 transition-all duration-300 ${
+                  <Upload className={`w-6 h-6 mx-auto mb-3 ${style.perf.transition.fast} ${
                     slackFiles.length > 0 ? 'text-[var(--color-primary-opacity100)]' : 'text-[var(--color-light-opacity40)]'
                   }`} />
                   {slackFiles.length > 0 ? (
                     <div>
-                      <p className="text-[var(--color-primary-opacity100)] mb-2 text-sm font-space-grotesk font-[500]">
+                      <p className={`text-[var(--color-primary-opacity100)] mb-2 text-sm ${style.font.grotesk.medium}`}>
                         {slackFiles.length} file{slackFiles.length > 1 ? 's' : ''} uploaded
                       </p>
-                      <div className="text-xs text-[var(--color-light-opacity60)] space-y-1 mb-3 font-space-mono">
+                      <div className={`text-xs text-[var(--color-light-opacity60)] space-y-1 mb-3 ${style.font.mono.text}`}>
                         {slackFiles.map((file, index) => (
                           <div key={index}>{file.name}</div>
                         ))}
                       </div>
                       <button
                         onClick={handleClearSlackFiles}
-                        className="text-xs text-[var(--color-alerts-opacity100)] hover:text-[var(--color-alerts-opacity60)] underline font-space-grotesk transition-colors duration-200"
+                        className={`text-xs text-[var(--color-alerts-opacity100)] hover:text-[var(--color-alerts-opacity60)] underline ${style.font.grotesk.light} ${style.perf.transition.fast}`}
                       >
                         Clear files
                       </button>
                     </div>
                   ) : (
                     <>
-                      <p className="text-[var(--color-light-opacity60)] mb-2 text-sm font-space-grotesk font-[300]">
+                      <p className={`text-[var(--color-light-opacity60)] mb-2 text-sm ${style.font.grotesk.light}`}>
                         Drag and drop files here, or
                       </p>
                       <input
@@ -547,7 +568,7 @@ export default function ProjectSubmissionPage() {
                       />
                       <label
                         htmlFor="file-upload"
-                        className="inline-flex items-center px-4 py-2 bg-[var(--color-white-opacity20)] hover:bg-[var(--color-white-opacity30)] rounded-[5px] cursor-pointer transition-all duration-300 ease-out text-sm text-[var(--color-light-opacity100)] font-space-grotesk font-[400] transform hover:scale-105"
+                        className={`inline-flex items-center px-4 py-2 bg-[var(--color-white-opacity20)] hover:bg-[var(--color-white-opacity30)] ${style.border.radius.middle} cursor-pointer ${style.perf.transition.fast} text-sm text-[var(--color-light-opacity100)] ${style.font.grotesk.light} transform hover:scale-105`}
                       >
                         Browse files
                       </label>
@@ -561,26 +582,26 @@ export default function ProjectSubmissionPage() {
                 
                 {/* Video Upload */}
                 <div className="space-y-2 flex flex-col h-full">
-                  <div className={`rounded-[5px] p-4 border flex flex-col h-full transition-all duration-500 ease-out transform ${
+                  <div className={`${style.border.radius.middle} p-4 border flex flex-col h-full ${style.perf.transition.slow} transform ${
                     formData.videoFile 
                       ? 'bg-[var(--color-primary-opacity20)] border-[var(--color-primary-opacity100)] scale-[1.02]' 
                       : 'bg-[var(--color-white-opacity10)] border-[var(--color-light-opacity20)] scale-100'
                   }`}>
-                    <div className={`aspect-video rounded-[5px] flex items-center justify-center mb-3 transition-all duration-300 ${
+                    <div className={`aspect-video ${style.border.radius.middle} flex items-center justify-center mb-3 ${style.perf.transition.fast} ${
                       formData.videoFile ? 'bg-[var(--color-primary-opacity30)]' : 'bg-[var(--color-white-opacity5)]'
                     }`}>
                       {formData.videoFile ? (
                         <div className="text-center">
                           <Play className="w-8 h-8 mx-auto mb-2 text-[var(--color-primary-opacity100)]" />
-                          <p className="text-xs text-[var(--color-primary-opacity100)] font-space-grotesk font-[500]">
+                          <p className={`text-xs text-[var(--color-primary-opacity100)] ${style.font.grotesk.medium}`}>
                             Video uploaded
                           </p>
-                          <p className="text-xs text-[var(--color-light-opacity60)] mb-2 font-space-mono">
+                          <p className={`text-xs text-[var(--color-light-opacity60)] mb-2 ${style.font.mono.text}`}>
                             {formData.videoFile.name}
                           </p>
                           <button
                             onClick={handleRemoveVideo}
-                            className="text-xs text-[var(--color-alerts-opacity100)] hover:text-[var(--color-alerts-opacity60)] underline font-space-grotesk transition-colors duration-200"
+                            className={`text-xs text-[var(--color-alerts-opacity100)] hover:text-[var(--color-alerts-opacity60)] underline ${style.font.grotesk.light} ${style.perf.transition.fast}`}
                           >
                             Remove video
                           </button>
@@ -588,7 +609,7 @@ export default function ProjectSubmissionPage() {
                       ) : (
                         <div className="text-center">
                           <Play className="w-8 h-8 mx-auto mb-2 text-[var(--color-light-opacity40)]" />
-                          <p className="text-xs text-[var(--color-light-opacity60)] font-space-grotesk font-[300]">
+                          <p className={`text-xs text-[var(--color-light-opacity60)] ${style.font.grotesk.light}`}>
                             No video uploaded
                           </p>
                         </div>
@@ -604,7 +625,7 @@ export default function ProjectSubmissionPage() {
                     />
                     <label
                       htmlFor="video-upload"
-                      className={`block w-full text-center px-3 py-2 border rounded-[5px] cursor-pointer transition-all duration-300 ease-out text-sm mt-auto font-space-grotesk font-[400] transform hover:scale-105 ${
+                      className={`block w-full text-center px-3 py-2 border ${style.border.radius.middle} cursor-pointer ${style.perf.transition.fast} text-sm mt-auto ${style.font.grotesk.light} transform hover:scale-105 ${
                         formData.videoFile
                           ? 'bg-[var(--color-primary-opacity30)] hover:bg-[var(--color-primary-opacity50)] border-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)]'
                           : 'bg-[var(--color-white-opacity5)] hover:bg-[var(--color-white-opacity10)] border-[var(--color-light-opacity20)] text-[var(--color-light-opacity100)]'
@@ -620,10 +641,10 @@ export default function ProjectSubmissionPage() {
                   
                   {/* Project Demo */}
                   <div className="space-y-2">
-                    <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                    <label className={`block text-[var(--color-light-opacity100)] text-sm ${style.font.grotesk.medium}`}>
                       Project Demo
                     </label>
-                    <p className="text-[var(--color-light-opacity60)] text-xs mb-2 font-space-grotesk font-[300]">
+                    <p className={`${style.font.grotesk.light} text-[var(--color-light-opacity60)] text-xs mb-2`}>
                       The place where you project can be experienced.
                     </p>
                     
@@ -634,7 +655,7 @@ export default function ProjectSubmissionPage() {
                       onChange={handleInputChange}
                       onFocus={() => handleFieldFocus('demoUrl')}
                       onBlur={handleFieldBlur}
-                      className={`w-full bg-[var(--color-white-opacity10)] border rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none transition-all duration-300 ease-out text-sm font-space-mono transform ${
+                      className={`w-full bg-[var(--color-white-opacity10)] border ${style.border.radius.middle} px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none ${style.perf.transition.fast} text-sm ${style.font.mono.text} transform ${
                         activeField === 'demoUrl' 
                           ? 'border-[var(--color-primary-opacity100)] shadow-md scale-[1.02] bg-[var(--color-white-opacity15)]' 
                           : 'border-[var(--color-light-opacity20)] scale-100'
@@ -645,10 +666,10 @@ export default function ProjectSubmissionPage() {
 
                   {/* Source Code */}
                   <div className="space-y-2">
-                    <label className="block text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">
+                    <label className={`block text-[var(--color-light-opacity100)] text-sm ${style.font.grotesk.medium}`}>
                       Source Code
                     </label>
-                    <p className="text-[var(--color-light-opacity60)] text-xs mb-2 font-space-grotesk font-[300]">
+                    <p className={`${style.font.grotesk.light} text-[var(--color-light-opacity60)] text-xs mb-2`}>
                       Where viewers and judges can access your source code.
                     </p>
                     
@@ -659,7 +680,7 @@ export default function ProjectSubmissionPage() {
                       onChange={handleInputChange}
                       onFocus={() => handleFieldFocus('sourceCode')}
                       onBlur={handleFieldBlur}
-                      className={`w-full bg-[var(--color-white-opacity10)] border rounded-[5px] px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none transition-all duration-300 ease-out text-sm font-space-mono transform ${
+                      className={`w-full bg-[var(--color-white-opacity10)] border ${style.border.radius.middle} px-3 py-2 text-[var(--color-light-opacity100)] focus:outline-none ${style.perf.transition.fast} text-sm ${style.font.mono.text} transform ${
                         activeField === 'sourceCode' 
                           ? 'border-[var(--color-primary-opacity100)] shadow-md scale-[1.02] bg-[var(--color-white-opacity15)]' 
                           : 'border-[var(--color-light-opacity20)] scale-100'
@@ -674,19 +695,20 @@ export default function ProjectSubmissionPage() {
                       // When editing a field, show save/cancel buttons
                       <>
                         <MainButton 
+                          onClick={handleSaveDraft}
                           variant="default"
                           size="sm"
                           showIcon={false}
-                          className="transition-all duration-300 ease-out transform hover:scale-105"
+                          className={`${style.perf.transition.fast} transform hover:scale-105`}
                         >
                           Save Draft
                         </MainButton>
                         <MainButton 
-                          onClick={() => setActiveField(null)}
+                          onClick={handleCancelEdit}
                           variant="alerts"
                           size="sm"
                           showIcon={false}
-                          className="transition-all duration-300 ease-out transform hover:scale-105"
+                          className={`${style.perf.transition.fast} transform hover:scale-105`}
                         >
                           Cancel
                         </MainButton>
@@ -699,7 +721,7 @@ export default function ProjectSubmissionPage() {
                           variant="primary"
                           size="default"
                           showIcon={false}
-                          className="transition-all duration-300 ease-out transform hover:scale-105"
+                          className={`${style.perf.transition.fast} transform hover:scale-105`}
                         >
                           Submit As Final
                         </MainButton>
@@ -713,21 +735,21 @@ export default function ProjectSubmissionPage() {
 
           {/* Right Sidebar - Next Steps with Enhanced Animation */}
           <div className="w-[26rem] p-6">
-            <div className={`border rounded-[10px] sticky top-6 transition-all duration-700 ease-out shadow-md transform
+            <div className={`${style.border.solid} ${style.border.radius.outer} sticky top-6 ${style.perf.transition.slow} shadow-md transform
               ${allFieldsCompleted 
                 ? 'border-[var(--color-primary-opacity100)] bg-[var(--color-primary-opacity20)] px-8 py-6 scale-105' 
                 : 'border-[var(--color-alerts-opacity100)] bg-[var(--color-white-opacity5)] px-6 py-4 scale-100'
               }`}
             >
-              <h3 className="text-base font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-4 transition-all duration-300">
+              <h3 className={`text-base ${style.font.grotesk.main} text-[var(--color-light-opacity100)] mb-4 ${style.perf.transition.fast}`}>
                 {allFieldsCompleted ? 'ALL DONE!' : 'Next Steps'}
               </h3>
 
               {allFieldsCompleted ? (
-                <div className="transition-all duration-500 ease-out">
-                  <p className="text-[var(--color-light-opacity60)] text-sm leading-relaxed font-space-grotesk font-[300]">
+                <div className={`${style.perf.transition.slow}`}>
+                  <p className={`${style.font.grotesk.light} text-[var(--color-light-opacity60)] text-sm leading-relaxed`}>
                     Now, just sit back and relax. Follow the{" "}
-                    <span className="underline cursor-pointer hover:text-[var(--color-light-opacity100)] text-[var(--color-primary-opacity100)] transition-colors duration-200">
+                    <span className={`underline cursor-pointer hover:text-[var(--color-light-opacity100)] text-[var(--color-primary-opacity100)] ${style.perf.transition.fast}`}>
                       announcements
                     </span>{" "}
                     closely and get some sleep!

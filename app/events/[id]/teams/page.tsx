@@ -5,8 +5,9 @@ import { useRouter, useParams } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import { Footer } from "@/components/footer"
 import { MainButton } from "@/components/attachables/main-button"
+import { useLoading } from '@/components/loading-context'
+import Loading from '@/components/loading'
 import * as style from '@/styles/design-system'
-import { initializeCSSVariables } from '@/styles/design-system'
 
 const userProfile = {
   name: 'Junction Hack',
@@ -29,19 +30,15 @@ interface Team {
 export default function TeamManagementPage() {
   const router = useRouter()
   const params = useParams()
+  const { setLoading } = useLoading()
   const eventId = params?.id as string
   
   const [activeTab, setActiveTab] = useState('all-teams')
   const [showJoinModal, setShowJoinModal] = useState(false)
   const [teamCode, setTeamCode] = useState('')
   const [teams, setTeams] = useState<Team[]>([])
-  const [loading, setLoading] = useState(true)
+  const [localLoading, setLocalLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
-  //-------------------------------- DESIGN SYSTEM ACTUATOR --------------------------------//
-  useEffect(() => {
-    initializeCSSVariables();
-  }, []);
 
   // Fetch teams for the specific event
   useEffect(() => {
@@ -49,7 +46,7 @@ export default function TeamManagementPage() {
       if (!eventId) return
 
       try {
-        setLoading(true)
+        setLocalLoading(true)
         setError(null)
 
         const response = await fetch(`/api/proxy/teams?event_id=${eventId}`, {
@@ -81,7 +78,7 @@ export default function TeamManagementPage() {
         console.error('API Error:', err)
         setError(err instanceof Error ? err.message : 'Failed to fetch teams')
       } finally {
-        setLoading(false)
+        setLocalLoading(false)
       }
     }
 
@@ -89,50 +86,59 @@ export default function TeamManagementPage() {
   }, [eventId])
 
   const handleBackToHome = () => {
+    setLoading('back-to-dashboard', true)
     router.push(`/events/${eventId}/dash`)
   }
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId)
-    // Navigate to appropriate routes
+    // Navigate to appropriate routes with loading states
     switch (tabId) {
       case 'all-teams':
+        setLoading('tab-all-teams', true)
         router.push(`/events/${eventId}/teams`)
         break
       case 'my-team':
+        setLoading('tab-my-team', true)
         router.push(`/events/${eventId}/teams/my-team`)
         break
       case 'candidates':
+        setLoading('tab-candidates', true)
         router.push(`/events/${eventId}/teams/candidates`)
         break
     }
   }
 
   const handleApplyToTeam = (teamId: number) => {
+    setLoading(`apply-team-${teamId}`, true)
     console.log('Apply to team:', teamId)
     // This will be connected to API later
     // router.push(`/events/${eventId}/teams/${teamId}/apply`)
+    
+    // Clear loading after a short delay (simulate API call)
+    setTimeout(() => {
+      setLoading(`apply-team-${teamId}`, false)
+    }, 1000)
   }
 
   const handleJoinWithCode = () => {
     if (teamCode.trim()) {
+      setLoading('join-team-code', true)
       console.log('Join team with code:', teamCode)
       setShowJoinModal(false)
       setTeamCode('')
       // API call to join team with code
+      
+      // Clear loading after simulation
+      setTimeout(() => {
+        setLoading('join-team-code', false)
+      }, 1000)
     }
   }
 
   const renderAllTeamsView = () => {
-    if (loading) {
-      return (
-        <div className="flex justify-center items-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary-opacity100)] mx-auto mb-4"></div>
-            <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)]`}>Loading teams...</p>
-          </div>
-        </div>
-      )
+    if (localLoading) {
+      return <Loading message="Loading teams..." />
     }
 
     if (error) {
@@ -170,7 +176,7 @@ export default function TeamManagementPage() {
         {teams.map((team) => (
           <div
             key={team.team_id}
-            className="bg-[var(--color-white-opacity10)] rounded-xl overflow-hidden border border-[var(--color-white-opacity15)] w-full min-h-fit flex flex-col flex-shrink-0"
+            className={`${style.box.gray.bottom} overflow-hidden w-full min-h-fit flex flex-col flex-shrink-0`}
           >
             {/* Muted green image placeholder */}
             <div className="h-16 bg-[var(--color-primary-opacity40)] relative flex-shrink-0">
@@ -193,7 +199,7 @@ export default function TeamManagementPage() {
 
                 {/* Team Status */}
                 <div className="mb-4">
-                  <span className={`${style.font.mono.text} px-2 py-1 text-xs rounded-full ${
+                  <span className={`${style.font.mono.text} px-2 py-1 text-xs ${style.border.radius.full} ${
                     team.status === 'ACTIVE' 
                       ? 'bg-[var(--color-primary-opacity20)] text-[var(--color-primary-opacity100)] border border-[var(--color-primary-opacity30)]' 
                       : 'bg-[var(--color-light-opacity20)] text-[var(--color-light-opacity60)] border border-[var(--color-light-opacity30)]'
@@ -211,14 +217,14 @@ export default function TeamManagementPage() {
                     {team.availableRoles?.slice(0, 4).map((role, idx) => (
                       <span
                         key={idx}
-                        className={`${style.font.mono.text} px-3 py-2 bg-transparent border border-[var(--color-primary-opacity60)] text-[var(--color-primary-opacity100)] text-xs rounded-lg text-center whitespace-nowrap`}
+                        className={`${style.font.mono.text} px-3 py-2 bg-transparent border border-[var(--color-primary-opacity60)] text-[var(--color-primary-opacity100)] text-xs ${style.border.radius.middle} text-center whitespace-nowrap`}
                       >
                         {role}
                       </span>
                     ))}
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    <span className={`${style.font.mono.text} px-3 py-2 bg-transparent border border-[var(--color-primary-opacity60)] text-[var(--color-primary-opacity100)] text-xs rounded-lg text-center`}>
+                    <span className={`${style.font.mono.text} px-3 py-2 bg-transparent border border-[var(--color-primary-opacity60)] text-[var(--color-primary-opacity100)] text-xs ${style.border.radius.middle} text-center`}>
                       {team.availableRoles?.[4]}
                     </span>
                     <span className={`${style.font.mono.text} px-3 py-2 text-[var(--color-light-opacity40)] text-xs text-center flex items-center justify-center`}>
@@ -289,7 +295,7 @@ export default function TeamManagementPage() {
               onClick={() => setShowJoinModal(true)}
               variant="outlineGreen"
               size="sm"
-              className="rounded-full text-center justify-center"
+              className={`${style.border.radius.full} text-center justify-center`}
               showIcon={false}
             >
               Join a team using a code
@@ -306,7 +312,7 @@ export default function TeamManagementPage() {
       {/* Join Team Modal */}
       {showJoinModal && (
         <div className="fixed inset-0 bg-[var(--color-dark-opacity50)] flex items-center justify-center z-50">
-          <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity10)] rounded-xl p-6 max-w-md w-full mx-4">
+          <div className={`${style.box.gray.bottom} p-6 max-w-md w-full mx-4`}>
             <h3 className={`${style.font.grotesk.main} text-xl text-[var(--color-light-opacity100)] mb-4`}>
               Join a team using a code
             </h3>
@@ -320,7 +326,7 @@ export default function TeamManagementPage() {
                 value={teamCode}
                 onChange={(e) => setTeamCode(e.target.value)}
                 placeholder="Your team code here"
-                className={`${style.font.mono.text} w-full bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg px-4 py-3 text-[var(--color-light-opacity100)] placeholder-[var(--color-light-opacity40)] focus:outline-none focus:border-[var(--color-primary-opacity50)]`}
+                className={`${style.font.mono.text} w-full bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] ${style.border.radius.middle} px-4 py-3 text-[var(--color-light-opacity100)] placeholder-[var(--color-light-opacity40)] focus:outline-none focus:border-[var(--color-primary-opacity50)] ${style.perf.transition.fast}`}
               />
               
               <div className="flex gap-3 justify-end">

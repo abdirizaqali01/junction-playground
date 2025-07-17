@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import { MainButton } from '@/components/attachables/main-button'
+import { useLoading } from '@/components/loading-context'
 import { Play, ArrowLeft, Users } from 'lucide-react'
-import { initializeCSSVariables } from '@/styles/design-system'
+import * as style from '@/styles/design-system'
 
 const userProfile = {
   name: 'Junction Hack',
@@ -31,6 +32,7 @@ const getSubmissionData = () => {
 export default function ProjectPreviewPage() {
   const router = useRouter()
   const params = useParams()
+  const { setLoading } = useLoading()
   const eventId = params.id
   
   // State to track if component has mounted (client-side)
@@ -52,11 +54,6 @@ export default function ProjectPreviewPage() {
     videoFile: null,
     slackFiles: []
   })
-  
-  // Initialize design system variables
-  useEffect(() => {
-    initializeCSSVariables();
-  }, []);
 
   // Handle mounting and data loading
   useEffect(() => {
@@ -114,37 +111,47 @@ export default function ProjectPreviewPage() {
     return (
       <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-[var(--color-primary-opacity100)] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[var(--color-light-opacity60)] font-space-grotesk">Loading preview...</p>
+          <div className={`w-8 h-8 border-2 border-[var(--color-primary-opacity100)] border-t-transparent ${style.border.radius.full} animate-spin mx-auto mb-4`}></div>
+          <p className={`text-[var(--color-light-opacity60)] ${style.font.grotesk.light}`}>Loading preview...</p>
         </div>
       </div>
     )
   }
 
   const handleBackToSubmission = () => {
+    setLoading('back-to-submission', true)
     // Navigate back to submissions page with proper event ID
     router.push(`/events/${eventId}/submissions`)
   }
 
   const handleBackToHome = () => {
+    setLoading('back-to-home', true)
     router.push('/dash')
   }
 
   const handleSubmitProject = () => {
+    setLoading('submit-project', true)
     // Handle final submission logic here
     console.log('Submitting project with data:', submissionData)
     
-    // You could add API call here to submit the project
-    // For now, we'll just show an alert and redirect
-    alert('Project submitted successfully!')
-    
-    // Clear the preview data
-    if (typeof window !== 'undefined') {
-      sessionStorage.removeItem('previewData')
-    }
-    
-    // Redirect to dashboard or success page
-    router.push('/dash')
+    // Simulate API call
+    setTimeout(() => {
+      alert('Project submitted successfully!')
+      
+      // Clear the preview data
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('previewData')
+      }
+      
+      setLoading('submit-project', false)
+      // Redirect to dashboard or success page
+      router.push('/dash')
+    }, 2000)
+  }
+
+  const handleContinueEditing = () => {
+    setLoading('continue-editing', true)
+    router.push(`/events/${eventId}/submissions`)
   }
 
   // Helper function to format challenge name
@@ -208,46 +215,46 @@ export default function ProjectPreviewPage() {
               <div className="flex items-center justify-between mb-4">
                 <button 
                   onClick={handleBackToSubmission}
-                  className="flex items-center space-x-2 text-[var(--color-light-opacity60)] hover:text-[var(--color-light-opacity100)] transition-colors group font-space-grotesk font-[400]"
+                  className={`flex items-center space-x-2 text-[var(--color-light-opacity60)] hover:text-[var(--color-light-opacity100)] ${style.perf.transition.fast} group ${style.font.grotesk.light}`}
                 >
-                  <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                  <ArrowLeft className={`w-5 h-5 group-hover:-translate-x-1 ${style.perf.transition.fast}`} />
                   <span>Back to Submission</span>
                 </button>
                 
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs text-[var(--color-light-opacity60)] font-space-mono">
+                    <span className={`text-xs text-[var(--color-light-opacity60)] ${style.font.mono.text}`}>
                       {completion.completed}/{completion.total} fields completed
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <div className={`w-2 h-2 rounded-full ${
+                    <div className={`w-2 h-2 ${style.border.radius.full} ${
                       completion.isComplete 
                         ? 'bg-[var(--color-primary-opacity100)]' 
                         : 'bg-[var(--color-secondary-opacity100)]'
                     }`}></div>
-                    <span className="text-sm text-[var(--color-light-opacity60)] font-space-mono font-[400]">
+                    <span className={`text-sm text-[var(--color-light-opacity60)] ${style.font.mono.text}`}>
                       {completion.isComplete ? 'Ready to Submit' : 'Preview Mode'}
                     </span>
                   </div>
                 </div>
               </div>
 
-              <h1 className="text-2xl font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)]">
+              <h1 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)]`}>
                 Project Preview
               </h1>
             </div>
 
             {/* Project Header with Video Background */}
-            <div className="relative bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity20)] rounded-[10px] overflow-hidden mb-8" style={{height: '200px'}}>
+            <div className={`relative ${style.box.gray.bottom} overflow-hidden mb-8`} style={{height: '200px'}}>
               <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-dark-opacity70)] to-[var(--color-dark-opacity40)]"></div>
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-dark-opacity80)] via-[var(--color-dark-opacity40)] to-transparent"></div>
               <div className="relative z-10 flex items-center justify-between h-full px-8">
                 <div className="flex items-center space-x-4">
-                  <h1 className="text-3xl font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)]">
+                  <h1 className={`${style.font.grotesk.main} text-3xl text-[var(--color-light-opacity100)]`}>
                     {submissionData.projectName || 'TBD - Project Name'}
                   </h1>
-                  <span className={`px-4 py-2 text-xs font-space-mono font-[400] rounded-full ${
+                  <span className={`px-4 py-2 text-xs ${style.font.mono.text} ${style.border.radius.full} ${
                     completion.isComplete
                       ? 'bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)]'
                       : 'bg-[var(--color-secondary-opacity100)] text-[var(--color-light-opacity100)]'
@@ -258,48 +265,48 @@ export default function ProjectPreviewPage() {
                 {submissionData.videoFile && (
                   <div className="flex items-center space-x-2 text-[var(--color-primary-opacity100)]">
                     <Play className="w-6 h-6" />
-                    <span className="text-sm font-space-grotesk font-[400]">Video Available</span>
+                    <span className={`text-sm ${style.font.grotesk.light}`}>Video Available</span>
                   </div>
                 )}
               </div>
             </div>
 
             {/* Description Section */}
-            <div className={`border rounded-[10px] p-6 mb-6 transition-all duration-300 ${
+            <div className={`${style.border.solid} ${style.border.radius.outer} p-6 mb-6 ${style.perf.transition.fast} ${
               submissionData.description 
                 ? 'bg-[var(--color-white-opacity5)] border-[var(--color-white-opacity20)]'
                 : 'bg-[var(--color-alerts-opacity5)] border-[var(--color-alerts-opacity40)]'
             }`}>
-              <h2 className="text-lg font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-4">
+              <h2 className={`${style.font.grotesk.main} text-lg text-[var(--color-light-opacity100)] mb-4`}>
                 Project Description
               </h2>
               {submissionData.description ? (
-                <p className="text-[var(--color-light-opacity80)] text-sm leading-relaxed font-space-grotesk font-[300]">
+                <p className={`${style.font.grotesk.light} text-[var(--color-light-opacity80)] text-sm leading-relaxed`}>
                   {submissionData.description}
                 </p>
               ) : (
-                <p className="text-[var(--color-alerts-opacity100)] text-sm leading-relaxed font-space-grotesk font-[300] italic">
+                <p className={`${style.font.grotesk.light} text-[var(--color-alerts-opacity100)] text-sm leading-relaxed italic`}>
                   TBD - No description provided yet. Please go back and add a project description.
                 </p>
               )}
             </div>
 
             {/* Challenge Section */}
-            <div className={`border rounded-[10px] p-6 mb-6 transition-all duration-300 ${
+            <div className={`${style.border.solid} ${style.border.radius.outer} p-6 mb-6 ${style.perf.transition.fast} ${
               submissionData.selectedChallenge 
                 ? 'bg-[var(--color-primary-opacity10)] border-[var(--color-primary-opacity50)]'
                 : 'bg-[var(--color-alerts-opacity5)] border-[var(--color-alerts-opacity40)]'
             }`}>
-              <h2 className="text-lg font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-4">
+              <h2 className={`${style.font.grotesk.main} text-lg text-[var(--color-light-opacity100)] mb-4`}>
                 Challenge Track
               </h2>
               <div className="flex items-center space-x-3">
                 {submissionData.selectedChallenge ? (
-                  <div className="px-4 py-2 bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] rounded-[5px] text-sm font-space-mono font-[400]">
+                  <div className={`px-4 py-2 bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] ${style.border.radius.middle} text-sm ${style.font.mono.text}`}>
                     {formatChallengeName(submissionData.selectedChallenge)}
                   </div>
                 ) : (
-                  <div className="px-4 py-2 bg-[var(--color-alerts-opacity100)] text-[var(--color-light-opacity100)] rounded-[5px] text-sm font-space-mono font-[400]">
+                  <div className={`px-4 py-2 bg-[var(--color-alerts-opacity100)] text-[var(--color-light-opacity100)] ${style.border.radius.middle} text-sm ${style.font.mono.text}`}>
                     TBD - No challenge selected
                   </div>
                 )}
@@ -307,28 +314,28 @@ export default function ProjectPreviewPage() {
             </div>
 
             {/* Slack Participation */}
-            <div className={`border rounded-[10px] p-6 mb-6 transition-all duration-300 ${
+            <div className={`${style.border.solid} ${style.border.radius.outer} p-6 mb-6 ${style.perf.transition.fast} ${
               submissionData.slackFiles && submissionData.slackFiles.length > 0
                 ? 'bg-[var(--color-white-opacity5)] border-[var(--color-white-opacity20)]'
                 : 'bg-[var(--color-alerts-opacity5)] border-[var(--color-alerts-opacity40)]'
             }`}>
-              <h2 className="text-lg font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-4">
+              <h2 className={`${style.font.grotesk.main} text-lg text-[var(--color-light-opacity100)] mb-4`}>
                 Slack Challenge Participation
               </h2>
               {submissionData.slackFiles && submissionData.slackFiles.length > 0 ? (
                 <div className="space-y-2">
-                  <p className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk font-[300] mb-3">
+                  <p className={`${style.font.grotesk.light} text-[var(--color-light-opacity60)] text-sm mb-3`}>
                     Files submitted for slack challenge participation:
                   </p>
                   {submissionData.slackFiles.map((file, index) => (
-                    <div key={index} className="flex items-center space-x-2 text-sm font-space-mono">
-                      <div className="w-2 h-2 bg-[var(--color-primary-opacity100)] rounded-full"></div>
+                    <div key={index} className={`flex items-center space-x-2 text-sm ${style.font.mono.text}`}>
+                      <div className={`w-2 h-2 bg-[var(--color-primary-opacity100)] ${style.border.radius.full}`}></div>
                       <span className="text-[var(--color-light-opacity80)]">{file?.name || `File ${index + 1}`}</span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-[var(--color-alerts-opacity100)] text-sm font-space-grotesk font-[300] italic">
+                <p className={`${style.font.grotesk.light} text-[var(--color-alerts-opacity100)] text-sm italic`}>
                   TBD - No slack participation files uploaded yet. Please go back and upload your slack files.
                 </p>
               )}
@@ -338,29 +345,29 @@ export default function ProjectPreviewPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               
               {/* Video Section */}
-              <div className={`border rounded-[10px] p-6 transition-all duration-300 ${
+              <div className={`${style.border.solid} ${style.border.radius.outer} p-6 ${style.perf.transition.fast} ${
                 submissionData.videoFile 
                   ? 'bg-[var(--color-white-opacity5)] border-[var(--color-white-opacity20)]'
                   : 'bg-[var(--color-alerts-opacity5)] border-[var(--color-alerts-opacity40)]'
               }`}>
-                <h2 className="text-lg font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-4">
+                <h2 className={`${style.font.grotesk.main} text-lg text-[var(--color-light-opacity100)] mb-4`}>
                   Demo Video
                 </h2>
-                <div className="aspect-video bg-[var(--color-white-opacity5)] rounded-[5px] flex items-center justify-center border border-[var(--color-white-opacity10)]">
+                <div className={`aspect-video bg-[var(--color-white-opacity5)] ${style.border.radius.middle} flex items-center justify-center border border-[var(--color-white-opacity10)]`}>
                   {submissionData.videoFile ? (
                     <div className="text-center">
                       <Play className="w-16 h-16 text-[var(--color-primary-opacity100)] mx-auto mb-2" />
-                      <p className="text-sm text-[var(--color-primary-opacity100)] font-space-grotesk font-[500]">
+                      <p className={`text-sm text-[var(--color-primary-opacity100)] ${style.font.grotesk.medium}`}>
                         {submissionData.videoFile?.name || 'Video File'}
                       </p>
-                      <p className="text-xs text-[var(--color-light-opacity60)] font-space-mono">
+                      <p className={`text-xs text-[var(--color-light-opacity60)] ${style.font.mono.text}`}>
                         Click to play video
                       </p>
                     </div>
                   ) : (
                     <div className="text-center">
                       <Play className="w-16 h-16 text-[var(--color-alerts-opacity60)] mx-auto mb-2" />
-                      <p className="text-sm text-[var(--color-alerts-opacity100)] font-space-grotesk font-[300] italic">
+                      <p className={`text-sm text-[var(--color-alerts-opacity100)] ${style.font.grotesk.light} italic`}>
                         TBD - No video uploaded yet
                       </p>
                     </div>
@@ -369,22 +376,22 @@ export default function ProjectPreviewPage() {
               </div>
 
               {/* Team Section */}
-              <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity20)] rounded-[10px] p-6">
-                <h2 className="text-lg font-space-grotesk font-[600] tracking-[-0.01rem] text-[var(--color-light-opacity100)] mb-4 flex items-center space-x-2">
+              <div className={`${style.box.gray.bottom} p-6`}>
+                <h2 className={`${style.font.grotesk.main} text-lg text-[var(--color-light-opacity100)] mb-4 flex items-center space-x-2`}>
                   <Users className="w-5 h-5" />
                   <span>Team</span>
                 </h2>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-[var(--color-primary-opacity100)] rounded-full flex items-center justify-center text-xs font-space-mono font-[400] text-[var(--color-light-opacity100)]">
+                    <div className={`w-8 h-8 bg-[var(--color-primary-opacity100)] ${style.border.radius.full} flex items-center justify-center text-xs ${style.font.mono.text} text-[var(--color-light-opacity100)]`}>
                       {userProfile.initials}
                     </div>
                     <div>
-                      <p className="text-[var(--color-light-opacity100)] text-sm font-space-grotesk font-[500]">{userProfile.name}</p>
-                      <p className="text-[var(--color-light-opacity60)] text-xs font-space-mono">{userProfile.email}</p>
+                      <p className={`text-[var(--color-light-opacity100)] text-sm ${style.font.grotesk.medium}`}>{userProfile.name}</p>
+                      <p className={`text-[var(--color-light-opacity60)] text-xs ${style.font.mono.text}`}>{userProfile.email}</p>
                     </div>
                   </div>
-                  <p className="text-[var(--color-light-opacity60)] text-xs font-space-grotesk font-[300] mt-4">
+                  <p className={`text-[var(--color-light-opacity60)] text-xs ${style.font.grotesk.light} mt-4`}>
                     Team information auto-populated from your account profile
                   </p>
                 </div>
@@ -395,12 +402,12 @@ export default function ProjectPreviewPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               
               {/* Demo Link */}
-              <div className={`border rounded-[10px] p-6 transition-all duration-300 ${
+              <div className={`${style.border.solid} ${style.border.radius.outer} p-6 ${style.perf.transition.fast} ${
                 submissionData.demoUrl 
                   ? 'bg-[var(--color-white-opacity5)] border-[var(--color-white-opacity20)]'
                   : 'bg-[var(--color-alerts-opacity5)] border-[var(--color-alerts-opacity40)]'
               }`}>
-                <h3 className="text-[var(--color-light-opacity100)] font-space-grotesk font-[600] tracking-[-0.01rem] mb-2">
+                <h3 className={`text-[var(--color-light-opacity100)] ${style.font.grotesk.main} mb-2`}>
                   Project Demo
                 </h3>
                 {submissionData.demoUrl ? (
@@ -408,24 +415,24 @@ export default function ProjectPreviewPage() {
                     href={submissionData.demoUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-[var(--color-primary-opacity100)] text-sm font-space-mono underline hover:text-[var(--color-primary-opacity60)] transition-colors break-all"
+                    className={`text-[var(--color-primary-opacity100)] text-sm ${style.font.mono.text} underline hover:text-[var(--color-primary-opacity60)] ${style.perf.transition.fast} break-all`}
                   >
                     {submissionData.demoUrl}
                   </a>
                 ) : (
-                  <p className="text-[var(--color-alerts-opacity100)] text-sm font-space-grotesk font-[300] italic">
+                  <p className={`text-[var(--color-alerts-opacity100)] text-sm ${style.font.grotesk.light} italic`}>
                     TBD - No demo URL provided yet
                   </p>
                 )}
               </div>
               
               {/* Source Code */}
-              <div className={`border rounded-[10px] p-6 transition-all duration-300 ${
+              <div className={`${style.border.solid} ${style.border.radius.outer} p-6 ${style.perf.transition.fast} ${
                 submissionData.sourceCode 
                   ? 'bg-[var(--color-white-opacity5)] border-[var(--color-white-opacity20)]'
                   : 'bg-[var(--color-alerts-opacity5)] border-[var(--color-alerts-opacity40)]'
               }`}>
-                <h3 className="text-[var(--color-light-opacity100)] font-space-grotesk font-[600] tracking-[-0.01rem] mb-2">
+                <h3 className={`text-[var(--color-light-opacity100)] ${style.font.grotesk.main} mb-2`}>
                   Source Code
                 </h3>
                 {submissionData.sourceCode ? (
@@ -433,12 +440,12 @@ export default function ProjectPreviewPage() {
                     href={submissionData.sourceCode} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-[var(--color-primary-opacity100)] text-sm font-space-mono underline hover:text-[var(--color-primary-opacity60)] transition-colors break-all"
+                    className={`text-[var(--color-primary-opacity100)] text-sm ${style.font.mono.text} underline hover:text-[var(--color-primary-opacity60)] ${style.perf.transition.fast} break-all`}
                   >
                     {submissionData.sourceCode}
                   </a>
                 ) : (
-                  <p className="text-[var(--color-alerts-opacity100)] text-sm font-space-grotesk font-[300] italic">
+                  <p className={`text-[var(--color-alerts-opacity100)] text-sm ${style.font.grotesk.light} italic`}>
                     TBD - No source code URL provided yet
                   </p>
                 )}
@@ -449,17 +456,18 @@ export default function ProjectPreviewPage() {
             <div className="flex justify-between items-center mt-8 pt-6 border-t border-[var(--color-white-opacity20)]">
               <div>
                 {!completion.isComplete && (
-                  <p className="text-[var(--color-alerts-opacity100)] text-sm font-space-grotesk font-[300]">
+                  <p className={`text-[var(--color-alerts-opacity100)] text-sm ${style.font.grotesk.light}`}>
                     Complete all fields before submitting your project
                   </p>
                 )}
               </div>
               <div className="flex space-x-4">
                 <MainButton
-                  onClick={handleBackToSubmission}
+                  onClick={handleContinueEditing}
                   variant="outlineGray"
                   size="default"
                   showIcon={false}
+                  className={`${style.perf.transition.fast} transform hover:scale-105`}
                 >
                   Continue Editing
                 </MainButton>
@@ -469,9 +477,9 @@ export default function ProjectPreviewPage() {
                   size="default"
                   showIcon={false}
                   disabled={!completion.isComplete}
-                  className={`transition-all duration-300 ${
+                  className={`${style.perf.transition.fast} ${
                     completion.isComplete 
-                      ? 'hover:scale-105' 
+                      ? 'hover:scale-105 transform' 
                       : 'cursor-not-allowed opacity-50'
                   }`}
                 >

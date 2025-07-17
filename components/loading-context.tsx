@@ -1,6 +1,7 @@
 'use client'
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 
 // LoadingBar component
 interface LoadingBarProps {
@@ -101,6 +102,8 @@ interface LoadingContextType {
   setLoading: (key: string, loading: boolean) => void
   globalLoading: boolean
   setGlobalLoading: (loading: boolean) => void
+  clearAllLoading: () => void
+  clearNavigationLoading: () => void
 }
 
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined)
@@ -120,6 +123,7 @@ interface LoadingProviderProps {
 export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) => {
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({})
   const [globalLoading, setGlobalLoading] = useState(false)
+  const pathname = usePathname()
 
   const isLoading = useCallback((key: string) => {
     return loadingStates[key] || false
@@ -137,25 +141,57 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
     })
   }, [])
 
+  const clearAllLoading = useCallback(() => {
+    setLoadingStates({})
+    setGlobalLoading(false)
+  }, [])
+
+  const clearNavigationLoading = useCallback(() => {
+    setLoadingStates(prev => {
+      const newState = { ...prev }
+      Object.keys(newState).forEach(key => {
+        if (key.startsWith('sidebar-') || 
+            key.startsWith('nav-') || 
+            key.startsWith('tab-') ||
+            key.includes('navigation') ||
+            key.includes('back-to')) {
+          delete newState[key]
+        }
+      })
+      return newState
+    })
+  }, [])
+
+  // Clear navigation-related loading states when pathname changes
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      clearNavigationLoading()
+    }, 150) // Short delay to ensure navigation has started
+
+    return () => clearTimeout(timeoutId)
+  }, [pathname, clearNavigationLoading])
+
   const value: LoadingContextType = {
     isLoading,
     setLoading,
     globalLoading,
     setGlobalLoading,
+    clearAllLoading,
+    clearNavigationLoading,
   }
 
-  // Check if any loading is active
+  // Check if any loading is active for the loading bar
   const hasActiveLoading = globalLoading || Object.keys(loadingStates).length > 0
 
   return (
     <LoadingContext.Provider value={value}>
       {children}
-      {/* Loading bar removed */}
+      <LoadingBar isLoading={hasActiveLoading} />
     </LoadingContext.Provider>
   )
 }
 
-// Custom hook for router navigation with loading
+// Enhanced router hook with automatic loading management
 export const useOptimizedRouter = () => {
   const { setLoading } = useLoading()
   
@@ -167,13 +203,34 @@ export const useOptimizedRouter = () => {
     import('next/navigation').then(({ useRouter }) => {
       const router = useRouter()
       router.push(url)
-      
-      // Clear loading after navigation
-      setTimeout(() => {
-        setLoading(key, false)
-      }, 500)
+      // Loading will be cleared automatically by pathname change
+    }).catch(() => {
+      // Fallback: clear loading if navigation fails
+      setLoading(key, false)
     })
   }, [setLoading])
 
   return { push }
+}
+
+// Custom hook for navigation with loading
+export const useLoadingNavigation = () => {
+  const { setLoading } = useLoading()
+  
+  const navigateWithLoading = useCallback((
+    navigationFn: () => void,
+    loadingKey: string = `nav-${Date.now()}`
+  ) => {
+    setLoading(loadingKey, true)
+    try {
+      navigationFn()
+      // Loading will be cleared automatically by pathname change
+    } catch (error) {
+      // Clear loading if navigation fails
+      setLoading(loadingKey, false)
+      throw error
+    }
+  }, [setLoading])
+
+  return { navigateWithLoading }
 }

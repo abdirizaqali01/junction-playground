@@ -1,12 +1,11 @@
-// app/events/[id]/teams/my-team/page.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Sidebar from '@/components/sidebar'
 import { MainButton } from "@/components/attachables/main-button"
+import { useLoading } from '@/components/loading-context'
 import * as style from '@/styles/design-system'
-import { initializeCSSVariables } from '@/styles/design-system'
 
 const userProfile = {
   name: 'Junction Hack',
@@ -18,15 +17,11 @@ const userProfile = {
 export default function MyTeamPage() {
   const router = useRouter()
   const params = useParams()
+  const { setLoading } = useLoading()
   const eventId = params?.id as string
   
   const [activeTab, setActiveTab] = useState('my-team')
   const [hasTeam, setHasTeam] = useState(true) // Change to false to see empty state
-
-  //-------------------------------- DESIGN SYSTEM ACTUATOR --------------------------------//
-  useEffect(() => {
-    initializeCSSVariables();
-  }, []);
 
   // Mock team data
   const teamData = {
@@ -45,6 +40,7 @@ export default function MyTeamPage() {
   }
 
   const handleBackToHome = () => {
+    setLoading('back-to-dashboard', true)
     router.push(`/events/${eventId}/dash`)
   }
 
@@ -52,27 +48,50 @@ export default function MyTeamPage() {
     setActiveTab(tabId)
     switch(tabId) {
       case 'all-teams':
+        setLoading('tab-all-teams', true)
         router.push(`/events/${eventId}/teams`)
         break
       case 'my-team':
+        setLoading('tab-my-team', true)
         router.push(`/events/${eventId}/teams/my-team`)
         break
       case 'candidates':
+        setLoading('tab-candidates', true)
         router.push(`/events/${eventId}/teams/candidates`)
         break
     }
   }
 
+  const handleViewChallenges = () => {
+    setLoading('view-challenges', true)
+    router.push(`/events/${eventId}/challenges`)
+  }
+
   const handleEditTeam = () => {
+    setLoading('edit-team', true)
     console.log('Edit team')
+    // Simulate API call
+    setTimeout(() => {
+      setLoading('edit-team', false)
+    }, 1000)
   }
 
   const handleDeleteTeam = () => {
+    setLoading('delete-team', true)
     console.log('Delete team')
+    // Simulate API call
+    setTimeout(() => {
+      setLoading('delete-team', false)
+    }, 1000)
   }
 
   const handleSeeMoreMember = (memberId: number) => {
+    setLoading(`member-${memberId}`, true)
     console.log('See more for member:', memberId)
+    // Simulate API call
+    setTimeout(() => {
+      setLoading(`member-${memberId}`, false)
+    }, 800)
   }
 
   return (
@@ -116,7 +135,7 @@ export default function MyTeamPage() {
             </div>
             
             <MainButton 
-              onClick={() => router.push(`/events/${eventId}/challenges`)}
+              onClick={handleViewChallenges}
               variant="outlineGray"
               size="sm"
               className="w-40 text-center justify-center"
@@ -158,7 +177,7 @@ export default function MyTeamPage() {
                   {teamData.availableRoles.map((role, index) => (
                     <span
                       key={index}
-                      className={`${style.font.mono.text} px-6 py-2 bg-transparent border border-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] rounded-full text-sm`}
+                      className={`${style.font.mono.text} px-6 py-2 bg-transparent border border-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] ${style.border.radius.full} text-sm`}
                     >
                       {role}
                     </span>
@@ -175,10 +194,10 @@ export default function MyTeamPage() {
                   {teamData.members.map((member) => (
                     <div
                       key={member.id}
-                      className="bg-[var(--color-white-opacity10)] rounded-xl p-4 flex items-center justify-between w-full max-w-3xl border border-[var(--color-white-opacity15)]"
+                      className={`${style.box.gray.bottom} p-4 flex items-center justify-between w-full max-w-3xl`}
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-[var(--color-light-opacity40)] rounded-full flex items-center justify-center flex-shrink-0">
+                        <div className={`w-12 h-12 bg-[var(--color-light-opacity40)] ${style.border.radius.full} flex items-center justify-center flex-shrink-0`}>
                           <span className={`${style.font.mono.text} text-[var(--color-dark-opacity100)] text-sm font-medium`}>
                             {member.name.split(' ').map(n => n[0]).join('')}
                           </span>
