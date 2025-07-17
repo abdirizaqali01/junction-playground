@@ -3,6 +3,17 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { ChevronRight, ChevronLeft, Check, AlertCircle, Calendar, MapPin, Globe, X, Loader2 } from 'lucide-react'
+import {
+  steps,
+  countryOptions,
+  languageOptions,
+  dietaryOptions,
+  roleOptions,
+  skillOptions,
+  themeOptions,
+  experienceOptions,
+  expertiseOptions
+} from '../../../../lib/registrationOptions'
 
 // Event interface based on your API response
 interface Event {
@@ -62,61 +73,6 @@ interface FormData {
   termsAccepted: boolean
 }
 
-const steps = [
-  { id: 1, name: 'Basic Details', completed: false },
-  { id: 2, name: 'Skills & Interests', completed: false },
-  { id: 3, name: 'Links', completed: false },
-  { id: 4, name: 'Opportunities', completed: false },
-  { id: 5, name: 'Other', completed: false },
-]
-
-const countryOptions = [
-  'Finland (+358)', 'United States (+1)', 'United Kingdom (+44)', 'Germany (+49)', 
-  'Sweden (+46)', 'Norway (+47)', 'Denmark (+45)', 'France (+33)', 'Spain (+34)', 'Other'
-]
-
-const languageOptions = [
-  'English', 'Finnish', 'Swedish', 'German', 'French', 'Spanish', 'Italian', 
-  'Portuguese', 'Russian', 'Chinese', 'Japanese', 'Korean', 'Arabic', 'Hindi', 'Other'
-]
-
-const dietaryOptions = [
-  'Vegetarian', 'Vegan', 'Gluten free', 'Dairy free', 'Nut allergy', 
-  'Shellfish allergy', 'Halal', 'Kosher', 'Other'
-]
-
-const roleOptions = [
-  'Frontend Developer', 'Backend Developer', 'Full Stack Developer', 'Mobile Developer',
-  'Data Scientist', 'Machine Learning Engineer', 'DevOps Engineer', 'UI/UX Designer',
-  'Product Manager', 'Business Analyst', 'Marketing Specialist', 'Other'
-]
-
-const skillOptions = [
-  'JavaScript', 'Python', 'React', 'Node.js', 'Machine Learning', 'Data Analysis',
-  'UI/UX Design', 'Project Management', 'Mobile Development', 'Cloud Computing',
-  'Blockchain', 'Cybersecurity', 'Game Development', 'AR/VR'
-]
-
-const themeOptions = [
-  'Artificial Intelligence', 'Sustainability', 'Healthcare', 'Fintech', 'Education',
-  'Social Impact', 'Gaming', 'IoT', 'Blockchain', 'AR/VR', 'Cybersecurity', 'Open Innovation'
-]
-
-const experienceOptions = [
-  { value: '1', label: 'Under 1 year' },
-  { value: '2', label: '1-2 years' },
-  { value: '3', label: '3-4 years' },
-  { value: '4', label: '5-7 years' },
-  { value: '5', label: '8+ years' }
-]
-
-const expertiseOptions = [
-  { value: '1', label: 'Basic proficiency' },
-  { value: '2', label: 'Novice' },
-  { value: '3', label: 'Intermediate' },
-  { value: '4', label: 'Advanced' },
-  { value: '5', label: 'Expert' }
-]
 
 export default function HackathonRegistration() {
   const params = useParams()
@@ -596,7 +552,7 @@ export default function HackathonRegistration() {
               className="w-full bg-[#2a2a2a] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#55D186] focus:outline-none transition-colors"
             >
               <option value="">Select a role...</option>
-              {roleOptions.map(role => (
+              {roleOptions.sort().map(role => (
                 <option key={role} value={role}>{role}</option>
               ))}
             </select>
@@ -665,7 +621,7 @@ export default function HackathonRegistration() {
               className="w-full bg-[#2a2a2a] border border-[#444] rounded-lg px-4 py-3 text-white focus:border-[#55D186] focus:outline-none transition-colors"
             >
               <option value="">Select a skill...</option>
-              {skillOptions.map(skill => (
+              {skillOptions.sort().map(skill => (
                 <option key={skill} value={skill}>{skill}</option>
               ))}
             </select>
@@ -1098,10 +1054,10 @@ export default function HackathonRegistration() {
                   <Globe size={14} />
                   <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs ${
                     event.status === 'PUBLISHED' 
-                      ? 'bg-[#55D186] text-black' 
+                      ? 'bg-[var(--color-light-opacity100)] text-[var(--color-dark-opacity100)]' 
                       : event.status === 'ONGOING'
-                        ? 'bg-[#FFB800] text-black'
-                        : 'bg-[#FF8383] text-black'
+                        ? 'bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)]'
+                        : 'bg-[var(--color-alerts-opacity100)] text-[var(--color-light-opacity100)]'
                   }`}>
                     {event.status}
                   </span>

@@ -25,6 +25,7 @@ const mainButtonVariants = cva(
         default: "px-6 py-3 text-[0.9rem]",
         sm: "px-6 py-2 text-sm",
         lg: "px-8 py-4 text-[1rem]",
+        none: "px-0 py-3 text-[0.9rem]",
       },
     },
     defaultVariants: {

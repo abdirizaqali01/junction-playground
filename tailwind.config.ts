@@ -20,8 +20,9 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-space-grotesk)"],
-        "space-mono": ["var(--font-space-mono)"],
+        'space-grotesk': ['var(--font-space-grotesk)', 'sans-serif'],
+        'space-mono': ['var(--font-space-mono)', 'monospace'],
+        'sans': ['var(--font-space-grotesk)', 'sans-serif'], 
       },
       colors: {
         border: "hsl(var(--border))",

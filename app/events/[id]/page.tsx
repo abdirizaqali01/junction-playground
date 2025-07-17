@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react'
 import { Footer } from "@/components/footer"
 import Navbar from '@/components/navi'
 import * as style from '@/styles/design-system'
+import Loading from '@/components/loading'
 
 interface Event {
   event_id: number
@@ -39,7 +40,7 @@ const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
     <div className={`bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] ${style.border.radius.middle} overflow-hidden p-2`}>
       <div className="flex">
         {/* Left side - CO badge - darker */}
-        <div className={`w-1/4 bg-[var(--color-dark-opacity50)] flex items-center justify-center border border-[var(--color-white-opacity10)] ${style.border.radius.inner} flex-shrink-0`}>
+        <div className={`w-1/4 aspect-square bg-[var(--color-dark-opacity50)] flex items-center justify-center border border-[var(--color-white-opacity10)] ${style.border.radius.inner} flex-shrink-0`}>
           <div className="text-[var(--color-light-opacity60)] text-6xl font-bold font-space-grotesk">CO</div>
         </div>
         
@@ -98,6 +99,22 @@ export default function EventDetailPage() {
   useEffect(() => {
     initializeCSSVariables()
   }, [])
+
+  // Scroll Disabled when popup is open
+  useEffect(() => {
+    if (showChallengesPopup) {
+      // Disable body scrolling when popup is open
+      document.body.classList.add('overflow-hidden')
+    } else {
+      // Re-enable body scrolling when popup is closed
+      document.body.classList.remove('overflow-hidden')
+    }
+
+    // Cleanup: ensure scrolling is restored when component unmounts
+    return () => {
+      document.body.classList.remove('overflow-hidden')
+    }
+  }, [showChallengesPopup])
 
   // Fetch event data and challenges
   useEffect(() => {
@@ -208,16 +225,7 @@ export default function EventDetailPage() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk">
-        <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-        <div className="pt-20 flex justify-center items-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary-opacity100)] mx-auto mb-4"></div>
-            <p className="text-[var(--color-light-opacity60)]">Loading event...</p>
-          </div>
-        </div>
-        <Footer />
-      </div>
+      <Loading message='Loading event details...' />
     )
   }
 
@@ -250,6 +258,9 @@ export default function EventDetailPage() {
   const similarEvents = allEvents.filter(e => e.event_id !== eventId).slice(0, 2)
   const eventChallenges = getEventChallenges(eventId)
 
+  //------------------------------------------------------------------------------------//
+  //------------------- MAIN CONTENT -------------------//
+  //------------------------------------------------------------------------------------//
   return (
     <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk">
       {/* Header */}
@@ -279,17 +290,18 @@ export default function EventDetailPage() {
       <div className="pt-20">
         <div className="container mx-auto px-6 py-6 max-w-7xl">
           {/* Back to Events Button */}
-          <div className="mb-6">
+          <div className="mb-6  justify-start items-center flex">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+              <path d="M19 12H5"/>
+              <path d="M12 19l-7-7 7-7"/>
+            </svg>
             <MainButton 
               variant="ghost"
+              size="none"
               onClick={() => router.push('/events')}
               showIcon={false}
-              className="text-[var(--color-light-opacity60)] hover:text-[var(--color-light-opacity100)] justify-start items-center flex"
+              className="text-[var(--color-light-opacity60)] hover:text-[var(--color-light-opacity100)]"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-                <path d="M19 12H5"/>
-                <path d="M12 19l-7-7 7-7"/>
-              </svg>
               Back to Events
             </MainButton>
           </div>
@@ -588,8 +600,8 @@ export default function EventDetailPage() {
           </div>
 
             {/* Similar Events Section - Full Width */}
-            <div className="mt-8">
-              <h2 className="text-2xl font-bold text-[var(--color-light-opacity100)] mb-6 font-space-grotesk">Similar Events</h2>
+            <div className={style.sectionGap.top}>
+              <h2 className={style.sectionTitle.grotesk}>Similar Events</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {similarEvents.map((similarEvent, index) => (
@@ -666,14 +678,15 @@ export default function EventDetailPage() {
         </div>
       </div>
       
+
       {/*--------------- Challenges Popup ---------------*/}
       {showChallengesPopup && (
         <>
           {/* Blur overlay for entire screen */}
-          <div className="fixed inset-0 bg-neutral-800/80 backdrop-blur-sm z-40" />
+          <div className="fixed inset-0 bg-neutral-800/80 backdrop-blur-sm z-40 overflow-y-none" />
           
           {/* Popup Window */}
-          <div className="fixed inset-0 top-20 z-50 flex items-start justify-center pt-8">
+          <div className="fixed inset-0 top-20 z-50 flex items-start justify-center pt-8 overflow-y-none">
             <div className={`bg-neutral-900 border border-neutral-700 ${style.border.radius.outer} w-full max-w-6xl mx-4 max-h-[calc(100vh-120px)] overflow-hidden px-8 py-6`}>
               {/* Window Header */}
               <div className="flex items-center justify-between">
@@ -689,7 +702,7 @@ export default function EventDetailPage() {
               </div>
               
               {/* Scrollable Content */}
-              <div className="overflow-y-auto max-h-[calc(100vh-200px)] mt-6">
+              <div className="overflow-y-auto max-h-[calc(75vh)] mt-6 py-1 px-2">
                 {challenges.length > 0 ? (
                   <div className="space-y-6">
                     {challenges.map((challenge) => (

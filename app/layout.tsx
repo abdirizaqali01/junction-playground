@@ -1,8 +1,16 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Space_Mono } from "next/font/google"
+import { Space_Grotesk, Space_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { colors } from "@/styles/design-system"
+
+const spaceGrotesk = Space_Grotesk({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-space-grotesk",
+})
 
 const spaceMono = Space_Mono({
   weight: ["400", "700"],
@@ -11,10 +19,20 @@ const spaceMono = Space_Mono({
   variable: "--font-space-mono",
 })
 
+const generateCSSVariables = () => {
+  let cssVars = '';
+  Object.entries(colors).forEach(([colorName, shades]) => {
+    Object.entries(shades).forEach(([shade, value]) => {
+      cssVars += `--color-${colorName}-${shade}: ${value}; `;
+    });
+  });
+  return cssVars;
+};
+
 export const metadata: Metadata = {
   title: "Junction Platform - The World's Leading Builder Ecosystem",
   description: "Connect, collaborate, and create the future with a global community of innovators and problem-solvers.",
-  generator: 'v0.dev',
+  generator: 'Interract',
   icons: {
     icon: '/junction_platform_logo.png',
     shortcut: '/junction_platform_logo.png',
@@ -29,7 +47,33 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="dark">
-      <body className={`${spaceMono.variable} font-sans`}>
+      <head>
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              :root {
+                ${generateCSSVariables()}
+              }
+              html.dark {
+                ${generateCSSVariables()}
+              }
+            `,
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.style.colorScheme = 'dark';
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className={`${spaceMono.variable} ${spaceGrotesk.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           {children}
         </ThemeProvider>
