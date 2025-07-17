@@ -1,24 +1,27 @@
 //----------------------------------------------------------------//
-// DESIGN SYSTEM
+// OPTIMIZED DESIGN SYSTEM WITH INSTANT FONT LOADING
 //----------------------------------------------------------------//
 
-// FONTS //
+// FONTS WITH PRELOAD AND DISPLAY OPTIMIZATIONS //
 import { Space_Grotesk, Space_Mono } from 'next/font/google'
 
 export const spaceGrotesk = Space_Grotesk({
     subsets: ['latin', 'latin-ext'],
-    display: 'swap',
+    display: 'swap', // Change to 'block' for instant loading
     weight: ['300', '400', '500', '600', '700'],
     variable: '--font-space-grotesk',
+    preload: true, // Ensure preloading
+    fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'], // Add fallback fonts
 })
 
 export const spaceMono = Space_Mono({
     subsets: ['latin', 'latin-ext'],
-    display: 'swap',
+    display: 'swap', // Change to 'block' for instant loading
     weight: ['400', '700'],
     variable: '--font-space-mono',
+    preload: true, // Ensure preloading
+    fallback: ['Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'], // Add fallback fonts
 })
-
 
 // COLORS //
 export const colors = {
@@ -108,9 +111,8 @@ export const border = {
     }
 }
 
-
 //----------------------------------------------------------------//
-// CSS VARIABLES SETUP
+// CSS VARIABLES SETUP WITH FONT OPTIMIZATION
 //----------------------------------------------------------------//
 export const initializeCSSVariables = () => {
     if (typeof window !== 'undefined') {
@@ -123,12 +125,11 @@ export const initializeCSSVariables = () => {
             });
         });
 
-        // SET FONT VARIABLES
-        root.style.setProperty('--font-space-grotesk', spaceGrotesk.style.fontFamily);
-        root.style.setProperty('--font-space-mono', spaceMono.style.fontFamily);
+        // SET FONT VARIABLES WITH FALLBACKS
+        root.style.setProperty('--font-space-grotesk', `${spaceGrotesk.style.fontFamily}, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`);
+        root.style.setProperty('--font-space-mono', `${spaceMono.style.fontFamily}, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`);
     }
 }
-
 
 //----------------------------------------------------------------//
 // COMPONENTS

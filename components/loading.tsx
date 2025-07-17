@@ -1,9 +1,4 @@
 import * as React from "react"
-import { useState, useEffect } from 'react'
-import * as style from '@/styles/design-system'
-import { initializeCSSVariables } from '@/styles/design-system'
-import Image from 'next/image'
-import { MainButton } from "@/components/attachables/main-button"
 
 interface LoadingProps {
   message?: string;

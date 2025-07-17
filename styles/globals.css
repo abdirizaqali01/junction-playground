@@ -2,8 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Font optimization - prevent invisible text during font swap */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-display: block; /* Show fallback immediately, then swap when loaded */
+  font-style: normal;
+  font-weight: 300 700;
+  src: url('https://fonts.gstatic.com/s/spacegrotesk/v16/V8mDoQDjQSkFtoMM3T6r8E7mPbF4C8Q.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-display: block; /* Show fallback immediately, then swap when loaded */
+  font-style: normal;
+  font-weight: 400 700;
+  src: url('https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRYE8.woff2') format('woff2');
+}
+
+/* Set fallback fonts immediately */
 body {
-  font-family: var(--font-space-grotesk);
+  font-family: var(--font-space-grotesk), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-display: block;
+}
+
+/* Prevent layout shift by setting font metrics */
+.font-space-grotesk {
+  font-family: var(--font-space-grotesk), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-display: block;
+}
+
+.font-space-mono {
+  font-family: var(--font-space-mono), Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-display: block;
+}
+
+/* Preload critical fonts */
+@font-face {
+  font-family: 'Space Grotesk Preload';
+  font-display: block;
+  font-style: normal;
+  font-weight: 600;
+  src: url('https://fonts.gstatic.com/s/spacegrotesk/v16/V8mDoQDjQSkFtoMM3T6r8E7mPbF4C8Q.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Grotesk Preload';
+  font-display: block;
+  font-style: normal;
+  font-weight: 700;
+  src: url('https://fonts.gstatic.com/s/spacegrotesk/v16/V8mDoQDjQSkFtoMM3T6r8E7mPbF4C8Q.woff2') format('woff2');
 }
 
 @layer utilities {
