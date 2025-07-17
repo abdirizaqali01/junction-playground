@@ -14,6 +14,7 @@ import {
   experienceOptions,
   expertiseOptions
 } from '../../../../lib/registrationOptions'
+import Loading from '@/components/loading'
 
 // Event interface based on your API response
 interface Event {
@@ -255,8 +256,7 @@ export default function HackathonRegistration() {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
         <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="w-8 h-8 animate-spin text-[#55D186]" />
-          <p className="text-[#FFFFFF99]">Loading event details...</p>
+          <Loading message="Loading Registration" />
         </div>
       </div>
     )

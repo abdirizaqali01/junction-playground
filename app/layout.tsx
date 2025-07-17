@@ -48,12 +48,28 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="dark">
       <head>
+        {/* Preload font files */}
+        <link
+          rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+          as="style"
+        />
+        <link
+          rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap"
+          as="style"
+        />
+
+        {/* Apply fonts immediately */}
         <style
           dangerouslySetInnerHTML={{
             __html: `
               :root {
                 ${generateCSSVariables()}
               }
+              html {
+                font-family: ${spaceGrotesk.style.fontFamily}, system-ui, sans-serif;
+              }s
               html.dark {
                 ${generateCSSVariables()}
               }

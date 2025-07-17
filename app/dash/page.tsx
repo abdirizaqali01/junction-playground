@@ -111,16 +111,16 @@ export default function JunctionDashboard() {
                     <hr className="border-[var(--color-white-opacity30)] mb-2" />
                     <div className="mt-4 space-y-2">
                       <div className="flex justify-between items-center py-1">
-                        <span className={style.font.grotesk.medium + " text-[var(--color-light-opacity100)] text-[1rem]"}>Team Set</span>
-                        <span className={style.font.mono.text + " text-[var(--color-light-opacity50)] text-[0.9rem]"}>Today at 17:00</span>
+                        <span className={style.font.grotesk.medium + " text-[var(--color-light-opacity100)] text-[0.9rem]"}>Team Set</span>
+                        <span className={style.font.mono.text + " text-[var(--color-light-opacity50)] text-[0.8rem]"}>Today at 17:00</span>
                       </div>
                       <div className="flex justify-between items-center py-1">
-                        <span className={style.font.grotesk.medium + " text-[var(--color-light-opacity100)] text-[1rem]"}>Project Draft</span>
-                        <span className={style.font.mono.text + " text-[var(--color-light-opacity50)] text-[0.9rem]"}>Tomorrow at 21:00</span>
+                        <span className={style.font.grotesk.medium + " text-[var(--color-light-opacity100)] text-[0.9rem]"}>Project Draft</span>
+                        <span className={style.font.mono.text + " text-[var(--color-light-opacity50)] text-[0.8rem]"}>Tomorrow at 21:00</span>
                       </div>
                       <div className="flex justify-between items-center py-1">
-                        <span className={style.font.grotesk.medium + " text-[var(--color-light-opacity100)] text-[1rem]"}>Final Submission</span>
-                        <span className={style.font.mono.text + " text-[var(--color-light-opacity50)] text-[0.9rem]"}>23rd of November at 21:00</span>
+                        <span className={style.font.grotesk.medium + " text-[var(--color-light-opacity100)] text-[0.9rem]"}>Final Submission</span>
+                        <span className={style.font.mono.text + " text-[var(--color-light-opacity50)] text-[0.8rem]"}>23rd of November at 21:00</span>
                       </div>
                     </div>
                   </div>
@@ -129,7 +129,7 @@ export default function JunctionDashboard() {
                   <div className={style.box.gray.top + " p-4"}>
                     <h2 className={style.font.grotesk.main + "text-white font-bold text-lg mb-4"}>Announcements</h2>
                     <hr className="border-[var(--color-white-opacity30)] mb-2" />
-                    <p className={style.font.mono.text + " text-[var(--color-light-opacity50)] text-[0.9rem] mt-4 py-1"}>Most recent announcements.</p>
+                    <p className={style.font.mono.text + " text-[var(--color-light-opacity50)] text-[0.8rem] mt-4 py-1"}>Most recent announcements.</p>
                   </div>
                 </div>
               </div>
