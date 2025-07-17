@@ -1,8 +1,7 @@
 import * as React from "react"
-import { useState, useEffect } from 'react'
 import Link from "next/link"
 import * as style from '@/styles/design-system'
-import { initializeCSSVariables } from '@/styles/design-system';
+// REMOVED: import { initializeCSSVariables } from '@/styles/design-system';
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 import Image from 'next/image';
@@ -35,7 +34,6 @@ const mainButtonVariants = cva(
   }
 )
 
-
 export interface MainButtonProps 
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof mainButtonVariants> {
@@ -46,16 +44,16 @@ export interface MainButtonProps
 
 const MainButton = React.forwardRef<HTMLButtonElement, MainButtonProps>(
   ({ className, variant, size, href, children = "Enter Event", showIcon = true, ...props }, ref) => {
-    //-------------------------------- DESIGN SYSTEM ACTUATOR --------------------------------//
-      useEffect(() => {
-        initializeCSSVariables();
-      }, []);
+    // REMOVED: Design system actuator - no longer needed
+    // useEffect(() => {
+    //   initializeCSSVariables();
+    // }, []);
 
     const buttonContent = (
       <>
         <span>{children}</span>
         {showIcon && (
-          <Image src="/icons/Right-Arrow.svg" alt="Calendar Check" width={20} height={20} />
+          <Image src="/icons/Right-Arrow.svg" alt="Right Arrow" width={20} height={20} />
         )}
       </>
     )

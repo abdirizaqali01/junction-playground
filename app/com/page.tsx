@@ -1,13 +1,20 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { Footer } from "@/components/footer"
 import Navbar from '@/components/navi'
 import { MainButton } from '@/components/attachables/main-button'
-import { initializeCSSVariables } from '@/styles/design-system'
+import { useLoading } from '@/components/loading-context'
 
 // Community Stats Card Component
-const CommunityCard = ({ icon, number, label, description }) => (
+interface CommunityCardProps {
+  icon: React.ReactNode
+  number: string
+  label: string
+  description: string
+}
+
+const CommunityCard = ({ icon, number, label, description }: CommunityCardProps) => (
   <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-6 text-center hover:border-[var(--color-primary-opacity100)] transition-colors">
     <div className="flex justify-center mb-4">
       {icon}
@@ -20,13 +27,25 @@ const CommunityCard = ({ icon, number, label, description }) => (
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState('Community')
+  const { setLoading } = useLoading()
 
-  // Initialize CSS variables
-  useEffect(() => {
-    initializeCSSVariables()
-  }, [])
+  // REMOVED: initializeCSSVariables() - no longer needed
 
-  const tabs = ['Dashboard', 'Events', 'Community']
+  // Optimized button handlers with loading states
+  const handleJoinDiscord = useCallback(() => {
+    setLoading('join-discord', true)
+    // Simulate external link or action
+    window.open('https://discord.gg/junction', '_blank')
+    // Clear loading after a brief delay
+    setTimeout(() => setLoading('join-discord', false), 1000)
+  }, [setLoading])
+
+  const handleViewGuidelines = useCallback(() => {
+    setLoading('view-guidelines', true)
+    // Navigate to guidelines page or open modal
+    // For now, simulate loading
+    setTimeout(() => setLoading('view-guidelines', false), 1000)
+  }, [setLoading])
 
   return (
     <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)]">
@@ -34,7 +53,6 @@ export default function CommunityPage() {
       <Navbar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
-        tabs={tabs}
       />
 
       {/* Main Content */}
@@ -159,10 +177,20 @@ export default function CommunityPage() {
               Become part of a global community that's shaping the future of technology and innovation.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <MainButton variant="primary" size="lg" showIcon={false}>
+              <MainButton 
+                variant="primary" 
+                size="lg" 
+                showIcon={false}
+                onClick={handleJoinDiscord}
+              >
                 Join Discord
               </MainButton>
-              <MainButton variant="outlineGreen" size="lg" showIcon={false}>
+              <MainButton 
+                variant="outlineGreen" 
+                size="lg" 
+                showIcon={false}
+                onClick={handleViewGuidelines}
+              >
                 View Community Guidelines
               </MainButton>
             </div>

@@ -1,11 +1,11 @@
 'use client'
 import * as React from "react"
 import { useRouter } from 'next/navigation' 
-import { useState, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { Footer } from "@/components/footer"
 import Navbar from '@/components/navi'
 import * as style from '@/styles/design-system'
-import { initializeCSSVariables } from '@/styles/design-system'
+import { useLoading } from '@/components/loading-context'
 import Image from 'next/image'
 import { MainButton } from "@/components/attachables/main-button"
 import { EventCard, Event } from "@/components/event-card"
@@ -33,14 +33,31 @@ export default function JunctionDashboard() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('Dashboard')
   const [selectedEventId, setSelectedEventId] = useState<number | null>(null)
+  const { setLoading } = useLoading()
 
-  useEffect(() => {
-    initializeCSSVariables()
-  }, [])
+  // Optimized event click handler
+  const handleEventClick = useCallback((eventId: number) => {
+    setLoading(`event-${eventId}`, true)
+    router.push(`/events/${eventId}`)
+  }, [router, setLoading])
 
-  const handleEventClick = (eventId: number) => {
-    setSelectedEventId(eventId)
-  }
+  // Optimized "Enter Event" handler
+  const handleEnterEvent = useCallback(() => {
+    setLoading('enter-junction', true)
+    router.push('/events/junction-hackathon')
+  }, [router, setLoading])
+
+  // Optimized "View Event" handler
+  const handleViewEvent = useCallback(() => {
+    setLoading('view-event', true)
+    router.push('/events/sample-event')
+  }, [router, setLoading])
+
+  // Optimized "View All Events" handler
+  const handleViewAllEvents = useCallback(() => {
+    setLoading('view-all-events', true)
+    router.push('/events')
+  }, [router, setLoading])
 
   return (
     <div className="min-h-screen bg-[var(--color-dark-opacity100)]">
@@ -100,7 +117,9 @@ export default function JunctionDashboard() {
                     </div>
                   </div>
                   
-                  <MainButton variant="default" size="default">Enter Event</MainButton>
+                  <MainButton variant="default" size="default" onClick={handleEnterEvent}>
+                    Enter Event
+                  </MainButton>
                 </div>
 
                 {/* Content Sections */}
@@ -229,18 +248,6 @@ export default function JunctionDashboard() {
                   <div className="space-y-3">
                     <div className="border-b border-gray-600">
                       <div className="flex justify-between items-center py-3">
-                        <span className={style.font.grotesk.light + " text-[var(--color-light-opacity100)] text-[1rem]"}>Kickoff & Teambuilding</span>
-                        <span className={style.font.mono.text + " text-[var(--color-white-opacity50)] text-[0.9rem]"}>10:00 - 11:00</span>
-                      </div>   
-                    </div>
-                    <div className="border-b border-gray-600">
-                      <div className="flex justify-between items-center py-3">
-                        <span className={style.font.grotesk.light + " text-[var(--color-light-opacity100)] text-[1rem]"}>Development</span>
-                        <span className={style.font.mono.text + " text-[var(--color-white-opacity50)] text-[0.9rem]"}>11:00 - 15:00</span>
-                      </div> 
-                    </div>
-                    <div className="border-b border-gray-600">
-                      <div className="flex justify-between items-center py-3">
                         <span className={style.font.grotesk.light + " text-[var(--color-light-opacity100)] text-[1rem]"}>Pitch, Judging & Celebration</span>
                         <span className={style.font.mono.text + " text-[var(--color-white-opacity50)] text-[0.9rem]"}>15:00 - 17:00</span>
                       </div> 
@@ -249,7 +256,10 @@ export default function JunctionDashboard() {
                 </div>
 
                 {/* View Event Button */}
-                <button className="bg-white text-black px-8 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors w-[169px] h-12">
+                <button 
+                  className="bg-white text-black px-8 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors w-[169px] h-12"
+                  onClick={handleViewEvent}
+                >
                   View event
                 </button>
               </div>
@@ -280,7 +290,7 @@ export default function JunctionDashboard() {
 
           {/* View All Events Button */}
           <div className="mt-8 flex justify-center">
-            <MainButton variant="gray" showIcon={false} size="default" onClick={() => router.push('/events')}>
+            <MainButton variant="gray" showIcon={false} size="default" onClick={handleViewAllEvents}>
               View All Events
             </MainButton>
           </div>

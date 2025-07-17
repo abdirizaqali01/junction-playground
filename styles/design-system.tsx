@@ -1,29 +1,29 @@
 //----------------------------------------------------------------//
-// OPTIMIZED DESIGN SYSTEM WITH INSTANT FONT LOADING
+// OPTIMIZED DESIGN SYSTEM - NO RUNTIME CSS VARIABLE INITIALIZATION
 //----------------------------------------------------------------//
 
-// FONTS WITH PRELOAD AND DISPLAY OPTIMIZATIONS //
+// FONTS - Optimized for instant loading
 import { Space_Grotesk, Space_Mono } from 'next/font/google'
 
 export const spaceGrotesk = Space_Grotesk({
     subsets: ['latin', 'latin-ext'],
-    display: 'swap', // Change to 'block' for instant loading
+    display: 'block',
     weight: ['300', '400', '500', '600', '700'],
     variable: '--font-space-grotesk',
-    preload: true, // Ensure preloading
-    fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'], // Add fallback fonts
+    preload: true,
+    fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
 })
 
 export const spaceMono = Space_Mono({
     subsets: ['latin', 'latin-ext'],
-    display: 'swap', // Change to 'block' for instant loading
+    display: 'block',
     weight: ['400', '700'],
     variable: '--font-space-mono',
-    preload: true, // Ensure preloading
-    fallback: ['Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'], // Add fallback fonts
+    preload: true,
+    fallback: ['Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
 })
 
-// COLORS //
+// COLORS - Pre-computed for instant access
 export const colors = {
     primary: {
         opacity100: '#55D186',
@@ -47,21 +47,18 @@ export const colors = {
         opacity10: '#55D1861A',
         opacity5: '#55D1860D',
     },
-
     secondary: {
         opacity100: '#9069FF',
         opacity60: '#9069FF99',
         opacity50: '#9069FF80',
         opacity40: '#9069FF66',
     },
-
     alerts: {
         opacity100: '#FF8383',
         opacity60: '#FF838399',
         opacity50: '#FF838380',
         opacity40: '#FF838366',
     },
-
     light: {
         opacity100: '#F6F6F6',
         opacity60: '#F6F6F699',
@@ -73,7 +70,6 @@ export const colors = {
         opacity10: '#F6F6F61A',
         opacity5: '#F6F6F60D',
     },
-
     white: {
         opacity100: '#ffffff',
         opacity90: '#ffffffe6',
@@ -88,7 +84,6 @@ export const colors = {
         opacity10: '#FFFFFF1A', 
         opacity5: '#FFFFFF0D',
     },
-
     dark: {
         opacity100: '#0D0D0D',
         opacity80: '#0D0D0DCC',
@@ -99,10 +94,9 @@ export const colors = {
     }
 }
 
-// BORDER RADIUS //
+// BORDER RADIUS
 export const border = {
     solid: 'border',
-
     radius: {
         full: 'rounded-full',
         outer: 'rounded-[10px]',
@@ -112,78 +106,80 @@ export const border = {
 }
 
 //----------------------------------------------------------------//
-// CSS VARIABLES SETUP WITH FONT OPTIMIZATION
-//----------------------------------------------------------------//
-export const initializeCSSVariables = () => {
-    if (typeof window !== 'undefined') {
-        const root = document.documentElement;
-        
-        // SET COLOR VARIABLE
-        Object.entries(colors).forEach(([colorName, shade]) => {
-            Object.entries(shade).forEach(([shade, value]) => {
-                root.style.setProperty(`--color-${colorName}-${shade}`, value);
-            });
-        });
-
-        // SET FONT VARIABLES WITH FALLBACKS
-        root.style.setProperty('--font-space-grotesk', `${spaceGrotesk.style.fontFamily}, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`);
-        root.style.setProperty('--font-space-mono', `${spaceMono.style.fontFamily}, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`);
-    }
-}
-
-//----------------------------------------------------------------//
-// COMPONENTS
+// REMOVED: initializeCSSVariables function - no longer needed
 //----------------------------------------------------------------//
 
-// SECTION GAPS //
+//----------------------------------------------------------------//
+// COMPONENTS - Optimized for performance
+//----------------------------------------------------------------//
+
+// SECTION GAPS
 export const sectionGap = {
-    top: `pt-[5%]`,
-    bottom: `pb-[5%]`,
+    top: 'pt-[5%]',
+    bottom: 'pb-[5%]',
 }
 
-// SECTION TITLES //
+// SECTION TITLES
 export const sectionTitle = {
-    grotesk: `text-[var(--color-light-opacity100)] font-space-grotesk font-[600] text-[1.7rem] tracking-[-0.01rem] mb-5`,
+    grotesk: 'text-[var(--color-light-opacity100)] font-space-grotesk font-[600] text-[1.7rem] tracking-[-0.01rem] mb-5',
 }
 
-// STATUS BADGE //
+// STATUS BADGE
 export const status = {
     greenLight: `bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] px-4 py-2 ${border.radius.full} text-sm font-light font-[var(--font-space-grotesk)]`,
 }
 
-// FONT TITLE //
+// FONT STYLES - Optimized
 export const font = {
     grotesk: {
-        main: `font-space-grotesk font-[600] tracking-[-0.01rem]`,
-        heavy: `font-space-grotesk font-[700] tracking-[-0.05rem]`,
-        medium: `font-space-grotesk font-[500] tracking-[-0.01rem]`,
-        light: `font-space-grotesk font-[300] tracking-[-0.01rem]`,
+        main: 'font-space-grotesk font-[600] tracking-[-0.01rem]',
+        heavy: 'font-space-grotesk font-[700] tracking-[-0.05rem]',
+        medium: 'font-space-grotesk font-[500] tracking-[-0.01rem]',
+        light: 'font-space-grotesk font-[300] tracking-[-0.01rem]',
     },
-
     mono: {
-        title: `font-space-mono font-[700] tracking-[-0.01rem]`,
-        text: `font-space-mono font-[400] tracking-[-0.03rem]`,
+        title: 'font-space-mono font-[700] tracking-[-0.01rem]',
+        text: 'font-space-mono font-[400] tracking-[-0.03rem]',
     }
 }
 
-// BOX STYLING //
+// BOX STYLING - Optimized
 export const box = {
     gray: {
         bottom: `bg-[var(--color-white-opacity5)] ${border.solid} ${border.radius.outer} border-[var(--color-white-opacity20)]`,
         middle: `bg-[var(--color-white-opacity10)] ${border.solid} ${border.radius.middle} border-[var(--color-white-opacity20)]`,
         top: `bg-[var(--color-white-opacity20)] ${border.solid} ${border.radius.inner} border-[var(--color-white-opacity20)]`,
     },
-
     primary: {
         bottom: `bg-[var(--color-primary-opacity5)] ${border.solid} ${border.radius.outer} border-[var(--color-primary-opacity100)]`,
         middle: `bg-[var(--color-primary-opacity10)] ${border.solid} ${border.radius.middle} border-[var(--color-primary-opacity100)]`,
         top: `bg-[var(--color-primary-opacity20)] ${border.solid} ${border.radius.inner} border-[var(--color-primary-opacity100)]`,
     },
-
     grayPrimary: `bg-[var(--color-white-opacity15)] ${border.solid} ${border.radius.outer} border-[var(--color-primary-opacity100)]`,
 }
 
-// BOX SOMETHING ELSE //
+// TAGS
 export const tag = {
-    main: `bg-[var(--color-light-opacity10)] text-[var(--color-light-opacity90)] px-[8px] ${border.radius.middle} ${border.solid} border-[var(--color-white-opacity10)] border-[0.5px] text-[0.8rem] font-[400] leading-loose font-space-mono]`,
+    main: `bg-[var(--color-light-opacity10)] text-[var(--color-light-opacity90)] px-[8px] ${border.radius.middle} ${border.solid} border-[var(--color-white-opacity10)] border-[0.5px] text-[0.8rem] font-[400] leading-loose font-space-mono`,
+}
+
+// PERFORMANCE UTILITIES
+export const perf = {
+    // Optimized transitions
+    transition: {
+        fast: 'transition-all duration-150 ease-out',
+        smooth: 'transition-all duration-300 ease-in-out',
+        slow: 'transition-all duration-500 ease-in-out',
+    },
+    
+    // Hardware acceleration
+    gpu: 'transform-gpu will-change-transform',
+    
+    // Optimized animations
+    animation: {
+        fadeIn: 'animate-in fade-in duration-300',
+        fadeOut: 'animate-out fade-out duration-300',
+        slideIn: 'animate-in slide-in-from-bottom duration-300',
+        slideOut: 'animate-out slide-out-to-bottom duration-300',
+    }
 }

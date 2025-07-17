@@ -3,7 +3,6 @@ import * as React from "react"
 import { useState, useEffect } from 'react'
 import { Globe } from 'lucide-react'
 import * as style from '@/styles/design-system'
-import { initializeCSSVariables } from '@/styles/design-system'
 import Image from 'next/image'
 import { MainButton } from "@/components/attachables/main-button"
 
@@ -93,9 +92,6 @@ export const EventCard: React.FC<EventCardProps> = ({
   setSelectedEventId 
 }) => {
   
-  useEffect(() => {
-    initializeCSSVariables()
-  }, [])
 
   // Handle card click - uses both setSelectedEventId and onEventClick for flexibility
   const handleCardClick = () => {

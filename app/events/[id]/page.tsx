@@ -1,9 +1,9 @@
 'use client'
 
 import { useRouter, useParams } from 'next/navigation'
-import { initializeCSSVariables } from '@/styles/design-system'
+import { useLoading } from '@/components/loading-context'
 import { MainButton } from '@/components/attachables/main-button'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import { Footer } from "@/components/footer"
 import Navbar from '@/components/navi'
 import * as style from '@/styles/design-system'
@@ -30,6 +30,117 @@ interface Challenge {
   organization_id: number
   name: string
   description: string
+}
+
+// Custom hook for optimized data fetching with caching
+const useEventData = (eventId: number) => {
+  const [event, setEvent] = useState<Event | null>(null)
+  const [allEvents, setAllEvents] = useState<Event[]>([])
+  const [challenges, setChallenges] = useState<Challenge[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchEventData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+
+        // Check cache first
+        const cachedEvents = sessionStorage.getItem('events-cache')
+        const cachedTime = sessionStorage.getItem('events-cache-time')
+        const cachedChallenges = sessionStorage.getItem('challenges-cache')
+        
+        let eventsArray: Event[] = []
+        
+        if (cachedEvents && cachedTime) {
+          const isExpired = Date.now() - parseInt(cachedTime) > 5 * 60 * 1000 // 5 minutes
+          if (!isExpired) {
+            eventsArray = JSON.parse(cachedEvents)
+            setAllEvents(eventsArray)
+            
+            // Find the specific event
+            const selectedEvent = eventsArray.find((e: Event) => e.event_id === eventId)
+            if (selectedEvent) {
+              setEvent(selectedEvent)
+            }
+          }
+        }
+        
+        // If no cached data or expired, fetch from API
+        if (eventsArray.length === 0) {
+          const eventsResponse = await fetch('/api/proxy/events', {
+            headers: { 'Content-Type': 'application/json' }
+          })
+          
+          if (!eventsResponse.ok) {
+            throw new Error(`Failed to fetch events: ${eventsResponse.status}`)
+          }
+          
+          const eventsData = await eventsResponse.json()
+          eventsArray = Array.isArray(eventsData) ? eventsData : [eventsData]
+          
+          // Cache the events data
+          sessionStorage.setItem('events-cache', JSON.stringify(eventsArray))
+          sessionStorage.setItem('events-cache-time', Date.now().toString())
+          
+          setAllEvents(eventsArray)
+          
+          // Find the specific event
+          const selectedEvent = eventsArray.find((e: Event) => e.event_id === eventId)
+          if (selectedEvent) {
+            setEvent(selectedEvent)
+          }
+        }
+
+        // Handle challenges caching
+        let allChallenges: Challenge[] = []
+        
+        if (cachedChallenges && cachedTime) {
+          const isExpired = Date.now() - parseInt(cachedTime) > 5 * 60 * 1000 // 5 minutes
+          if (!isExpired) {
+            allChallenges = JSON.parse(cachedChallenges)
+            setChallenges(allChallenges)
+          }
+        }
+        
+        // If no cached challenges or expired, fetch from API
+        if (allChallenges.length === 0) {
+          for (const event of eventsArray) {
+            try {
+              const challengesResponse = await fetch(`/api/proxy/events/${event.event_id}/challenges`, {
+                headers: { 'Content-Type': 'application/json' }
+              })
+              
+              if (challengesResponse.ok) {
+                const challengesData = await challengesResponse.json()
+                const challengesArray = Array.isArray(challengesData) ? challengesData : [challengesData]
+                allChallenges.push(...challengesArray)
+              }
+            } catch (err) {
+              console.log(`No challenges found for event ${event.event_id}`)
+            }
+          }
+          
+          // Cache the challenges data
+          sessionStorage.setItem('challenges-cache', JSON.stringify(allChallenges))
+          setChallenges(allChallenges)
+        }
+
+      } catch (err) {
+        console.error('API Error:', err)
+        setError(err instanceof Error ? err.message : 'Failed to fetch event data')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (eventId) {
+      fetchEventData()
+    }
+  }, [eventId])
+
+  return { event, allEvents, challenges, loading, error }
 }
 
 // Challenge Card component
@@ -84,107 +195,64 @@ export default function EventDetailPage() {
   const router = useRouter()
   const params = useParams()
   const eventId = parseInt(params.id as string)
+  const { setLoading } = useLoading()
   
   const [activeTab, setActiveTab] = useState('Events')
-  const [event, setEvent] = useState<Event | null>(null)
-  const [allEvents, setAllEvents] = useState<Event[]>([]) // For similar events
-  const [challenges, setChallenges] = useState<Challenge[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [showChallengesPopup, setShowChallengesPopup] = useState(false)
   const [isRegistered, setIsRegistered] = useState(false)
   
+  const { event, allEvents, challenges, loading, error } = useEventData(eventId)
 
-  // Initialize design system CSS variables
-  useEffect(() => {
-    initializeCSSVariables()
-  }, [])
+  // Optimized navigation handlers
+  const handleRegistration = useCallback((eventId: number) => {
+    setLoading(`register-${eventId}`, true)
+    router.push(`/events/${eventId}/registration`)
+  }, [router, setLoading])
+
+  const handleBackToEvents = useCallback(() => {
+    setLoading('back-to-events', true)
+    router.push('/events')
+  }, [router, setLoading])
+
+  const handleEventIdPage = useCallback(() => {
+    setLoading('event-id-page', true)
+    router.push(`/events/${eventId}/idpage`)
+  }, [router, setLoading, eventId])
+
+  const handleEventDashboard = useCallback(() => {
+    setLoading('event-dashboard', true)
+    router.push(`/events/${eventId}/dash`)
+  }, [router, setLoading, eventId])
+
+  const handleSimilarEventClick = useCallback((similarEventId: number) => {
+    setLoading(`similar-event-${similarEventId}`, true)
+    router.push(`/events/${similarEventId}`)
+  }, [router, setLoading])
 
   // Scroll Disabled when popup is open
   useEffect(() => {
     if (showChallengesPopup) {
-      // Disable body scrolling when popup is open
       document.body.classList.add('overflow-hidden')
     } else {
-      // Re-enable body scrolling when popup is closed
       document.body.classList.remove('overflow-hidden')
     }
 
-    // Cleanup: ensure scrolling is restored when component unmounts
     return () => {
       document.body.classList.remove('overflow-hidden')
     }
   }, [showChallengesPopup])
 
-  // Fetch event data and challenges
-  useEffect(() => {
-    const fetchEventData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
+  // Memoized computed values
+  const similarEvents = useMemo(() => {
+    return allEvents.filter(e => e.event_id !== eventId).slice(0, 2)
+  }, [allEvents, eventId])
 
-        // Fetch all events first (matching your original approach)
-        const eventsResponse = await fetch('/api/proxy/events', {
-          headers: { 'Content-Type': 'application/json' }
-        })
-        
-        if (!eventsResponse.ok) {
-          throw new Error(`Failed to fetch events: ${eventsResponse.status}`)
-        }
-        
-        const eventsData = await eventsResponse.json()
-        const eventsArray = Array.isArray(eventsData) ? eventsData : [eventsData]
-        setAllEvents(eventsArray)
-        
-        // Find the specific event
-        const selectedEvent = eventsArray.find((e: Event) => e.event_id === eventId)
-        if (selectedEvent) {
-          setEvent(selectedEvent)
-        }
-
-        // Fetch challenges for each event (matching your original approach)
-        const allChallenges: Challenge[] = []
-        for (const event of eventsArray) {
-          try {
-            const challengesResponse = await fetch(`/api/proxy/events/${event.event_id}/challenges`, {
-              headers: { 'Content-Type': 'application/json' }
-            })
-            
-            if (challengesResponse.ok) {
-              const challengesData = await challengesResponse.json()
-              const challengesArray = Array.isArray(challengesData) ? challengesData : [challengesData]
-              allChallenges.push(...challengesArray)
-            }
-          } catch (err) {
-            console.log(`No challenges found for event ${event.event_id}`)
-          }
-        }
-        setChallenges(allChallenges)
-
-      } catch (err) {
-        console.error('API Error:', err)
-        setError(err instanceof Error ? err.message : 'Failed to fetch event data')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    if (eventId) {
-      fetchEventData()
-    }
-  }, [eventId])
-  
-  const getEventChallenges = (eventId: number) => {
+  const eventChallenges = useMemo(() => {
     return challenges.filter(challenge => challenge.event_id === eventId)
-  }
-
-  // Navigation function for registration
-  const handleRegistration = (eventId: number) => {
-    router.push(`/events/${eventId}/registration`)
-  }
+  }, [challenges, eventId])
 
   // Helper functions
-  const formatDate = (dateString: string) => {
+  const formatDate = useCallback((dateString: string) => {
     if (!dateString) return 'Date of event'
     try {
       return new Date(dateString).toLocaleDateString('en-US', {
@@ -195,9 +263,9 @@ export default function EventDetailPage() {
     } catch {
       return 'Date of event'
     }
-  }
+  }, [])
 
-  const getPlaceholderImage = (index: number) => {
+  const getPlaceholderImage = useCallback((index: number) => {
     const placeholderImages = [
       "https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
@@ -207,9 +275,9 @@ export default function EventDetailPage() {
       "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
     ]
     return placeholderImages[index % placeholderImages.length]
-  }
+  }, [])
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = useCallback((status: string) => {
     switch (status) {
       case 'PUBLISHED':
         return 'bg-[var(--color-primary-opacity20)] text-[var(--color-primary-opacity100)] border-[var(--color-primary-opacity40)]'
@@ -220,7 +288,7 @@ export default function EventDetailPage() {
       default:
         return 'bg-[var(--color-white-opacity10)] text-[var(--color-light-opacity100)] border-[var(--color-white-opacity20)]'
     }
-  }
+  }, [])
 
   // Loading state
   if (loading) {
@@ -241,7 +309,7 @@ export default function EventDetailPage() {
             </p>
             <MainButton 
               variant="primary"
-              onClick={() => router.push('/events')}
+              onClick={handleBackToEvents}
               className="justify-center"
               showIcon={false}
             >
@@ -253,10 +321,6 @@ export default function EventDetailPage() {
       </div>
     )
   }
-
-  // Get similar events (exclude current event)
-  const similarEvents = allEvents.filter(e => e.event_id !== eventId).slice(0, 2)
-  const eventChallenges = getEventChallenges(eventId)
 
   //------------------------------------------------------------------------------------//
   //------------------- MAIN CONTENT -------------------//
@@ -298,7 +362,7 @@ export default function EventDetailPage() {
             <MainButton 
               variant="ghost"
               size="none"
-              onClick={() => router.push('/events')}
+              onClick={handleBackToEvents}
               showIcon={false}
               className="text-[var(--color-light-opacity60)] hover:text-[var(--color-light-opacity100)]"
             >
@@ -393,7 +457,7 @@ export default function EventDetailPage() {
                   <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] font-space-grotesk">Challenges</h2>
                 </div>
                 
-                {challenges.length > 0 ? (
+                {eventChallenges.length > 0 ? (
                   <div className="space-y-4">
                     {/* Preview one challenge */}
                     <div className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg overflow-hidden">
@@ -406,7 +470,7 @@ export default function EventDetailPage() {
                         {/* Right side - Just title */}
                         <div className="flex-1 p-4">
                           <h3 className="text-[var(--color-light-opacity100)] text-lg font-medium font-space-grotesk">
-                            {challenges[0].name || 'Sustainable Generative AI Assistant For Insights'}
+                            {eventChallenges[0].name || 'Sustainable Generative AI Assistant For Insights'}
                           </h3>
                         </div>
                       </div>
@@ -550,7 +614,7 @@ export default function EventDetailPage() {
                       variant="default"
                       className="w-full justify-center"
                       showIcon={false}
-                      onClick={() => router.push(`/events/${eventId}/idpage`)}
+                      onClick={handleEventIdPage}
                     >
                       Event ID
                     </MainButton>
@@ -558,7 +622,7 @@ export default function EventDetailPage() {
                         variant="outlineGreen"
                         className="w-full justify-center"
                         showIcon={false}
-                        onClick={() => router.push(`/events/${eventId}/dash`)}
+                        onClick={handleEventDashboard}
                       >
                         Event Dashboard
                       </MainButton>
@@ -606,7 +670,7 @@ export default function EventDetailPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {similarEvents.map((similarEvent, index) => (
                   <div key={similarEvent.event_id} className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg overflow-hidden group hover:border-[var(--color-white-opacity20)] transition-all cursor-pointer"
-                        onClick={() => router.push(`/events/${similarEvent.event_id}`)}>
+                        onClick={() => handleSimilarEventClick(similarEvent.event_id)}>
                     <div className="relative h-48 bg-[var(--color-white-opacity10)] overflow-hidden">
                       <img 
                         src={similarEvent.cover_image_url || getPlaceholderImage(index)}
@@ -703,9 +767,9 @@ export default function EventDetailPage() {
               
               {/* Scrollable Content */}
               <div className="overflow-y-auto max-h-[calc(75vh)] mt-6 py-1 px-2">
-                {challenges.length > 0 ? (
+                {eventChallenges.length > 0 ? (
                   <div className="space-y-6">
-                    {challenges.map((challenge) => (
+                    {eventChallenges.map((challenge) => (
                       <ChallengeCard key={challenge.challenge_id} challenge={challenge} />
                     ))}
                   </div>

@@ -3,12 +3,13 @@ import type { Metadata } from "next"
 import { Space_Grotesk, Space_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { LoadingProvider } from "@/components/loading-context"
 import { colors } from "@/styles/design-system"
 
 const spaceGrotesk = Space_Grotesk({
   weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"],
-  display: "block", // Changed from "swap" to "block" for instant loading
+  display: "block",
   variable: "--font-space-grotesk",
   preload: true,
   fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
@@ -17,7 +18,7 @@ const spaceGrotesk = Space_Grotesk({
 const spaceMono = Space_Mono({
   weight: ["400", "700"],
   subsets: ["latin"],
-  display: "block", // Changed from "swap" to "block" for instant loading
+  display: "block",
   variable: "--font-space-mono",
   preload: true,
   fallback: ['Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
@@ -144,7 +145,9 @@ export default function RootLayout({
       </head>
       <body className={`${spaceMono.variable} ${spaceGrotesk.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          {children}
+          <LoadingProvider>
+            {children}
+          </LoadingProvider>
         </ThemeProvider>
       </body>
     </html>
