@@ -542,7 +542,7 @@ export default function Sidebar({
             </LoadingButton>
           )}
 
-          <button 
+          {/* <button 
             onClick={handleSidebarToggle} 
             className={`text-white/90 hover:text-white transition-all duration-200 active:scale-95 p-2 rounded-lg hover:bg-white/10 ${
               sidebarState === 'icons' ? 'mx-auto' : 'ml-auto'
@@ -552,7 +552,7 @@ export default function Sidebar({
             <div className="w-5 h-5 flex items-center justify-center">
               {IconCollapse}
             </div>
-          </button>
+          </button> */}
         </div>
 
         {/* Image Placeholder */}

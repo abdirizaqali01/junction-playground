@@ -103,7 +103,7 @@ export default function MyTeamPage() {
       />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10">
+      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10 lg:pb-0 pb-8">
         {/* Header */}
         <div className="">
           <div className="flex items-center justify-between mb-4">

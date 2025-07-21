@@ -157,7 +157,7 @@ export default function HackerpackPage() {
             <h1 className={`${style.font.grotesk.heavy} text-4xl text-[var(--color-light-opacity100)] mb-3`}>
               Hackerpack
             </h1>
-            <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-md leading-relaxed max-w-4xl`}>
+            <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-[0.9rem] leading-relaxed max-w-4xl`}>
               We want you to focus entirely on making your hackathon project as awesome as possible! The software and tools provided by our partners are here to help you unlock your creativity and get the most out of your learning experience during the event.
             </p>
           </div>
@@ -176,7 +176,7 @@ export default function HackerpackPage() {
           ) : (
             <div className="grid grid-cols-1 gap-6">
               {hackerpacks.map((hackerpack, index) => (
-                <div key={hackerpack.hackerpack_id} className={`${style.box.gray.bottom} p-6 flex gap-6`}>
+                <div key={hackerpack.hackerpack_id} className={`${style.box.gray.bottom} p-6 flex flex-col md:flex-row gap-6`}>
                   {/* Image Placeholder */}
                   <div className={`w-48 aspect-square ${style.border.radius.middle} flex items-center justify-center flex-shrink-0 ${getImagePlaceholder(index)}`}>
                     <svg className="w-12 h-12 text-[var(--color-light-opacity40)]" fill="currentColor" viewBox="0 0 16 16">

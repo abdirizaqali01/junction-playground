@@ -26,15 +26,17 @@ const Loading: React.FC<LoadingProps> = ({
   }
 
   const LoadingSpinner = () => (
-    <div className="text-center">
+    <div className="text-center px-4 max-w-sm mx-auto">
       <div className={`animate-spin rounded-full border-b-2 border-[var(--color-primary-opacity100)] mx-auto mb-4 ${sizeClasses[size]}`}></div>
-      <p className={`text-[var(--color-light-opacity60)] ${textSizeClasses[size]}`}>{message}</p>
+      <p className={`text-[var(--color-light-opacity60)] ${textSizeClasses[size]} break-words`}>
+        {message}
+      </p>
     </div>
   )
 
   if (variant === 'fullscreen') {
     return (
-      <div className={`h-[100vh] bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk flex justify-center items-center ${className}`}>
+      <div className={`min-h-[calc(100vh-80px)] lg:min-h-screen w-full bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk flex justify-center items-center p-4 fixed lg:static top-[80px] lg:top-0 left-0 right-0 lg:left-auto lg:right-auto z-10 ${className}`}>
         <LoadingSpinner />
       </div>
     );
@@ -42,8 +44,8 @@ const Loading: React.FC<LoadingProps> = ({
 
   if (variant === 'overlay') {
     return (
-      <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center ${className}`}>
-        <div className="bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk p-8 rounded-lg">
+      <div className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4 ${className}`}>
+        <div className="bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk p-4 sm:p-6 md:p-8 rounded-lg max-w-sm w-full mx-auto">
           <LoadingSpinner />
         </div>
       </div>
@@ -52,7 +54,7 @@ const Loading: React.FC<LoadingProps> = ({
 
   // inline variant
   return (
-    <div className={`flex justify-center items-center p-4 ${className}`}>
+    <div className={`flex justify-center items-center p-2 sm:p-4 w-full ${className}`}>
       <LoadingSpinner />
     </div>
   );
@@ -67,7 +69,7 @@ export const ButtonSpinner: React.FC<{ size?: 'sm' | 'md' | 'lg' }> = ({ size = 
   }
 
   return (
-    <div className={`${sizeClasses[size]} border-2 border-current border-t-transparent rounded-full animate-spin`} />
+    <div className={`${sizeClasses[size]} border-2 border-current border-t-transparent rounded-full animate-spin flex-shrink-0`} />
   )
 }
 

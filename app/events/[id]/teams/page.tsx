@@ -284,7 +284,7 @@ export default function TeamManagementPage() {
           </div>
 
           {/* Tab Navigation */}
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
             <div className="flex space-x-1">
               {[
                 { id: 'all-teams', label: 'All Teams' },

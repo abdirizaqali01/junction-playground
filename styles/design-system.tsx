@@ -111,8 +111,8 @@ export const border = {
 
 // SECTION GAPS
 export const sectionGap = {
-    top: 'pt-[5%]',
-    bottom: 'pb-[5%]',
+    top: 'pt-[10%] lg:pt-[5%]',
+    bottom: 'pt-[10%] lg:pb-[5%]',
 }
 
 // SECTION TITLES

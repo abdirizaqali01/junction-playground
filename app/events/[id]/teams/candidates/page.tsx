@@ -140,7 +140,7 @@ export default function TeamCandidatesPage() {
 
           {/* Application Card Content */}
           {hasApplications ? (
-            <div className="grid grid-cols-3 gap-6 justify-items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center">
               {applications.map((application) => (
                 <div
                   key={application.id}

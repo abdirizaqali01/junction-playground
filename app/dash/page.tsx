@@ -216,7 +216,7 @@ export default function JunctionDashboard() {
     <div className="min-h-screen bg-[var(--color-dark-opacity100)]">
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
       
-      <main className="w-[95%] lg:w-[80%] mx-auto pt-20">
+      <main className="w-[95%] md:w-[95%] lg:w-[80%] mx-auto pt-20">
         {/* Hero section with personalized greeting */}
         <section className="text-center py-[8%]">
           <h1 className={style.font.grotesk.heavy + " text-5xl font-[700]"}>
@@ -247,7 +247,7 @@ export default function JunctionDashboard() {
               </div>
               
               <div className="lg:w-2/3 my-auto">
-                <div className="flex justify-between items-start">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                   <div>
                     <h1 className={style.font.grotesk.main + " text-3xl text-[var(--color-light-opacity100)] mb-2 mr-3 truncate"}>
                       {currentActiveEvent.name}
