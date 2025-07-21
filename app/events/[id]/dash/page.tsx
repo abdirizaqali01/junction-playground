@@ -86,7 +86,7 @@ export default function EventDashboard() {
   }
 
   return (
-    <div className={`min-h-screen text-[${style.colors.light.opacity100}] flex`} style={{ backgroundColor: style.colors.dark.opacity100 }}>
+    <div className={`min-h-screen text-[${style.colors.light.opacity100}] flex bg-[${style.colors.dark.opacity100}]`}>
       <Sidebar
         userProfile={userProfile}
         backToHomeLabel="Back To Home"
@@ -95,23 +95,23 @@ export default function EventDashboard() {
       />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-auto transition-all duration-300 ml-[250px]">
-        <div className="p-4 lg:p-6 pt-[3vh]">
+      <div className="overflow-auto transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10">
+        <div className="">
           {/* Header */}
-          <h1 className={`${style.font.grotesk.heavy} text-3xl lg:text-4xl mb-4 lg:mb-6`} style={{ color: style.colors.light.opacity100 }}>
+          <h1 className={`${style.font.grotesk.heavy} text-[var(--color-light-opacity100)] text-3xl lg:text-4xl mb-4 lg:mb-6`}>
             Dashboard
           </h1>
 
-          {/* Main Content Grid - Dynamic layout with 30% wider announcements */}
+          {/*------------------------------ Main Content Grid - Dynamic layout with 30% wider announcements ------------------------------*/}
           <div className="grid grid-cols-1 lg:grid-cols-10 gap-4 lg:gap-6 mb-4 lg:mb-6 lg:items-start">
             
-            {/* Left Column - Main content */}
-            <div className="lg:col-span-7 space-y-4 lg:space-y-5">
+            {/*--------------- Left Column - Main content ---------------*/}
+            <div className="lg:col-span-7 space-y-4 lg:space-y-6">
               {/* Your Submission Card - Responsive sizing */}
-              <div className={`${style.box.primary.bottom} p-4 lg:p-8 relative overflow-hidden`}>
-                <div className="flex flex-col lg:flex-row items-start gap-4 lg:gap-8">
-                  {/* Left side - Responsive image placeholder with Draft badge */}
-                  <div className="relative w-full lg:w-40 h-32 lg:h-40 rounded-lg flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: style.colors.light.opacity20 }}>
+              <div className={`${style.box.primary.bottom} p-4 lg:p-4 relative overflow-hidden`}>
+                <div className="flex flex-col lg:flex-row items-start gap-4 lg:gap-6">
+                  {/* Left side - Always 1/4 width */}
+                  <div className={style.border.radius.outer + " relative w-full lg:w-1/4 aspect-square flex-shrink-0 flex items-center justify-center"} style={{ backgroundColor: style.colors.light.opacity20 }}>
                     <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-full" style={{ backgroundColor: style.colors.light.opacity30 }}></div>
                     {/* Draft status badge on top of image */}
                     <div className="absolute top-2 lg:top-3 left-2 lg:left-3">
@@ -120,9 +120,9 @@ export default function EventDashboard() {
                       </span>
                     </div>
                   </div>
-                  
-                  {/* Right side - Content */}
-                  <div className="flex-1 flex flex-col justify-between min-h-0">
+
+                  {/* Right side - Always 3/4 width */}
+                  <div className="w-full lg:w-3/4 flex flex-col justify-between min-h-0">
                     {/* Top row - Title and Edit button aligned */}
                     <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mb-4 lg:mb-6">
                       <div className="mb-4 lg:mb-0">
@@ -144,7 +144,7 @@ export default function EventDashboard() {
                     </div>
 
                     {/* Combined card for deadlines - positioned at bottom */}
-                    <div className="rounded-lg p-3 lg:p-4" style={{ backgroundColor: style.colors.white.opacity10 }}>
+                    <div className={`p-3 lg:p-4 ${style.border.radius.middle}`} style={{ backgroundColor: style.colors.white.opacity10 }}>
                       {/* Upcoming Deadlines header */}
                       <div className="pb-2">
                         <h3 className={`${style.font.grotesk.medium} text-sm lg:text-base`} style={{ color: style.colors.light.opacity100 }}>
@@ -157,10 +157,10 @@ export default function EventDashboard() {
                       
                       {/* Draft Submission row */}
                       <div className="flex justify-between items-center pt-2">
-                        <span className={`${style.font.mono.text} text-sm lg:text-base`} style={{ color: style.colors.light.opacity100 }}>
+                        <span className={`${style.font.mono.text} text-[0.95rem] lg:text-[0.95rem]`} style={{ color: style.colors.light.opacity100 }}>
                           Draft Submission
                         </span>
-                        <span className={`${style.font.mono.text} text-sm lg:text-base`} style={{ color: style.colors.light.opacity60 }}>
+                        <span className={`${style.font.mono.text} text-[0.95rem] lg:text-[0.95rem]`} style={{ color: style.colors.light.opacity60 }}>
                           Today at 23:59
                         </span>
                       </div>
@@ -170,11 +170,11 @@ export default function EventDashboard() {
               </div>
 
               {/* Schedule Section - Fixed height with scrolling */}
-              <div className={`${style.box.gray.bottom} p-4 lg:p-5 h-64 flex flex-col`}>
+              <div className={`${style.box.gray.bottom} p-4 lg:p-5 h-[230px] flex flex-col`}>
                 <h2 className={`${style.font.grotesk.heavy} text-lg lg:text-xl mb-3 lg:mb-4 flex-shrink-0`} style={{ color: style.colors.light.opacity100 }}>
                   Schedule
                 </h2>
-                <div className="space-y-2 lg:space-y-3 flex-1 overflow-y-auto">
+                <div className="space-y-2 lg:space-y-3 flex-1 overflow-y-auto pr-3">
                   {scheduleData.map((item, index) => (
                     <div key={index} className="flex items-center justify-between py-2 last:border-b-0" style={{ borderBottom: `1px solid ${style.colors.white.opacity10}` }}>
                       <div className="flex items-center space-x-2 lg:space-x-3">
@@ -194,25 +194,25 @@ export default function EventDashboard() {
               </div>
             </div>
 
-            {/* Right Column - Announcements (constrained height to match left column) */}
+            {/*--------------- Right Column - Announcements (constrained height to match left column) ---------------*/}
             <div className="lg:col-span-3">
-              <div className={`${style.box.gray.bottom} p-4 lg:p-5 flex flex-col max-h-[calc(16rem+20rem+1rem)]`}>
+              <div className={`${style.box.gray.bottom} p-4 lg:p-5 flex flex-col h-[calc(100vh-200px)] lg:h-[505px]`}>
                 <h2 className={`${style.font.grotesk.heavy} text-lg lg:text-xl mb-3 lg:mb-4 flex-shrink-0`} style={{ color: style.colors.light.opacity100 }}>
                   Announcements
                 </h2>
                 
-                <div className="space-y-3 flex-1 overflow-y-auto min-h-0">
+                <div className="space-y-2 flex-1 overflow-y-auto min-h-0 pb-2">
                   {announcementsData.map((announcement) => (
-                    <div key={announcement.id} className="rounded-lg p-3 flex-shrink-0" style={{ backgroundColor: style.colors.white.opacity10 }}>
+                    <div key={announcement.id} className={`${style.border.radius.middle} mr-2 p-3 flex-shrink-0`} style={{ backgroundColor: style.colors.white.opacity10 }}>
                       <div className="flex items-center justify-between mb-2">
-                        <span className={`${style.font.mono.text} font-medium text-xs`} style={{ color: style.colors.light.opacity100 }}>
+                        <span className={`${style.font.mono.text} font-medium text-[0.85rem]`} style={{ color: style.colors.light.opacity100 }}>
                           {announcement.author}
                         </span>
                         <span className={`${style.font.mono.text} text-xs`} style={{ color: style.colors.light.opacity60 }}>
                           {announcement.time}
                         </span>
                       </div>
-                      <p className={`${style.font.mono.text} text-xs leading-relaxed`} style={{ color: style.colors.light.opacity60 }}>
+                      <p className={`${style.font.mono.text} text-[0.8rem] leading-relaxed`} style={{ color: style.colors.light.opacity60 }}>
                         {announcement.content}
                       </p>
                     </div>
@@ -222,12 +222,12 @@ export default function EventDashboard() {
             </div>
           </div>
 
-          {/* Ongoing Side Events - Dynamic sizing */}
+          {/*--------------- Ongoing Side Events - Dynamic sizing ---------------*/}
           <div className="mb-4 lg:mb-6">
-            <div className={`${style.box.grayPrimary} p-3 lg:p-4`}>
+            <div className={`${style.box.graySecondary} p-3 lg:py-5 lg:px-7`}>
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 lg:gap-0">
                 <div className="flex-1">
-                  <span className={`${style.font.mono.text} font-medium text-sm`} style={{ color: style.colors.primary.opacity100 }}>
+                  <span className={`${style.font.mono.title} text-md`} style={{ color: style.colors.primary.opacity100 }}>
                     Ongoing Side Events
                   </span>
                   <div className="flex items-center space-x-4 mt-1">
@@ -247,17 +247,17 @@ export default function EventDashboard() {
             </div>
           </div>
 
-          {/* Quick Actions - Responsive layout */}
+          {/*--------------- Quick Actions - Responsive layout ---------------*/}
           <div className="mb-4 lg:mb-6">
-            <h2 className={`${style.font.grotesk.heavy} text-lg lg:text-xl mb-3 lg:mb-4`} style={{ color: style.colors.light.opacity100 }}>
+            <h2 className={`${style.font.grotesk.heavy} ${style.sectionTitle.grotesk} mb-3 lg:mb-4`} style={{ color: style.colors.light.opacity100 }}>
               Quick Actions
             </h2>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:flex xl:flex-wrap gap-3 lg:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 xl:flex xl:flex-wrap gap-3 lg:gap-4">
               <MainButton 
                 onClick={handleViewChallenges}
                 variant="outlineGray"
-                size="default"
+                size="lg"
                 className="w-full xl:w-auto"
                 showIcon={false}
               >

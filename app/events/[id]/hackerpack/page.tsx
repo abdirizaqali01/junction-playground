@@ -149,15 +149,15 @@ export default function HackerpackPage() {
       />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
+      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10">
         {/* Main Content Area */}
-        <div className="flex-1 p-8 pt-[6%]">
+        <div className="flex-1">
           {/* Page Title and Description */}
-          <div className="mb-8">
-            <h1 className={`${style.font.grotesk.heavy} text-4xl text-[var(--color-light-opacity100)] mb-6`}>
+          <div className="mb-10">
+            <h1 className={`${style.font.grotesk.heavy} text-4xl text-[var(--color-light-opacity100)] mb-3`}>
               Hackerpack
             </h1>
-            <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-lg leading-relaxed max-w-4xl`}>
+            <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-md leading-relaxed max-w-4xl`}>
               We want you to focus entirely on making your hackathon project as awesome as possible! The software and tools provided by our partners are here to help you unlock your creativity and get the most out of your learning experience during the event.
             </p>
           </div>
@@ -188,7 +188,7 @@ export default function HackerpackPage() {
                   {/* Content */}
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
-                      <div className="flex items-center gap-3 mb-4">
+                      <div className="flex items-center gap-3 mb-3">
                         <h3 className={`${style.font.grotesk.medium} text-xl text-[var(--color-light-opacity100)]`}>
                           {hackerpack.title}
                         </h3>

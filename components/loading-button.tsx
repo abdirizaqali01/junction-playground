@@ -77,7 +77,7 @@ export function LoadingButton({
   // Loading and disabled styles
   const stateStyles = (isCurrentlyLoading || disabled) 
     ? 'opacity-70 cursor-not-allowed' 
-    : 'cursor-pointer active:scale-95 hover:scale-105'
+    : 'cursor-pointer active:scale-95 hover:scale-[1.03]'
 
   const combinedClassName = `
     ${baseStyles}

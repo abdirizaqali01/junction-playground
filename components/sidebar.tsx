@@ -4,6 +4,8 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useLoading } from '@/components/loading-context'
 import { LoadingButton, SidebarNavButton } from '@/components/loading-button'
+import * as style from '@/styles/design-system'
+import Image from 'next/image'
 
 interface NavigationItem {
   id: string
@@ -40,30 +42,40 @@ interface SidebarProps {
 
 type SidebarState = 'expanded' | 'icons'
 
+const IconCollapse = (
+  <Image src={`/icons/Bar_Left.svg`} alt="Close NavBar Icon" width={30} height={30} />
+)
+
 const IconHome = (
-  <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-4.5a1 1 0 0 1-1-1v-5.5h-5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
-  </svg>
+  <Image src={`/icons/House_02.svg`} alt="Home Icon" width={18} height={18} />
 )
 
 const IconList = (
-  <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/>
-    <circle cx="4" cy="6" r="1.5" fill="currentColor"/><circle cx="4" cy="12" r="1.5" fill="currentColor"/><circle cx="4" cy="18" r="1.5" fill="currentColor"/>
-  </svg>
+  <Image src={`/icons/List_Unordered.svg`} alt="Challenges Icon" width={18} height={18} />
 )
 
 const IconUsers = (
-  <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-  </svg>
+  <Image src={`/icons/Users_Group.svg`} alt="Team Icon" width={18} height={18} />
 )
 
 const IconLayers = (
-  <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
-  </svg>
+  <Image src={`/icons/Layers.svg`} alt="Hackerpack Icon" width={18} height={18} />
+)
+
+const ProjectSubmission = (
+  <Image src={`/icons/Download_Package.svg`} alt="Hackerpack Icon" width={18} height={18} />
+)
+
+const MentorMeetings = (
+  <Image src={`/icons/User_Check.svg`} alt="Hackerpack Icon" width={18} height={18} />
+)
+
+const ReviewProjects = (
+  <Image src={`/icons/Arrows_Reload_01.svg`} alt="Hackerpack Icon" width={18} height={18} />
+)
+
+const FinalistsVoting = (
+  <Image src={`/icons/Wavy_Check.svg`} alt="Hackerpack Icon" width={18} height={18} />
 )
 
 const ChevronLeft = (
@@ -72,9 +84,20 @@ const ChevronLeft = (
   </svg>
 )
 
-const IconCollapse = (
-  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/>
+// Hamburger Icon
+const HamburgerIcon = (
+  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="3" y1="6" x2="21" y2="6"/>
+    <line x1="3" y1="12" x2="21" y2="12"/>
+    <line x1="3" y1="18" x2="21" y2="18"/>
+  </svg>
+)
+
+// Close Icon
+const CloseIcon = (
+  <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"/>
+    <line x1="6" y1="6" x2="18" y2="18"/>
   </svg>
 )
 
@@ -118,41 +141,25 @@ const defaultNavigationSections: NavigationSection[] = [
         id: 'project-submission',
         label: 'Project Submission',
         href: '#',
-        icon: (
-          <svg className="w-[15px] h-[15px]" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-          </svg>
-        )
+        icon: ProjectSubmission
       },
       {
         id: 'mentor-meetings',
         label: 'Mentor Meetings',
         href: '#',
-        icon: (
-          <svg className="w-[15px] h-[15px]" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1h-2z"/>
-          </svg>
-        )
+        icon: MentorMeetings
       },
       {
         id: 'review-projects',
         label: 'Review Projects',
         href: '#',
-        icon: (
-          <svg className="w-[15px] h-[15px]" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
-          </svg>
-        )
+        icon: ReviewProjects
       },
       {
-        id: 'finalist-voting',
-        label: 'Finalist Voting',
+        id: 'finalists-voting',
+        label: 'Finalists Voting',
         href: '#',
-        icon: (
-          <svg className="w-[15px] h-[15px]" fill="currentColor" viewBox="0 0 16 16">
-            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z"/>
-          </svg>
-        )
+        icon: FinalistsVoting
       }
     ]
   }
@@ -163,13 +170,13 @@ const defaultUserProfile: UserProfile = {
   name: 'Junction Hack',
   email: 'ju@hackjunction.com',
   initials: 'JU',
-  avatarColor: 'bg-green-500'
+  avatarColor: 'bg-[var(--color-primary-opacity100)]',
 }
 
 export default function Sidebar({
   navigationSections = defaultNavigationSections,
   userProfile = defaultUserProfile,
-  backToHomeLabel = 'Back To dashboard',
+  backToHomeLabel = 'Back To Home',
   onBackToHome,
   className = '',
   showImagePlaceholder = true,
@@ -178,6 +185,7 @@ export default function Sidebar({
 }: SidebarProps) {
   const [sidebarState, setSidebarState] = useState<SidebarState>('expanded')
   const [showProfilePopup, setShowProfilePopup] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const pathname = usePathname()
@@ -185,6 +193,10 @@ export default function Sidebar({
 
   const handleSidebarToggle = () => {
     setSidebarState((s: SidebarState) => (s === 'expanded' ? 'icons' : 'expanded'))
+  }
+
+  const handleMobileMenuToggle = () => {
+    setMobileMenuOpen(!mobileMenuOpen)
   }
 
   // Get event ID from props or pathname
@@ -212,7 +224,7 @@ export default function Sidebar({
       '/submissions': 'project-submission',
       '/meetings': 'mentor-meetings',
       '/reviews': 'review-projects',
-      '/voting': 'finalist-voting',
+      '/voting': 'finalists-voting',
     }
     
     // First check if the full pathname (after /events/[id]) matches
@@ -257,7 +269,7 @@ export default function Sidebar({
         item.id === 'project-submission' ? 'submissions' :
         item.id === 'mentor-meetings' ? 'meetings' :
         item.id === 'review-projects' ? 'reviews' :
-        item.id === 'finalist-voting' ? 'voting' :
+        item.id === 'finalists-voting' ? 'voting' :
         item.id === 'team' ? 'teams' : item.id
       }` : item.href
     }))
@@ -278,6 +290,7 @@ export default function Sidebar({
 
   const handleProfileMenuClick = (action: string) => {
     setShowProfilePopup(false)
+    setMobileMenuOpen(false) // Close mobile menu when navigating
     setLoading(`profile-${action}`, true)
     
     // Handle different profile menu actions
@@ -302,6 +315,11 @@ export default function Sidebar({
     }
   }
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [pathname])
+
   // Close popup when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -314,6 +332,20 @@ export default function Sidebar({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [mobileMenuOpen])
+
+  // Change to Dynamic Image Placeholder
   const defaultImagePlaceholder = (
     <div className="w-full h-44 bg-white/20 rounded-lg flex items-center justify-center">
       <div className="text-center">
@@ -324,96 +356,86 @@ export default function Sidebar({
   )
 
   return (
-    <div 
-      className={`${
-        sidebarState === 'icons' ? 'w-[67px]' : 'w-[250px]'
-        } bg-white/10 border-r border-white/15 flex flex-col fixed h-screen
-        overflow-hidden transition-all duration-300 pt-[1%] ${className}`}
-      style={{ 
-        fontFamily: 'Space Grotesk, sans-serif'
-      }}
-    >
-
-      {/* HEADER */}
-      <div className="p-4 flex items-center justify-between">
-        {sidebarState === 'expanded' && (
-          <LoadingButton
-            onClick={handleBackToHome}
-            loadingKey="sidebar-back-home"
-            variant="ghost"
-            size="sm"
-            className="flex items-center gap-2 bg-white/10 hover:bg-white/20 rounded px-3 py-1
-                       text-white/40 hover:text-white/60 text-sm font-medium transition-all duration-200
-                       active:bg-white/5 border-0"
-            icon={ChevronLeft}
-          >
-            {backToHomeLabel}
-          </LoadingButton>
-        )}
-
-        <button 
-          onClick={handleSidebarToggle} 
-          className={`text-white/90 hover:text-white transition-all duration-200 active:scale-95 p-2 rounded-lg hover:bg-white/10 ${
-            sidebarState === 'icons' ? 'mx-auto' : 'ml-auto'
-          }`} 
-          title="Toggle sidebar"
+    <>
+      {/* MOBILE TOP BAR (visible on mobile only) */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 bg-[#191919] border-b border-white/15 px-4 py-3 flex items-center justify-between z-[200]">
+        {/* Left side - Back to Home */}
+        <LoadingButton
+          onClick={handleBackToHome}
+          loadingKey="sidebar-back-home"
+          variant="ghost"
+          size="sm"
+          className={`flex items-center gap-2 bg-white/10 hover:bg-white/20 rounded px-3 py-1
+                     text-white/40 hover:text-white/60 text-sm font-medium transition-all duration-200
+                     active:bg-white/5 border-0 ${style.font.mono.text}`}
+          icon={ChevronLeft}
         >
-          <div className="w-4 h-4 flex items-center justify-center">
-            {IconCollapse}
-          </div>
+          {backToHomeLabel}
+        </LoadingButton>
+
+        {/* Right side - Hamburger Menu */}
+        <button
+          onClick={handleMobileMenuToggle}
+          className="text-white/90 hover:text-white transition-all duration-200 active:scale-95 p-2 rounded-lg hover:bg-white/10"
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? CloseIcon : HamburgerIcon}
         </button>
       </div>
 
-      {/* Image Placeholder */}
-      {sidebarState === 'expanded' && showImagePlaceholder && (
-        <div className="p-4">{imagePlaceholder ?? defaultImagePlaceholder}</div>
-      )}
-
-      {/* Navigation */}
-      <nav className="flex-1 px-4 overflow-y-auto">
-        {updatedNavigationSections.map((section: NavigationSection) => (
-          <div key={section.id} className="mb-6">
-            {sidebarState === 'expanded' && (
-              <div className="pl-[19px] text-xs font-semibold text-white/60 mb-3 uppercase tracking-wider">
-                {section.title}
-              </div>
+      {/* MOBILE OVERLAY MENU */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden fixed inset-0 bg-[#191919] z-[150] flex flex-col">
+          {/* Spacer for top bar */}
+          <div className="h-[60px]"></div>
+          
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto px-4 py-6">
+            {/* Image Placeholder */}
+            {showImagePlaceholder && (
+              <div className="mb-6">{imagePlaceholder ?? defaultImagePlaceholder}</div>
             )}
 
-            <div className="space-y-1">
-              {section.items.map((item: NavigationItem) => (
-                <SidebarNavButton
-                  key={item.id}
-                  href={item.href}
-                  isActive={item.isActive}
-                  icon={<div className="w-[15px] h-[15px] flex items-center justify-center">{item.icon}</div>}
-                  loadingKey={`sidebar-${item.id}`}
-                  sidebarExpanded={sidebarState === 'expanded'}
-                  className={`
-                    w-full flex items-center px-3 py-2 text-sm rounded-[6px] transition-all duration-200 text-left
-                    ${item.isActive 
-                      ? 'text-white/85 bg-white/15' 
-                      : 'text-white/75 hover:text-white hover:bg-white/10'
-                    }
-                    font-medium border-0 justify-start gap-3
-                  `}
-                >
-                  {item.label}
-                </SidebarNavButton>
-              ))}
-            </div>
-          </div>
-        ))}
-      </nav>
+            {/* Navigation */}
+            <nav className="space-y-6">
+              {updatedNavigationSections.map((section: NavigationSection) => (
+                <div key={section.id}>
+                  <div className={`${style.font.grotesk.main} text-xs font-semibold text-white/60 mb-3 uppercase tracking-wider`}>
+                    {section.title}
+                  </div>
 
-      {/* User Profile Card at Bottom */}
-      <div className="relative" ref={profileRef}>
-        <div className="p-4 mt-auto">
-          {sidebarState === 'expanded' ? (
+                  <div className="space-y-2">
+                    {section.items.map((item: NavigationItem) => (
+                      <SidebarNavButton
+                        key={item.id}
+                        href={item.href}
+                        isActive={item.isActive}
+                        icon={<div className="w-[18px] h-[18px] flex items-center justify-center">{item.icon}</div>}
+                        loadingKey={`sidebar-${item.id}`}
+                        sidebarExpanded={true}
+                        className={`
+                          w-full flex items-center px-4 py-3 text-base rounded-lg transition-all duration-200 text-left
+                          ${item.isActive 
+                            ? 'text-[var(--color-light-opacity100)] bg-white/10' 
+                            : 'text-white/60 hover:text-[var(--color-light-opacity100)] hover:bg-white/5'
+                          }
+                          ${style.font.grotesk.light} border-0 justify-start gap-3
+                        `}>
+                        {item.label}
+                      </SidebarNavButton>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </nav>
+          </div>
+
+          {/* User Profile at Bottom */}
+          <div className="p-4 border-t border-white/10" ref={profileRef}>
             <div className="bg-white/5 border border-white/5 rounded-lg p-1">
               <button 
                 onClick={handleProfileClick}
-                className="w-full flex items-center hover:bg-white/5 rounded-lg p-2 transition-all duration-200
-                           active:scale-95"
+                className="w-full flex items-center hover:bg-white/5 rounded-lg p-3 transition-all duration-200"
               >
                 <div 
                   className={`w-12 h-12 ${userProfile.avatarColor || 'bg-green-600'} rounded-lg flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}
@@ -430,81 +452,250 @@ export default function Sidebar({
                 </div>
               </button>
             </div>
-          ) : (
-            <button 
-              onClick={handleProfileClick}
-              className="w-full flex items-center justify-center px-3 py-2 text-sm rounded-[6px] transition-all duration-200
-                         text-white/75 hover:text-white hover:bg-white/10 active:scale-95"
-              title={userProfile.name}
-            >
-              <div 
-                className={`w-[15px] h-[15px] ${userProfile.avatarColor || 'bg-green-600'} rounded flex items-center justify-center text-white font-bold text-xs`}
-              >
-                {userProfile.avatar || userProfile.initials.charAt(0)}
+
+            {/* Mobile Profile Popup */}
+            {showProfilePopup && (
+              <div className="mt-2 bg-[#2a2a2a] border border-white/50 rounded-lg shadow-2xl overflow-hidden">
+                <div className="py-2">
+                  <LoadingButton
+                    onClick={() => handleProfileMenuClick('profile')}
+                    loadingKey="profile-profile"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full px-4 py-3 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
+                               transition-all duration-200 justify-start border-0 rounded-none"
+                  >
+                    Profile
+                  </LoadingButton>
+                  <LoadingButton
+                    onClick={() => handleProfileMenuClick('events')}
+                    loadingKey="profile-events"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full px-4 py-3 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
+                               transition-all duration-200 justify-start border-0 rounded-none"
+                  >
+                    Organize Events
+                  </LoadingButton>
+                  <LoadingButton
+                    onClick={() => handleProfileMenuClick('settings')}
+                    loadingKey="profile-settings"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full px-4 py-3 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
+                               transition-all duration-200 justify-start border-0 rounded-none"
+                  >
+                    Settings
+                  </LoadingButton>
+                  <LoadingButton
+                    onClick={() => handleProfileMenuClick('language')}
+                    loadingKey="profile-language"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full px-4 py-3 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
+                               transition-all duration-200 justify-start border-0 rounded-none"
+                  >
+                    Language
+                  </LoadingButton>
+                  <div className="border-t border-white/10 my-1"></div>
+                  <LoadingButton
+                    onClick={() => handleProfileMenuClick('signout')}
+                    loadingKey="profile-signout"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full px-4 py-3 text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 
+                               transition-all duration-200 justify-start border-0 rounded-none"
+                  >
+                    Sign Out
+                  </LoadingButton>
+                </div>
               </div>
-            </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* DESKTOP SIDEBAR (hidden on mobile) */}
+      <div 
+        className={`hidden lg:flex ${
+          sidebarState === 'icons' ? 'w-[67px]' : 'w-[250px]'
+          } bg-[#191919] border-r border-white/15 flex-col fixed h-screen
+          overflow-hidden transition-all duration-300 pt-[1%] z-[100] ${className}`}
+        style={{ 
+          fontFamily: 'Space Grotesk, sans-serif'
+        }}
+      >
+        {/* DESKTOP HEADER */}
+        <div className="p-4 flex items-center justify-between">
+          {sidebarState === 'expanded' && (
+            <LoadingButton
+              onClick={handleBackToHome}
+              loadingKey="sidebar-back-home"
+              variant="ghost"
+              size="sm"
+              className={`flex items-center gap-2 bg-white/10 hover:bg-white/20 rounded px-3 py-1
+                         text-white/40 hover:text-white/60 text-[0.85rem] font-medium transition-all duration-200
+                         active:bg-white/5 border-0 ${style.font.mono.text}`}
+              icon={ChevronLeft}
+            >
+              {backToHomeLabel}
+            </LoadingButton>
           )}
+
+          <button 
+            onClick={handleSidebarToggle} 
+            className={`text-white/90 hover:text-white transition-all duration-200 active:scale-95 p-2 rounded-lg hover:bg-white/10 ${
+              sidebarState === 'icons' ? 'mx-auto' : 'ml-auto'
+            }`} 
+            title="Toggle sidebar"
+          >
+            <div className="w-5 h-5 flex items-center justify-center">
+              {IconCollapse}
+            </div>
+          </button>
         </div>
 
-        {/* Profile Popup */}
-        {showProfilePopup && sidebarState === 'expanded' && (
-          <div className="absolute bottom-full left-4 right-4 mb-2 bg-[#2a2a2a] border border-white/50 rounded-lg shadow-2xl overflow-hidden z-50">
-            <div className="py-2">
-              <LoadingButton
-                onClick={() => handleProfileMenuClick('profile')}
-                loadingKey="profile-profile"
-                variant="ghost"
-                size="sm"
-                className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
-                           transition-all duration-200 justify-start border-0 rounded-none"
-              >
-                Profile
-              </LoadingButton>
-              <LoadingButton
-                onClick={() => handleProfileMenuClick('events')}
-                loadingKey="profile-events"
-                variant="ghost"
-                size="sm"
-                className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
-                           transition-all duration-200 justify-start border-0 rounded-none"
-              >
-                Organize Events
-              </LoadingButton>
-              <LoadingButton
-                onClick={() => handleProfileMenuClick('settings')}
-                loadingKey="profile-settings"
-                variant="ghost"
-                size="sm"
-                className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
-                           transition-all duration-200 justify-start border-0 rounded-none"
-              >
-                Settings
-              </LoadingButton>
-              <LoadingButton
-                onClick={() => handleProfileMenuClick('language')}
-                loadingKey="profile-language"
-                variant="ghost"
-                size="sm"
-                className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
-                           transition-all duration-200 justify-start border-0 rounded-none"
-              >
-                Language
-              </LoadingButton>
-              <div className="border-t border-white/10 my-1"></div>
-              <LoadingButton
-                onClick={() => handleProfileMenuClick('signout')}
-                loadingKey="profile-signout"
-                variant="ghost"
-                size="sm"
-                className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 
-                           transition-all duration-200 justify-start border-0 rounded-none"
-              >
-                Sign Out
-              </LoadingButton>
-            </div>
-          </div>
+        {/* Image Placeholder */}
+        {sidebarState === 'expanded' && showImagePlaceholder && (
+          <div className="p-4">{imagePlaceholder ?? defaultImagePlaceholder}</div>
         )}
+
+        {/* Navigation */}
+        <nav className="flex-1 px-4 overflow-y-auto">
+          {updatedNavigationSections.map((section: NavigationSection) => (
+            <div key={section.id} className="mt-4 mb-6">
+              {sidebarState === 'expanded' && (
+                <div className={`${style.font.grotesk.main} pl-[19px] text-xs font-semibold text-white/60 mb-3 uppercase tracking-wider`}>
+                  {section.title}
+                </div>
+              )}
+
+              <div className="space-y-1">
+                {section.items.map((item: NavigationItem) => (
+                  <SidebarNavButton
+                    key={item.id}
+                    href={item.href}
+                    isActive={item.isActive}
+                    icon={<div className="w-[18px] h-[18px] flex items-center justify-center">{item.icon}</div>}
+                    loadingKey={`sidebar-${item.id}`}
+                    sidebarExpanded={sidebarState === 'expanded'}
+                    className={`
+                      w-full flex items-center px-3 py-2 text-sm rounded-[1px] transition-all duration-100 text-left
+                      ${item.isActive 
+                        ? 'text-[var(--color-light-opacity100)] bg-white/10' 
+                        : 'text-white/60 hover:text-[var(--color-light-opacity100)] hover:bg-white/5'
+                      }
+                      ${style.font.grotesk.light} border-0 justify-start gap-3
+                    `}>
+                    {item.label}
+                  </SidebarNavButton>
+                ))}
+              </div>
+            </div>
+          ))}
+        </nav>
+
+        {/* User Profile Card at Bottom */}
+        <div className="relative" ref={profileRef}>
+          <div className="p-4 mt-auto">
+            {sidebarState === 'expanded' ? (
+              <div className="bg-white/5 border border-white/5 rounded-lg p-1">
+                <button 
+                  onClick={handleProfileClick}
+                  className="w-full flex items-center hover:bg-white/5 rounded-lg p-2 transition-all duration-200
+                             active:scale-95"
+                >
+                  <div 
+                    className={`w-12 h-12 ${userProfile.avatarColor || 'bg-green-600'} rounded-lg flex items-center justify-center text-white font-bold text-lg flex-shrink-0`}
+                  >
+                    {userProfile.avatar || userProfile.initials}
+                  </div>
+                  <div className="ml-3 min-w-0 flex-1 text-left">
+                    <div className="text-sm font-medium text-white truncate">
+                      {userProfile.name}
+                    </div>
+                    <div className="text-xs text-white/60 truncate">
+                      {userProfile.email}
+                    </div>
+                  </div>
+                </button>
+              </div>
+            ) : (
+              <button 
+                onClick={handleProfileClick}
+                className="w-full flex items-center justify-center px-3 py-2 text-sm rounded-[6px] transition-all duration-200
+                           text-white/75 hover:text-white hover:bg-white/10 active:scale-95"
+                title={userProfile.name}
+              >
+                <div 
+                  className={`w-[15px] h-[15px] ${userProfile.avatarColor || 'bg-green-600'} rounded flex items-center justify-center text-white font-bold text-xs`}
+                >
+                  {userProfile.avatar || userProfile.initials.charAt(0)}
+                </div>
+              </button>
+            )}
+          </div>
+
+          {/* Desktop Profile Popup */}
+          {showProfilePopup && sidebarState === 'expanded' && (
+            <div className="absolute bottom-full left-4 right-4 mb-2 bg-[#2a2a2a] border border-white/50 rounded-lg shadow-2xl overflow-hidden z-50">
+              <div className="py-2">
+                <LoadingButton
+                  onClick={() => handleProfileMenuClick('profile')}
+                  loadingKey="profile-profile"
+                  variant="ghost"
+                  size="sm"
+                  className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
+                             transition-all duration-200 justify-start border-0 rounded-none"
+                >
+                  Profile
+                </LoadingButton>
+                <LoadingButton
+                  onClick={() => handleProfileMenuClick('events')}
+                  loadingKey="profile-events"
+                  variant="ghost"
+                  size="sm"
+                  className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
+                             transition-all duration-200 justify-start border-0 rounded-none"
+                >
+                  Organize Events
+                </LoadingButton>
+                <LoadingButton
+                  onClick={() => handleProfileMenuClick('settings')}
+                  loadingKey="profile-settings"
+                  variant="ghost"
+                  size="sm"
+                  className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
+                             transition-all duration-200 justify-start border-0 rounded-none"
+                >
+                  Settings
+                </LoadingButton>
+                <LoadingButton
+                  onClick={() => handleProfileMenuClick('language')}
+                  loadingKey="profile-language"
+                  variant="ghost"
+                  size="sm"
+                  className="w-full px-4 py-2 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white 
+                             transition-all duration-200 justify-start border-0 rounded-none"
+                >
+                  Language
+                </LoadingButton>
+                <div className="border-t border-white/10 my-1"></div>
+                <LoadingButton
+                  onClick={() => handleProfileMenuClick('signout')}
+                  loadingKey="profile-signout"
+                  variant="ghost"
+                  size="sm"
+                  className="w-full px-4 py-2 text-left text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 
+                             transition-all duration-200 justify-start border-0 rounded-none"
+                >
+                  Sign Out
+                </LoadingButton>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }

@@ -88,7 +88,7 @@ export default function ReviewProjectsPage() {
               {/* Header */}
               <div className="text-center mb-7">
                 <h1 className={`text-4xl ${style.font.grotesk.heavy} text-[var(--color-light-opacity100)] mb-3`}>
-                  Reviewing Projects
+                  Finalists Voting
                 </h1>
                 <div className="flex items-center justify-center gap-2">
                   {reviewStatus === 'pending' ? (
@@ -196,21 +196,21 @@ export default function ReviewProjectsPage() {
                       onClick={handleWaitToReview}
                       className={`bg-[var(--color-white-opacity20)] hover:bg-[var(--color-white-opacity30)] text-[var(--color-light-opacity100)] px-8 py-3 ${style.border.radius.middle} ${style.font.grotesk.medium} ${style.perf.transition.fast} border border-[var(--color-white-opacity20)] transform hover:scale-105`}
                     >
-                      Wait To Review
+                      Wait To Review Finalists
                     </button>
                   ) : reviewStatus === 'open' ? (
                     <button 
                       onClick={handleStartReviewing}
                       className={`bg-[var(--color-primary-opacity100)] hover:bg-[var(--color-primary-opacity80)] text-[var(--color-light-opacity100)] px-8 py-3 ${style.border.radius.middle} ${style.font.grotesk.medium} ${style.perf.transition.fast} transform hover:scale-105`}
                     >
-                      Start Reviewing
+                      Start Finalists Reviewing
                     </button>
                   ) : (
                     <button 
                       disabled 
                       className={`bg-[var(--color-white-opacity10)] text-[var(--color-light-opacity50)] px-8 py-3 ${style.border.radius.middle} ${style.font.grotesk.medium} cursor-not-allowed`}
                     >
-                      Reviewing Closed
+                      Finalists Reviewing Closed
                     </button>
                   )}
                   

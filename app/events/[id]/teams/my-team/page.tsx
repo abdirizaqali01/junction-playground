@@ -98,17 +98,16 @@ export default function MyTeamPage() {
     <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
       <Sidebar
         userProfile={userProfile}
-        backToHomeLabel="Back To Dashboard"
         onBackToHome={handleBackToHome}
         showImagePlaceholder={true}
       />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
+      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10">
         {/* Header */}
-        <div className="px-6 py-4">
+        <div className="">
           <div className="flex items-center justify-between mb-4">
-            <h1 className={`${style.font.grotesk.heavy} text-4xl text-[var(--color-light-opacity100)] pt-[3%]`}>
+            <h1 className={`${style.font.grotesk.heavy} text-4xl text-[var(--color-light-opacity100)]`}>
               Team Management
             </h1>
           </div>
@@ -126,23 +125,15 @@ export default function MyTeamPage() {
                   onClick={() => handleTabNavigation(tab.id)}
                   variant={activeTab === tab.id ? 'default' : 'outlineGray'}
                   size="sm"
-                  className="w-32 px-3 py-1 text-xs text-center justify-center"
+                  className="text-xs text-center justify-center"
                   showIcon={false}
                 >
                   {tab.label}
                 </MainButton>
               ))}
             </div>
-            
-            <MainButton 
-              onClick={handleViewChallenges}
-              variant="outlineGray"
-              size="sm"
-              className="w-40 text-center justify-center"
-              showIcon={false}
-            >
-              All Challenges
-            </MainButton>
+
+            {/* FILTER FUNCTION HERE IF NECESSARY */}
           </div>
 
           {/* Content */}
@@ -159,11 +150,11 @@ export default function MyTeamPage() {
               </div>
 
               {/* Team Description */}
-              <div>
+              <div className='w-[100%] lg:w-[80%]'>
                 <h3 className={`${style.font.grotesk.medium} text-xl text-[var(--color-light-opacity100)] mb-4`}>
                   Team Description
                 </h3>
-                <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-sm leading-relaxed`}>
+                <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-[0.85rem] leading-relaxed`}>
                   {teamData.description}
                 </p>
               </div>
@@ -177,7 +168,7 @@ export default function MyTeamPage() {
                   {teamData.availableRoles.map((role, index) => (
                     <span
                       key={index}
-                      className={`${style.font.mono.text} px-6 py-2 bg-transparent border border-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] ${style.border.radius.full} text-sm`}
+                      className={`${style.font.mono.text} px-6 py-2 bg-transparent border  border-[var(--color-secondary-opacity100)] text-[var(--color-secondary-opacity100)] ${style.border.radius.middle} text-sm`}
                     >
                       {role}
                     </span>
@@ -214,7 +205,7 @@ export default function MyTeamPage() {
                         className="text-center justify-center"
                         showIcon={false}
                       >
-                        See more
+                        View Profile
                       </MainButton>
                     </div>
                   ))}
@@ -225,7 +216,7 @@ export default function MyTeamPage() {
               <div className="flex gap-3 pt-4">
                 <MainButton 
                   onClick={handleEditTeam}
-                  variant="outlineGray"
+                  variant="default"
                   size="sm"
                   className="text-center justify-center"
                   showIcon={false}
@@ -234,7 +225,7 @@ export default function MyTeamPage() {
                 </MainButton>
                 <MainButton 
                   onClick={handleDeleteTeam}
-                  variant="outlineGray"
+                  variant="alerts"
                   size="sm"
                   className="text-center justify-center"
                   showIcon={false}

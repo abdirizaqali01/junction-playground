@@ -61,8 +61,6 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
 
   const handleApplyToChallenge = () => {
     setLoading('apply-challenge', true)
-    // Add your application logic here
-    console.log('Applying to challenge:', challengeData?.challenge.name)
   }
 
   if (loading) {
@@ -90,7 +88,7 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
           onBackToHome={handleBackToHome}
           showImagePlaceholder={true}
         />
-        <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 pt-[3%] ml-[250px]">
+        <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10">
           <div className="flex justify-center items-center h-64">
             <div className="text-center">
               <p className={`${style.font.mono.text} text-[var(--color-alerts-opacity100)] mb-4`}>
@@ -122,14 +120,14 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
       />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 pt-[3%] ml-[250px]">
+      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10">
         {/* Header */}
-        <div className="bg-[var(--color-dark-opacity100)] border-b border-[var(--color-white-opacity10)] px-8 py-6">
+        <div className="bg-[var(--color-dark-opacity100)] border-[var(--color-white-opacity10)]">
           <MainButton 
             onClick={handleBackToChallenges}
             variant="ghost"
-            size="sm"
-            className="mb-6"
+            size="none"
+            className="mb-0"
             showIcon={false}
           >
             <div className="flex items-center">
@@ -140,7 +138,7 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
         </div>
 
         {/* Hero Banner Card with Rounded Corners */}
-        <div className="px-8 pt-6">
+        <div className="py-8">
           <div className={`relative h-64 bg-gradient-to-r from-[var(--color-secondary-opacity100)] via-[var(--color-primary-opacity100)] to-[var(--color-primary-opacity60)] flex items-end overflow-hidden ${style.border.radius.outer}`}>
             {/* Blurred Background */}
             <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-secondary-opacity100)] via-[var(--color-primary-opacity100)] to-[var(--color-primary-opacity60)] filter blur-sm"></div>
@@ -159,17 +157,17 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-8">
+        <div className="flex-1 pb-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-8">
               {/* The Challenge Section */}
               <div className={`${style.box.gray.bottom} p-8`}>
-                <h2 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-6`}>
+                <h2 className={`${style.font.grotesk.main} text-xl text-[var(--color-light-opacity100)] mb-4`}>
                   The Challenge
                 </h2>
                 
-                <div className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
+                <div className={`${style.font.mono.text} space-y-4 text-[0.82rem] text-[var(--color-white-opacity60)]`}>
                   <p>
                     {challenge.description || 'No description available for this challenge.'}
                   </p>
@@ -178,11 +176,11 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
 
               {/* Insight */}
               <div className={`${style.box.gray.bottom} p-8`}>
-                <h2 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-6`}>
+                <h2 className={`${style.font.grotesk.main} text-xl text-[var(--color-light-opacity100)] mb-6`}>
                   Insight
                 </h2>
                 
-                <div className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
+                <div className={`${style.font.mono.text} space-y-4 text-[0.82rem] text-[var(--color-light-opacity60)] leading-relaxed`}>
                   <p>
                     <span>TBD</span>
                   </p>
@@ -196,11 +194,11 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
 
               {/* What We'll Bring */}
               <div className={`${style.box.gray.bottom} p-8`}>
-                <h2 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-6`}>
+                <h2 className={`${style.font.grotesk.main} text-xl text-[var(--color-light-opacity100)] mb-6`}>
                   What We'll Bring
                 </h2>
                 
-                <div className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
+                <div className={`${style.font.mono.text} space-y-4 text-[0.82rem] text-[var(--color-light-opacity60)] leading-relaxed`}>
                   <p>
                     <span>TBD</span>
                   </p>
@@ -221,7 +219,7 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
                   {organization.name}
                 </h3>
                 
-                <div className={`${style.font.mono.text} text-sm text-[var(--color-light-opacity60)] leading-relaxed`}>
+                <div className={`${style.font.mono.text} text-[0.82rem] text-[var(--color-light-opacity60)] leading-relaxed`}>
                   {organization.description ? (
                     <p className="mb-4">{organization.description}</p>
                   ) : (
@@ -254,7 +252,7 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
                 
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
+                    <span className={`${style.font.mono.text} space-y-4 text-[0.82rem] text-[var(--color-light-opacity60)] leading-relaxed`}>
                       TBD
                     </span>
                   </div>
@@ -267,21 +265,32 @@ export default function ChallengeDetailPage({ params }: { params: { id: string; 
                   Prizes
                 </h3>
                 <div className="flex justify-between">
-                  <span className={`${style.font.mono.text} space-y-4 text-base text-[var(--color-light-opacity60)] leading-relaxed`}>
+                  <span className={`${style.font.mono.text} space-y-4 text-[0.82rem] text-[var(--color-light-opacity60)] leading-relaxed`}>
                     TBD
                   </span>
                 </div>
               </div>
-
-              {/* Apply Button */}
-              <div className="pt-4">
+            </div>
+          </div>
+          {/* Apply Button - MOVED OUTSIDE THE GRID */}
+          <div className={`${style.box.gray.bottom} p-6 mt-8`}>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className={`${style.font.mono.text} text-sm text-[var(--color-light-opacity60)] mb-1`}>
+                  Ready to take on this challenge?
+                </div>
+                <div className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity40)]`}>
+                  Last updated: {new Date(challenge.updated_at).toLocaleDateString()}
+                </div>
+              </div>
+              <div className="flex gap-3">
                 <MainButton 
                   variant="primary"
-                  size="lg"
-                  className="w-full"
+                  size="default"
+                  showIcon={false}
                   onClick={handleApplyToChallenge}
                 >
-                  Apply to Challenge
+                  Select Challenge
                 </MainButton>
               </div>
             </div>

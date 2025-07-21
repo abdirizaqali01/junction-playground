@@ -106,10 +106,6 @@ export const border = {
 }
 
 //----------------------------------------------------------------//
-// REMOVED: initializeCSSVariables function - no longer needed
-//----------------------------------------------------------------//
-
-//----------------------------------------------------------------//
 // COMPONENTS - Optimized for performance
 //----------------------------------------------------------------//
 
@@ -132,14 +128,15 @@ export const status = {
 // FONT STYLES - Optimized
 export const font = {
     grotesk: {
-        main: 'font-space-grotesk font-[600] tracking-[-0.01rem]',
-        heavy: 'font-space-grotesk font-[700] tracking-[-0.05rem]',
-        medium: 'font-space-grotesk font-[500] tracking-[-0.01rem]',
-        light: 'font-space-grotesk font-[300] tracking-[-0.01rem]',
+        main: 'font-space-grotesk !font-[600] tracking-[-0.01rem]',
+        heavy: 'font-space-grotesk !font-[700] tracking-[-0.05rem]',
+        medium: 'font-space-grotesk !font-[500] tracking-[-0.01rem]',
+        light: 'font-space-grotesk !font-[300] tracking-[-0.01rem]',
     },
+
     mono: {
-        title: 'font-space-mono font-[700] tracking-[-0.01rem]',
-        text: 'font-space-mono font-[400] tracking-[-0.03rem]',
+        title: 'font-space-mono !font-[700] tracking-[-0.01rem]',
+        text: 'font-space-mono !font-[400] tracking-[-0.03rem]',
     }
 }
 
@@ -149,13 +146,18 @@ export const box = {
         bottom: `bg-[var(--color-white-opacity5)] ${border.solid} ${border.radius.outer} border-[var(--color-white-opacity20)]`,
         middle: `bg-[var(--color-white-opacity10)] ${border.solid} ${border.radius.middle} border-[var(--color-white-opacity20)]`,
         top: `bg-[var(--color-white-opacity20)] ${border.solid} ${border.radius.inner} border-[var(--color-white-opacity20)]`,
+        solid: `bg-[#191919] ${border.solid} ${border.radius.outer} border-[var(--color-white-opacity20)]`,
     },
+
     primary: {
         bottom: `bg-[var(--color-primary-opacity5)] ${border.solid} ${border.radius.outer} border-[var(--color-primary-opacity100)]`,
         middle: `bg-[var(--color-primary-opacity10)] ${border.solid} ${border.radius.middle} border-[var(--color-primary-opacity100)]`,
         top: `bg-[var(--color-primary-opacity20)] ${border.solid} ${border.radius.inner} border-[var(--color-primary-opacity100)]`,
     },
+
     grayPrimary: `bg-[var(--color-white-opacity15)] ${border.solid} ${border.radius.outer} border-[var(--color-primary-opacity100)]`,
+    graySecondary: `bg-[var(--color-white-opacity10)] ${border.solid} ${border.radius.outer} border-[var(--color-primary-opacity100)]`,
+    light: `bg-[var(--color-light-opacity100)] ${border.solid} ${border.radius.outer} border-[var(--color-light-opacity100)]`,
 }
 
 // TAGS

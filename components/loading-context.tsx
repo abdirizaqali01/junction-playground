@@ -46,14 +46,20 @@ const LoadingBar: React.FC<LoadingBarProps> = ({
             currentProgress += increment * 0.1
           }
           
-          // Don't complete until loading is actually done
-          if (currentProgress >= 95 && isLoading) {
-            currentProgress = 95
-          }
-          
           setProgress(Math.min(currentProgress, 100))
+          
+          // Auto-hide when progress reaches 100%, regardless of loading state
+          if (currentProgress >= 100) {
+            setTimeout(() => {
+              setVisible(false)
+              setShouldShow(false)
+              setProgress(0)
+            }, 200)
+            clearInterval(progressInterval)
+          }
         }, 50)
       }, delay)
+
     } else {
       // Complete immediately when loading finishes
       if (shouldShow) {
@@ -166,7 +172,7 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       clearNavigationLoading()
-    }, 150) // Short delay to ensure navigation has started
+    }, 300) // Increased delay to 300ms for slower loads
 
     return () => clearTimeout(timeoutId)
   }, [pathname, clearNavigationLoading])
@@ -199,13 +205,21 @@ export const useOptimizedRouter = () => {
     const key = options?.key || `nav-${Date.now()}`
     setLoading(key, true)
     
+    // Set a timeout to clear loading if navigation takes too long
+    const timeoutId = setTimeout(() => {
+      console.warn(`Navigation timeout for key: ${key}, clearing loading state`)
+      setLoading(key, false)
+    }, 10000) // 10 second timeout
+    
     // Use dynamic import for better performance
     import('next/navigation').then(({ useRouter }) => {
       const router = useRouter()
       router.push(url)
+      clearTimeout(timeoutId)
       // Loading will be cleared automatically by pathname change
-    }).catch(() => {
-      // Fallback: clear loading if navigation fails
+    }).catch((error) => {
+      console.error('Navigation failed:', error)
+      clearTimeout(timeoutId)
       setLoading(key, false)
     })
   }, [setLoading])
@@ -222,11 +236,20 @@ export const useLoadingNavigation = () => {
     loadingKey: string = `nav-${Date.now()}`
   ) => {
     setLoading(loadingKey, true)
+    
+    // Set a timeout to clear loading if navigation takes too long
+    const timeoutId = setTimeout(() => {
+      console.warn(`Navigation timeout for key: ${loadingKey}, clearing loading state`)
+      setLoading(loadingKey, false)
+    }, 10000) // 10 second timeout
+    
     try {
       navigationFn()
+      clearTimeout(timeoutId)
       // Loading will be cleared automatically by pathname change
     } catch (error) {
       // Clear loading if navigation fails
+      clearTimeout(timeoutId)
       setLoading(loadingKey, false)
       throw error
     }

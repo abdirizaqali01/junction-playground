@@ -234,11 +234,11 @@ export default function JunctionDashboard() {
           <div className={style.box.primary.bottom + " p-4"}>
             <div className="flex flex-col lg:flex-row gap-5">
               <div className="lg:w-1/3">
-                <div className={style.border.radius.middle + " h-32 lg:h-full relative bg-[var(color-white-opacity20)] border border-[var(--color-white-opacity40)]"}>
+                <div className={style.border.radius.middle + " h-32 lg:h-full relative bg-[var(color-white-opacity20)] border border-[var(--color-white-opacity40)] overflow-hidden"}>
                   <img 
                     src={currentActiveEvent.cover_image_url || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} 
                     alt={`${currentActiveEvent.name} Venue`}
-                    className="w-full h-full object-cover rounded-lg"
+                    className={`w-full h-full object-cover`}
                   />
                   <div className="absolute top-4 left-4">
                     <span className={statusBadge.style}>{statusBadge.text}</span>

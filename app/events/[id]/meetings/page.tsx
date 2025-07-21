@@ -154,7 +154,7 @@ export default function MentorMeetingsPage() {
           onBackToHome={handleBackToHome}
           showImagePlaceholder={true}
         />
-        <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
+        <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10">
           <Loading message="Loading mentor meetings..." />
         </div>
       </div>
@@ -171,11 +171,11 @@ export default function MentorMeetingsPage() {
       />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
+      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-0">
         {/* Main Content Area */}
-        <div className="flex-1 p-6 pt-[4%] max-w-3xl mx-auto w-full">
+        <div className={`${style.box.gray.bottom} p-10 w-full md:w-[80%] lg:w-[70%] m-auto`}>
           {/* Page Title and Description */}
-          <div className="mb-8 text-center mt-16">
+          <div className="mb-6 text-center">
             <h1 className={`text-4xl ${style.font.grotesk.heavy} text-[var(--color-light-opacity100)] mb-4`}>
               Meetings
             </h1>
@@ -199,7 +199,7 @@ export default function MentorMeetingsPage() {
                 value={selectedChallenge}
                 onChange={(e) => setSelectedChallenge(e.target.value)}
                 disabled={localLoading || !challenges?.length}
-                className={`w-full ${style.box.gray.bottom} px-4 py-3 text-[var(--color-light-opacity100)] text-base appearance-none cursor-pointer focus:outline-none focus:border-[var(--color-primary-opacity100)] ${style.perf.transition.fast} disabled:opacity-50 disabled:cursor-not-allowed ${style.font.mono.text}`}
+                className={`w-full !bg-[#252525] ${style.box.gray.bottom} px-4 py-3 text-[var(--color-light-opacity100)] text-base appearance-none cursor-pointer focus:outline-none focus:border-[var(--color-primary-opacity100)] ${style.perf.transition.fast} disabled:opacity-50 disabled:cursor-not-allowed ${style.font.mono.text}`}
               >
                 <option value="">
                   {localLoading ? 'Loading challenges...' : 
@@ -220,7 +220,7 @@ export default function MentorMeetingsPage() {
               <select
                 value={selectedMentor}
                 onChange={(e) => setSelectedMentor(e.target.value)}
-                className={`w-full ${style.box.gray.bottom} px-4 py-3 text-[var(--color-light-opacity100)] text-base appearance-none cursor-pointer focus:outline-none focus:border-[var(--color-primary-opacity100)] ${style.perf.transition.fast} ${style.font.mono.text}`}
+                className={`w-full !bg-[#252525] ${style.box.gray.bottom} px-4 py-3 text-[var(--color-light-opacity100)] text-base appearance-none cursor-pointer focus:outline-none focus:border-[var(--color-primary-opacity100)] ${style.perf.transition.fast} ${style.font.mono.text}`}
               >
                 <option value="">Mentor</option>
                 {mentors.map((mentor, index) => (
@@ -235,7 +235,7 @@ export default function MentorMeetingsPage() {
 
           {/* Available Times Section */}
           {selectedMentor && (
-            <div className="mb-6">
+            <div className="">
               <div className="flex items-center justify-between mb-6">
                 <h2 className={`text-xl ${style.font.grotesk.main} text-[var(--color-light-opacity100)]`}>
                   Available times
@@ -284,8 +284,9 @@ export default function MentorMeetingsPage() {
                   <MainButton
                     variant="primary"
                     size="lg"
+                    showIcon={false}
                     onClick={handleBookMeeting}
-                    className={`${style.perf.transition.fast} transform hover:scale-105`}
+                    className={`${style.perf.transition.fast} transform hover:scale-[1.02]`}
                   >
                     Book Meeting
                   </MainButton>

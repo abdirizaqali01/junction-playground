@@ -69,7 +69,6 @@ export default function TeamManagementPage() {
             "Data Analitic",
             "Full Stack",
             "C++ Programmer",
-            "and more..."
           ]
         }))
 
@@ -136,31 +135,53 @@ export default function TeamManagementPage() {
     }
   }
 
-  const renderAllTeamsView = () => {
-    if (localLoading) {
-      return <Loading message="Loading teams..." />
-    }
+  // LOADING STATE - Show loading overlay over everything
+  if (localLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
+        <Sidebar
+          userProfile={userProfile}
+          onBackToHome={handleBackToHome}
+          showImagePlaceholder={true}
+        />
+        <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10">
+          <Loading message="Loading teams..." />
+        </div>
+      </div>
+    )
+  }
 
-    if (error) {
-      return (
-        <div className="flex justify-center items-center h-64">
-          <div className="text-center">
-            <p className={`${style.font.mono.text} text-[var(--color-alerts-opacity100)] mb-4`}>
-              Error loading teams: {error}
-            </p>
-            <MainButton 
-              onClick={() => window.location.reload()}
-              variant="primary"
-              size="default"
-              className="text-center justify-center"
-            >
-              Retry
-            </MainButton>
+  // ERROR STATE - Show error overlay over everything
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
+        <Sidebar
+          userProfile={userProfile}
+          onBackToHome={handleBackToHome}
+          showImagePlaceholder={true}
+        />
+        <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10">
+          <div className="flex justify-center items-center h-64">
+            <div className="text-center">
+              <p className={`${style.font.mono.text} text-[var(--color-alerts-opacity100)] mb-4`}>
+                Error loading teams: {error}
+              </p>
+              <MainButton 
+                onClick={() => window.location.reload()}
+                variant="primary"
+                size="default"
+                className="text-center justify-center"
+              >
+                Retry
+              </MainButton>
+            </div>
           </div>
         </div>
-      )
-    }
+      </div>
+    )
+  }
 
+  const renderAllTeamsView = () => {
     if (teams.length === 0) {
       return (
         <div className="text-center py-12">
@@ -172,7 +193,7 @@ export default function TeamManagementPage() {
     }
 
     return (
-      <div className="grid grid-cols-3 gap-6 justify-items-center">
+      <div className="grid gap-4 md:grid-cols-2 md:gap-4 lg:grid-cols-3 lg:gap-6 justify-items-center">
         {teams.map((team) => (
           <div
             key={team.team_id}
@@ -217,19 +238,11 @@ export default function TeamManagementPage() {
                     {team.availableRoles?.slice(0, 4).map((role, idx) => (
                       <span
                         key={idx}
-                        className={`${style.font.mono.text} px-3 py-2 bg-transparent border border-[var(--color-primary-opacity60)] text-[var(--color-primary-opacity100)] text-xs ${style.border.radius.middle} text-center whitespace-nowrap`}
+                        className={`${style.font.mono.text} px-3 py-2 bg-transparent border border-[var(--color-secondary-opacity100)] text-[var(--color-secondary-opacity100)] text-xs ${style.border.radius.middle} text-center whitespace-nowrap`}
                       >
                         {role}
                       </span>
                     ))}
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <span className={`${style.font.mono.text} px-3 py-2 bg-transparent border border-[var(--color-primary-opacity60)] text-[var(--color-primary-opacity100)] text-xs ${style.border.radius.middle} text-center`}>
-                      {team.availableRoles?.[4]}
-                    </span>
-                    <span className={`${style.font.mono.text} px-3 py-2 text-[var(--color-light-opacity40)] text-xs text-center flex items-center justify-center`}>
-                      and more...
-                    </span>
                   </div>
                 </div>
               </div>
@@ -251,21 +264,21 @@ export default function TeamManagementPage() {
     )
   }
 
+  // MAIN RENDER - Only shown when not loading and no error
   return (
     <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] flex">
       <Sidebar
         userProfile={userProfile}
-        backToHomeLabel="Back To Dashboard"
         onBackToHome={handleBackToHome}
         showImagePlaceholder={true}
       />
 
       {/* Main Content */}
-      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
+      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10">
         {/* Header */}
-        <div className="px-6 py-4">
+        <div className="">
           <div className="flex items-center justify-between mb-4">
-            <h1 className={`${style.font.grotesk.heavy} text-4xl text-[var(--color-light-opacity100)] pt-[3%]`}>
+            <h1 className={`${style.font.grotesk.heavy} text-3xl lg:text-4xl text-[var(--color-light-opacity100)]`}>
               Team Management
             </h1>
           </div>
@@ -283,7 +296,7 @@ export default function TeamManagementPage() {
                   onClick={() => handleTabChange(tab.id)}
                   variant={activeTab === tab.id ? 'default' : 'outlineGray'}
                   size="sm"
-                  className="w-32 px-3 py-1 text-xs text-center justify-center"
+                  className="text-xs text-center justify-center"
                   showIcon={false}
                 >
                   {tab.label}
@@ -309,10 +322,10 @@ export default function TeamManagementPage() {
         <Footer />
       </div>
 
-      {/* Join Team Modal */}
+      {/* Join Team Popup */}
       {showJoinModal && (
         <div className="fixed inset-0 bg-[var(--color-dark-opacity50)] flex items-center justify-center z-50">
-          <div className={`${style.box.gray.bottom} p-6 max-w-md w-full mx-4`}>
+          <div className={`${style.box.gray.solid} p-6 max-w-md w-full mx-4`}>
             <h3 className={`${style.font.grotesk.main} text-xl text-[var(--color-light-opacity100)] mb-4`}>
               Join a team using a code
             </h3>
@@ -326,7 +339,7 @@ export default function TeamManagementPage() {
                 value={teamCode}
                 onChange={(e) => setTeamCode(e.target.value)}
                 placeholder="Your team code here"
-                className={`${style.font.mono.text} w-full bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] ${style.border.radius.middle} px-4 py-3 text-[var(--color-light-opacity100)] placeholder-[var(--color-light-opacity40)] focus:outline-none focus:border-[var(--color-primary-opacity50)] ${style.perf.transition.fast}`}
+                className={`${style.font.mono.text} w-full bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] ${style.border.radius.middle} px-4 py-3 text-[var(--color-light-opacity100)] placeholder-[var(--color-light-opacity40)] focus:outline-none focus:border-[var(--color-primary-opacity100)] ${style.perf.transition.fast}`}
               />
               
               <div className="flex gap-3 justify-end">

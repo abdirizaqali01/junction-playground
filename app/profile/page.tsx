@@ -83,11 +83,8 @@ interface ProfileData {
 export default function ProfilePage() {
   const router = useRouter()
   
-  // Initialize CSS variables on component mount
-  useEffect(() => {
-    initializeCSSVariables()
-  }, [])
-  
+  // Initialize CSS variables on component mount MISSING
+
   // Static data dictionary
   const profileData: ProfileData = {
     profile: {

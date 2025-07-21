@@ -91,7 +91,15 @@ export default function ChallengesPage() {
   const handleChallengeClick = (ch: ChallengeWithDetails) => {
     if (ch.event?.event_id && ch.challenge_id) {
       setLoading(`challenge-${ch.challenge_id}`, true)
-      router.push(`/events/${ch.event.event_id}/challenges/${ch.challenge_id}`)
+      
+      // Determine if it's a side challenge based on current filter
+      const isSideChallenge = selectedFilter === 'Side Challenges'
+      
+      if (isSideChallenge) {
+        router.push(`/events/${ch.event.event_id}/challenges/side/${ch.challenge_id}`)
+      } else {
+        router.push(`/events/${ch.event.event_id}/challenges/${ch.challenge_id}`)
+      }
     } else {
       console.error('Missing event_id or challenge_id for navigation')
     }
@@ -253,7 +261,7 @@ export default function ChallengesPage() {
       />
 
       {selectedFilter === 'Main Challenges' && tracks.length > 0 && (
-        <div className="fixed right-6 top-1/4 z-10">
+        <div className="fixed right-6 top-1/4 z-10 hidden lg:block">
           <div className="space-y-2">
             {tracks.map(track => (
               <button
@@ -265,8 +273,8 @@ export default function ChallengesPage() {
                 }
                 className={`flex items-center justify-end text-xs ${style.perf.transition.smooth} w-32 ${style.font.mono.text}`}
                 style={{ 
-                  color: activeTrack === track ? style.colors.light.opacity100 : style.colors.light.opacity40,
-                  fontWeight: activeTrack === track ? '500' : '400'
+                  color: activeTrack.toLowerCase() === track.toLowerCase() ? style.colors.light.opacity100 : style.colors.light.opacity40,
+                  fontWeight: activeTrack.toLowerCase() === track.toLowerCase() ? '500' : '400'
                 }}
               >
                 <div className="text-right mr-2">
@@ -280,7 +288,7 @@ export default function ChallengesPage() {
                     track
                   )}
                 </div>
-                <span className="text-sm w-3 text-right">{activeTrack === track ? '●' : '—'}</span>
+                <span className="text-sm w-3 text-right">{activeTrack.toLowerCase() === track.toLowerCase() ? '●' : '—'}</span>
               </button>
             ))}
           </div>
@@ -288,9 +296,9 @@ export default function ChallengesPage() {
       )}
 
       {/* MAIN CONTENT*/}
-      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
-        <div className="bg-[var(--color-dark-opacity100)] border-b border-[var(--color-white-opacity10)] px-8 py-8">
-          <h1 className={`${style.font.grotesk.heavy} text-3xl text-[var(--color-light-opacity100)] mb-8`}>Challenges</h1>
+      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10">
+        <div className="bg-[var(--color-dark-opacity100)] border-[var(--color-white-opacity10)]">
+          <h1 className={`${style.font.grotesk.heavy} text-3xl lg:text-4xl text-[var(--color-light-opacity100)] mb-8`}>Challenges</h1>
 
           {/* FILTER TABS */}
           <div className="flex gap-2">
@@ -316,7 +324,7 @@ export default function ChallengesPage() {
 
         {/* CHALLENGE LISTS */}
         <div className="flex flex-1 relative">
-          <div className="flex-1 p-8">
+          <div className="flex-1 py-8">
             {challenges.length === 0 ? (
               <div className="text-center py-12">
                 <p className={`${style.font.mono.text} text-[var(--color-light-opacity60)] text-lg`}>
@@ -325,63 +333,63 @@ export default function ChallengesPage() {
               </div>
             ) : selectedFilter === 'Main Challenges' ? (
               <div className="space-y-8">
-                {Object.entries(grouped).map(([track, list]) => (
-                  <div key={track} id={`track-${track.replace(/\s+/g, '-').toLowerCase()}`}>
-                    <h2 className={`${style.font.grotesk.medium} text-[var(--color-primary-opacity100)] text-lg mb-4`}>{track}</h2>
-                    <div className="space-y-3 mr-16">
-                      {list.map(ch => (
-                        <div
-                          key={ch.challenge_id}
-                          className={`${style.border.radius.outer} overflow-hidden w-[95%] cursor-pointer bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] hover:bg-[var(--color-white-opacity10)] ${style.perf.transition.smooth}`}
-                          onClick={() => handleChallengeClick(ch)}
-                        >
-                          <div className="p-6">
-                            <div className="flex items-start gap-6">
-                              <div className={`w-40 h-40 ${style.border.radius.outer} flex items-center justify-center text-[var(--color-light-opacity100)] text-3xl font-bold flex-shrink-0 bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)]`}>
-                                CO
+              {Object.entries(grouped).map(([track, list]) => (
+                <div className="w-[100%] lg:w-[95%]" key={track} id={`track-${track.replace(/\s+/g, '-').toLowerCase()}`}>
+                  <h2 className={`${style.font.grotesk.medium} text-[var(--color-primary-opacity100)] text-xl md:text-2xl mb-4`}>{track}</h2>
+                  <div className="space-y-3 m-0 lg:mr-16">
+                    {list.map(ch => (
+                      <div
+                        key={ch.challenge_id}
+                        className={`${style.border.radius.outer} overflow-hidden cursor-pointer bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] hover:bg-[var(--color-white-opacity10)] ${style.perf.transition.smooth}`}
+                        onClick={() => handleChallengeClick(ch)}
+                      >
+                        <div className="p-4 md:p-6">
+                          <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
+                            <div className={`w-40 h-40 md:w-40 md:h-40 ${style.border.radius.outer} flex items-center justify-center text-[var(--color-light-opacity100)] text-lg md:text-3xl font-bold flex-shrink-0 bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)]`}>
+                              CO
+                            </div>
+                            <div className="flex-1 min-w-0 py-1 text-left">
+                              <div className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)] mb-2`}>
+                                {ch.organization?.name || 'General'}
                               </div>
-                              <div className="flex-1 min-w-0 py-1">
-                                <div className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)] mb-2`}>
-                                  {ch.organization?.name || 'General'}
+                              <h3 className={`${style.font.grotesk.main} text-lg md:text-2xl text-[var(--color-light-opacity100)] mb-3 leading-tight`}>
+                                {ch.name}
+                              </h3>
+                              <div className="flex flex-wrap items-center justify-start gap-2 md:gap-3 mb-4">
+                                <span className={`${style.font.mono.text} px-2 py-1 ${style.border.radius.inner} text-xs bg-[var(--color-dark-opacity50)] text-[var(--color-light-opacity80)]`}>
+                                  AI
+                                </span>
+                                <span className={`${style.font.mono.text} px-2 py-1 ${style.border.radius.inner} text-xs bg-[var(--color-dark-opacity50)] text-[var(--color-light-opacity80)]`}>
+                                  Machine Learning
+                                </span>
+                                <span className={`${style.font.mono.text} px-2 py-1 ${style.border.radius.inner} text-xs bg-[var(--color-dark-opacity50)] text-[var(--color-light-opacity80)]`}>
+                                  Data Science
+                                </span>
+                              </div>
+                              <div className="w-full h-px bg-[var(--color-white-opacity10)] mb-4" />
+                              <div className="pb-1 space-y-1">
+                                <div className="flex items-center justify-start gap-2 md:gap-6 pb-1">
+                                  <span className={`${style.font.mono.text} text-xs font-medium text-[var(--color-light-opacity100)]`}>
+                                    Prizes
+                                  </span>
+                                  <span className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)]`}>TBD</span>
                                 </div>
-                                <h3 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-3 leading-tight`}>
-                                  {ch.name}
-                                </h3>
-                                <div className="flex items-center gap-3 mb-4">
-                                  <span className={`${style.font.mono.text} px-2 py-1 ${style.border.radius.inner} text-xs bg-[var(--color-dark-opacity50)] text-[var(--color-light-opacity80)]`}>
-                                    AI
+                                <div className="flex items-center justify-start gap-2 md:gap-6 pb-1">
+                                  <span className={`${style.font.mono.text} text-xs font-medium text-[var(--color-light-opacity100)]`}>Event</span>
+                                  <span className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)]`}>
+                                    {ch.event?.name || 'Unknown Event'}
                                   </span>
-                                  <span className={`${style.font.mono.text} px-2 py-1 ${style.border.radius.inner} text-xs bg-[var(--color-dark-opacity50)] text-[var(--color-light-opacity80)]`}>
-                                    Machine Learning
-                                  </span>
-                                  <span className={`${style.font.mono.text} px-2 py-1 ${style.border.radius.inner} text-xs bg-[var(--color-dark-opacity50)] text-[var(--color-light-opacity80)]`}>
-                                    Data Science
-                                  </span>
-                                </div>
-                                <div className="w-full h-px bg-[var(--color-white-opacity10)] mb-4" />
-                                <div className="pb-1">
-                                  <div className="flex items-center gap-6 pb-1">
-                                    <span className={`${style.font.mono.text} text-xs font-medium text-[var(--color-light-opacity100)]`}>
-                                      Prizes
-                                    </span>
-                                    <span className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)]`}>TBD</span>
-                                  </div>
-                                  <div className="flex items-center gap-6 pb-1">
-                                    <span className={`${style.font.mono.text} text-xs font-medium text-[var(--color-light-opacity100)]`}>Event</span>
-                                    <span className={`${style.font.mono.text} text-xs text-[var(--color-light-opacity60)]`}>
-                                      {ch.event?.name || 'Unknown Event'}
-                                    </span>
-                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
+            </div>
             ) : (
               <div className="grid grid-cols-2 gap-6">
                 {displayed.map(ch => (

@@ -7,6 +7,7 @@ import { Footer } from "@/components/footer"
 import Navbar from '@/components/navi'
 import * as style from '@/styles/design-system'
 import { EventCard, Event } from '@/components/event-card'
+import Loading from '@/components/loading'
 
 // Custom hook for optimized API calls with caching
 const useEventsData = () => {
@@ -166,16 +167,7 @@ export default function EventsPage() {
   // LOADING SCREEN (optimized)
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk">
-        <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-        <div className="pt-20 flex justify-center items-center h-64">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--color-primary-opacity100)] mx-auto mb-4"></div>
-            <p className="text-[var(--color-light-opacity60)]">Loading events...</p>
-          </div>
-        </div>
-        <Footer />
-      </div>
+      <Loading message="Loading Events" variant="fullscreen" />
     )
   }
 

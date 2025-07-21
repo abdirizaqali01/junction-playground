@@ -378,13 +378,13 @@ export default function ProjectSubmissionPage() {
         />
 
         {/* Main Content */}
-        <div className="flex flex-1 transition-all duration-300 ml-[250px]">
+        <div className="flex flex-1 transition-all duration-300 ml-0 lg:ml-[250px] px-4 lg:px-10 pt-[100px] lg:pt-10">
           
           {/* Center Content Area */}
-          <div className="flex-1 p-6">
+          <div className="flex-1 pb-10">
             {/* Header */}
-            <div className="mb-6 pt-[3%]">
-              <h1 className={`${style.font.grotesk.main} text-2xl text-[var(--color-light-opacity100)] mb-4`}>
+            <div className="mb-6">
+              <h1 className={`${style.font.grotesk.main} text-4xl text-[var(--color-light-opacity100)] mb-4`}>
                 Project Submission
               </h1>
               
@@ -734,7 +734,7 @@ export default function ProjectSubmissionPage() {
           </div>
 
           {/* Right Sidebar - Next Steps with Enhanced Animation */}
-          <div className="w-[26rem] p-6">
+          <div className="hidden lg:block w-0 lg:w-[26rem] p-0 lg:p-6">
             <div className={`${style.border.solid} ${style.border.radius.outer} sticky top-6 ${style.perf.transition.slow} shadow-md transform
               ${allFieldsCompleted 
                 ? 'border-[var(--color-primary-opacity100)] bg-[var(--color-primary-opacity20)] px-8 py-6 scale-105' 
@@ -756,7 +756,7 @@ export default function ProjectSubmissionPage() {
                   </p>
                 </div>
               ) : (
-                <div className="space-y-0">
+                <div className="mt-3">
                   {sortedChecklistItems.map((item) => (
                     <NextStepItem
                       key={item.key}
