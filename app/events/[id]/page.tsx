@@ -382,15 +382,18 @@ export default function EventDetailPage() {
                     className="w-full h-full object-cover grayscale"
                   />
                 </div>
+
+                {/* Darkening gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                 
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--color-dark-opacity100)]/80 to-transparent p-6">
-                  <div className="flex items-start space-x-3 mb-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center items-start lg:justify-between justify-start space-x-0 mb-2">
                     <h1 className="text-3xl font-bold text-[var(--color-light-opacity100)] font-space-grotesk">{event.name}</h1>
-                    <span className={`px-3 py-1 mt-2 text-xs font-medium rounded-full ${getStatusColor(event.status)}`}>
+                    <span className={`px-3 py-1 mb-2 mt-2 text-xs font-medium rounded-full ${getStatusColor(event.status)}`}>
                       {event.status || 'LIVE'}
                     </span>
                   </div>
-                  <div className="flex items-center space-x-6 text-[var(--color-light-opacity60)] text-sm font-space-grotesk">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 text-[var(--color-light-opacity60)] text-sm font-space-grotesk">
                     <span className="flex items-center space-x-1">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
