@@ -36,7 +36,7 @@ const Loading: React.FC<LoadingProps> = ({
 
   if (variant === 'fullscreen') {
     return (
-      <div className={`min-h-[calc(100vh-80px)] lg:min-h-screen w-full bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk flex justify-center items-center p-4 fixed lg:static top-[80px] lg:top-0 left-0 right-0 lg:left-auto lg:right-auto z-10 ${className}`}>
+      <div className={`min-h-screen w-full bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk flex justify-center items-center p-4 ${className}`}>
         <LoadingSpinner />
       </div>
     );

@@ -3,7 +3,8 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
-// LoadingBar component
+// LoadingBar component - COMMENTED OUT DUE TO FAULT
+/*
 interface LoadingBarProps {
   isLoading: boolean
   duration?: number
@@ -101,6 +102,7 @@ const LoadingBar: React.FC<LoadingBarProps> = ({
     </div>
   )
 }
+*/
 
 // Loading Context
 interface LoadingContextType {
@@ -192,7 +194,8 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
   return (
     <LoadingContext.Provider value={value}>
       {children}
-      <LoadingBar isLoading={hasActiveLoading} />
+      {/* LoadingBar component commented out due to fault */}
+      {/* <LoadingBar isLoading={hasActiveLoading} /> */}
     </LoadingContext.Provider>
   )
 }

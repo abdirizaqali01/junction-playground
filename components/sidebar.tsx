@@ -6,6 +6,7 @@ import { useLoading } from '@/components/loading-context'
 import { LoadingButton, SidebarNavButton } from '@/components/loading-button'
 import * as style from '@/styles/design-system'
 import Image from 'next/image'
+import { useEvent } from '@/app/hooks/useApi'
 
 interface NavigationItem {
   id: string
@@ -79,7 +80,7 @@ const FinalistsVoting = (
 )
 
 const ChevronLeft = (
-  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="15 18 9 12 15 6"/>
   </svg>
 )
@@ -191,14 +192,6 @@ export default function Sidebar({
   const pathname = usePathname()
   const { setLoading, isLoading } = useLoading()
 
-  const handleSidebarToggle = () => {
-    setSidebarState((s: SidebarState) => (s === 'expanded' ? 'icons' : 'expanded'))
-  }
-
-  const handleMobileMenuToggle = () => {
-    setMobileMenuOpen(!mobileMenuOpen)
-  }
-
   // Get event ID from props or pathname
   const getEventId = (): string | null => {
     if (eventId) return eventId
@@ -210,6 +203,18 @@ export default function Sidebar({
       return pathSegments[eventsIndex + 1]
     }
     return null
+  }
+
+  // Get current event data
+  const currentEventId = getEventId()
+  const { data: eventData } = useEvent(currentEventId)
+
+  const handleSidebarToggle = () => {
+    setSidebarState((s: SidebarState) => (s === 'expanded' ? 'icons' : 'expanded'))
+  }
+
+  const handleMobileMenuToggle = () => {
+    setMobileMenuOpen(!mobileMenuOpen)
   }
 
   // Map pathnames to navigation item IDs
@@ -359,19 +364,23 @@ export default function Sidebar({
     <>
       {/* MOBILE TOP BAR (visible on mobile only) */}
       <div className="lg:hidden fixed top-0 left-0 right-0 bg-[#191919] border-b border-white/15 px-4 py-3 flex items-center justify-between z-[200]">
-        {/* Left side - Back to Home */}
+        {/* Left side - Back to Home Button Only */}
         <LoadingButton
           onClick={handleBackToHome}
           loadingKey="sidebar-back-home"
           variant="ghost"
           size="sm"
-          className={`flex items-center gap-2 bg-white/10 hover:bg-white/20 rounded px-3 py-1
-                     text-white/40 hover:text-white/60 text-sm font-medium transition-all duration-200
-                     active:bg-white/5 border-0 ${style.font.mono.text}`}
+          className="p-1 rounded-lg bg-white/10 hover:bg-white/20 text-white/60 hover:text-white transition-all duration-200 active:scale-95 border-0 flex items-center justify-center w-8 h-8"
           icon={ChevronLeft}
-        >
-          {backToHomeLabel}
-        </LoadingButton>
+          aria-label={backToHomeLabel}
+        />
+
+        {/* Center - Event Name */}
+        <div className="flex-1 text-center px-4">
+          <h1 className={`text-white font-medium text-base truncate ${style.font.grotesk.main}`}>
+            {eventData && eventData[0]?.name || 'Loading...'}
+          </h1>
+        </div>
 
         {/* Right side - Hamburger Menu */}
         <button

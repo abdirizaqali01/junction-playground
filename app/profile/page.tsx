@@ -1,18 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Sidebar from '@/components/sidebar'
 import { MainButton } from '@/components/attachables/main-button'
 import { Footer } from "@/components/footer"
-import { colors, spaceGrotesk, initializeCSSVariables } from '@/styles/design-system'
-
-const userProfile = {
-  name: 'Junction Hack',
-  email: 'ju@hackjunction.com',
-  initials: 'JU',
-  avatarColor: 'bg-green-600'
-}
+import { colors, spaceGrotesk, box, font, perf } from '@/styles/design-system'
+import { 
+  countryOptions, 
+  languageOptions, 
+  themeOptions, 
+  roleOptions, 
+  skillOptions, 
+  experienceOptions, 
+  expertiseOptions 
+} from '@/lib/registrationOptions'
 
 interface ProfileData {
   profile: {
@@ -80,10 +81,122 @@ interface ProfileData {
   }
 }
 
+// Define interfaces for form data types
+interface Skill {
+  id: string
+  skill: string
+  expertise: string
+}
+
+interface Role {
+  id: string
+  role: string
+  experience: string
+}
+
+interface FormDataType {
+  firstName: string
+  lastName: string
+  email: string
+  phoneNumber: string
+  countryCode: string
+  dateOfBirth: { day: string; month: string; year: string }
+  gender: string
+  headline: string
+  biography: string
+  countryOfResidence: string
+  nationality: string
+  spokenLanguages: string[]
+  themesOfInterest: string[]
+  industriesOfInterest: string
+  levelOfEducation: string
+  skills: Skill[]
+  professionalRoles: Role[]
+  recruitmentPreferences: string
+  cv: string
+  portfolio: string
+  github: string
+  linkedin: string
+}
+
 export default function ProfilePage() {
   const router = useRouter()
+
+  // Generate days (1-31)
+  const days = Array.from({ length: 31 }, (_, i) => i + 1)
   
-  // Initialize CSS variables on component mount MISSING
+  // Generate months
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]
+  
+  // Generate years (current year back to 1950)
+  const currentYear = new Date().getFullYear()
+  const years = Array.from({ length: currentYear - 1949 }, (_, i) => currentYear - i)
+
+  // Gender options
+  const genderOptions = [
+    'Male', 'Female', 'Non-binary', 'Prefer not to say', 'Other'
+  ]
+
+  // Education levels
+  const educationLevels = [
+    'Some High School',
+    'High School / GED',
+    'Some College',
+    'Trade School',
+    'Associate Degree',
+    'Bachelor\'s Degree',
+    'Master\'s Degree',
+    'Doctoral Degree',
+    'Other'
+  ]
+
+  // Recruitment preferences
+  const recruitmentOptions = [
+    'I am actively looking for work',
+    'I am not looking for work, but open to hear about opportunities',
+    'I am not looking for work',
+    'I am looking for internship opportunities',
+    'Other'
+  ]
+
+  // Industries (expanding themes for more career-focused options)
+  const industryOptions = [
+    'Technology/Software',
+    'Healthcare/Medical',
+    'Finance/Banking',
+    'Education',
+    'Manufacturing',
+    'Automotive',
+    'Aerospace',
+    'Energy/Utilities',
+    'Retail/E-commerce',
+    'Media/Entertainment',
+    'Real Estate',
+    'Construction',
+    'Agriculture',
+    'Transportation/Logistics',
+    'Government/Public Sector',
+    'Non-profit',
+    'Consulting',
+    'Legal',
+    'Marketing/Advertising',
+    'Gaming',
+    'Cryptocurrency/Blockchain',
+    'AI/Machine Learning',
+    'Cybersecurity',
+    'Sustainability/Clean Tech',
+    'Biotechnology',
+    'Other'
+  ]
+
+  // Extract countries without country codes for residence/nationality
+  const countries = countryOptions.map(option => {
+    const match = option.match(/^(.+?)\s+\(\+\d+\)$/)
+    return match ? match[1] : option
+  })
 
   // Static data dictionary
   const profileData: ProfileData = {
@@ -152,7 +265,7 @@ export default function ProfilePage() {
     }
   }
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
     firstName: 'test',
     lastName: 'test',
     email: 'test_participant@test.com',
@@ -164,8 +277,8 @@ export default function ProfilePage() {
     biography: '',
     countryOfResidence: 'Select...',
     nationality: 'Select...',
-    spokenLanguages: 'Select...',
-    themesOfInterest: 'Select...',
+    spokenLanguages: [],
+    themesOfInterest: [],
     industriesOfInterest: 'Select...',
     levelOfEducation: 'Choose one',
     skills: [],
@@ -177,510 +290,716 @@ export default function ProfilePage() {
     linkedin: ''
   })
 
+  const [newSkill, setNewSkill] = useState('')
+  const [newSkillExpertise, setNewSkillExpertise] = useState('')
+  const [newRole, setNewRole] = useState('')
+  const [newRoleExperience, setNewRoleExperience] = useState('')
+
   const handleBackToHome = () => {
     router.push('/dash')
   }
 
   const handleSaveProfile = () => {
     console.log('Saving profile:', formData)
-    // TODO: Implement save functionality
     alert('Profile saved successfully!')
   }
 
-  // Define styles using the design system colors
-  const styles = {
-    background: { backgroundColor: colors.dark.opacity100 },
-    text: { color: colors.light.opacity100 },
-    textSecondary: { color: colors.light.opacity60 },
-    textTertiary: { color: colors.light.opacity40 },
-    card: { 
-      backgroundColor: colors.white.opacity10,
-      borderColor: colors.white.opacity15
-    },
-    input: {
-      backgroundColor: colors.white.opacity5,
-      borderColor: colors.white.opacity15,
-      color: colors.light.opacity100
-    },
-    inputFocus: {
-      borderColor: colors.primary.opacity50
-    },
-    avatar: {
-      background: `linear-gradient(135deg, ${colors.primary.opacity100}, ${colors.primary.opacity60})`
+  // Helper functions for managing arrays
+  const addToArray = (field: keyof FormDataType, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: [...(prev[field] as string[]), value]
+    }))
+  }
+
+  const removeFromArray = (field: keyof FormDataType, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: (prev[field] as string[]).filter(item => item !== value)
+    }))
+  }
+
+  const addSkill = () => {
+    if (newSkill && newSkillExpertise && formData.skills.length < 10) {
+      const newSkillObj: Skill = {
+        id: Date.now().toString(), 
+        skill: newSkill, 
+        expertise: newSkillExpertise 
+      }
+      setFormData(prev => ({
+        ...prev,
+        skills: [...prev.skills, newSkillObj]
+      }))
+      setNewSkill('')
+      setNewSkillExpertise('')
     }
   }
 
-  return (
-    <div className={`min-h-screen ${spaceGrotesk.variable} flex`} style={styles.background}>
-      <Sidebar
-        userProfile={userProfile}
-        backToHomeLabel="Back To Home"
-        onBackToHome={handleBackToHome}
-        showImagePlaceholder={true}
+  const addRole = () => {
+    if (newRole && newRoleExperience && formData.professionalRoles.length < 5) {
+      const newRoleObj: Role = {
+        id: Date.now().toString(), 
+        role: newRole, 
+        experience: newRoleExperience 
+      }
+      setFormData(prev => ({
+        ...prev,
+        professionalRoles: [...prev.professionalRoles, newRoleObj]
+      }))
+      setNewRole('')
+      setNewRoleExperience('')
+    }
+  }
+
+  const removeSkill = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      skills: prev.skills.filter(skill => skill.id !== id)
+    }))
+  }
+
+  const removeRole = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      professionalRoles: prev.professionalRoles.filter(role => role.id !== id)
+    }))
+  }
+
+  // Multi-select component for themes and languages
+  const MultiSelectField = ({ 
+    label, 
+    options, 
+    value, 
+    onChange, 
+    maxSelections = null 
+  }: {
+    label: string
+    options: string[]
+    value: string[]
+    onChange: (value: string) => void
+    maxSelections?: number | null
+  }) => {
+    return (
+      <div>
+        <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{label}</label>
+        <div className="space-y-2 max-h-40 overflow-y-auto border border-[#333] rounded-lg p-3 bg-[${colors.white.opacity5}]">
+          {options.map(option => (
+            <label key={option} className="flex items-center space-x-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={value.includes(option)}
+                onChange={() => onChange(option)}
+                disabled={maxSelections && !value.includes(option) && value.length >= maxSelections}
+                className="w-4 h-4 text-[#55D186] border-[#FFFFFF33] focus:ring-[#55D186] disabled:opacity-50"
+              />
+              <span className={`text-sm ${value.includes(option) ? `text-[${colors.light.opacity100}]` : `text-[${colors.light.opacity60}]`}`}>
+                {option}
+              </span>
+            </label>
+          ))}
+        </div>
+        {maxSelections && (
+          <p className={`text-xs mt-1 text-[${colors.light.opacity40}]`}>
+            Selected: {value.length}/{maxSelections}
+          </p>
+        )}
+      </div>
+    )
+  }
+
+  // Input component with design system styles
+  const InputField = ({ 
+    type = "text", 
+    value, 
+    onChange, 
+    placeholder, 
+    onFocus, 
+    onBlur, 
+    rows,
+    disabled 
+  }: {
+    type?: string
+    value: string
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    placeholder?: string
+    onFocus?: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    onBlur?: (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+    rows?: number
+    disabled?: boolean
+  }) => {
+    const baseClasses = `w-full bg-[${colors.white.opacity5}] border border-[${colors.white.opacity15}] rounded-lg px-3 py-2 text-[${colors.light.opacity100}] focus:outline-none focus:border-[${colors.primary.opacity50}] ${perf.transition.fast} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`
+    
+    if (type === 'textarea') {
+      return (
+        <textarea
+          rows={rows || 4}
+          value={value}
+          onChange={onChange}
+          className={`${baseClasses} resize-none`}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          disabled={disabled || false}
+        />
+      )
+    }
+    
+    return (
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={baseClasses}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        disabled={disabled || false}
       />
+    )
+  }
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-auto flex flex-col transition-all duration-300 ml-[250px]">
-        {/* Main Content Area */}
-        <div className="flex-1 p-8 pt-[6%]">
-          {/* Profile Header */}
-          <div className="mb-8 flex items-center space-x-8">
-            {/* Profile Picture */}
-            <div 
-              className="w-24 h-24 rounded-full flex items-center justify-center"
-              style={styles.avatar}
-            >
-              <span className="text-2xl font-bold font-[var(--font-space-grotesk)]" style={styles.text}>TE</span>
-            </div>
-            
-            <div>
-              <h1 className="text-4xl font-bold mb-2 font-[var(--font-space-grotesk)]" style={styles.text}>
-                {profileData.profile.title}
-              </h1>
-              <p className="text-lg" style={styles.textSecondary}>Manage your personal information and preferences</p>
-            </div>
+  const SelectField = ({ 
+    value, 
+    onChange, 
+    children, 
+    onFocus, 
+    onBlur,
+    disabled 
+  }: {
+    value: string
+    onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+    children: React.ReactNode
+    onFocus?: (e: React.FocusEvent<HTMLSelectElement>) => void
+    onBlur?: (e: React.FocusEvent<HTMLSelectElement>) => void
+    disabled?: boolean
+  }) => (
+    <select 
+      value={value}
+      onChange={onChange}
+      className={`w-full bg-[${colors.white.opacity5}] border border-[${colors.white.opacity15}] rounded-lg px-3 py-2 text-[${colors.light.opacity100}] focus:outline-none focus:border-[${colors.primary.opacity50}] ${perf.transition.fast} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      disabled={disabled || false}
+    >
+      {children}
+    </select>
+  )
+
+  return (
+    <div className={`min-h-screen ${spaceGrotesk.variable} bg-[${colors.dark.opacity100}]`}>
+      {/* Back to Home Button - Far Left */}
+      <div className="px-6 pt-8 pb-4">
+        <div className="justify-start items-center flex">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`mr-2 text-[${colors.white.opacity40}]`}>
+            <path d="M19 12H5"/>
+            <path d="M12 19l-7-7 7-7"/>
+          </svg>
+          <MainButton 
+            variant="ghost"
+            size="none"
+            onClick={handleBackToHome}
+            showIcon={false}
+            className={`text-[${colors.white.opacity40}] hover:text-[${colors.white.opacity60}]`}
+          >
+            Back To Home
+          </MainButton>
+        </div>
+      </div>
+
+      {/* Centered Container */}
+      <div className="max-w-4xl mx-auto px-6 pb-8">
+
+        {/* Profile Header */}
+        <div className="mb-8 flex items-center space-x-8">
+          {/* Profile Picture */}
+          <div 
+            className="w-24 h-24 rounded-full flex items-center justify-center"
+            style={{
+              background: `linear-gradient(135deg, ${colors.primary.opacity100}, ${colors.primary.opacity60})`
+            }}
+          >
+            <span className={`text-2xl ${font.grotesk.main} text-[${colors.light.opacity100}]`}>TE</span>
           </div>
-
-          {/* Personal Information Section */}
-          <div className="border rounded-xl p-6 mb-6" style={styles.card}>
-            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
-              Personal Information
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* First Name */}
-              <div>
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.personalInfo.firstName}</label>
-                <input
-                  type="text"
-                  value={formData.firstName}
-                  onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                  style={styles.input}
-                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                />
-              </div>
-
-              {/* Last Name */}
-              <div>
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.personalInfo.lastName}</label>
-                <input
-                  type="text"
-                  value={formData.lastName}
-                  onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                  style={styles.input}
-                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                />
-              </div>
-
-              {/* Email Address */}
-              <div className="md:col-span-2">
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.personalInfo.emailAddress}</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                  style={styles.input}
-                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                />
-                <p className="text-xs mt-1" style={styles.textTertiary}>{profileData.profile.personalInfo.emailDescription}</p>
-              </div>
-
-              {/* Phone Number */}
-              <div className="md:col-span-2">
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.personalInfo.phoneNumber}</label>
-                <div className="flex space-x-2">
-                  <select 
-                    className="border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                    style={styles.input}
-                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                  >
-                    <option>Select...</option>
-                  </select>
-                  <input
-                    type="tel"
-                    placeholder="Phone number"
-                    value={formData.phoneNumber}
-                    onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
-                    className="flex-1 border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                    style={styles.input}
-                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                  />
-                </div>
-                <p className="text-xs mt-1" style={styles.textTertiary}>{profileData.profile.personalInfo.phoneDescription}</p>
-              </div>
-
-              {/* Date of Birth */}
-              <div className="md:col-span-2">
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.personalInfo.dateOfBirth}</label>
-                <div className="grid grid-cols-12 gap-2">
-                  <div className="col-span-3">
-                    <select 
-                      className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                      style={styles.input}
-                      onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                      onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                    >
-                      <option>Day</option>
-                    </select>
-                  </div>
-                  <div className="col-span-6">
-                    <select 
-                      className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                      style={styles.input}
-                      onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                      onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                    >
-                      <option>Month</option>
-                    </select>
-                  </div>
-                  <div className="col-span-3">
-                    <select 
-                      className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                      style={styles.input}
-                      onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                      onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                    >
-                      <option>Year</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Gender */}
-              <div>
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.personalInfo.gender}</label>
-                <select 
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                  style={styles.input}
-                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                >
-                  <option>Select...</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Profile Details Section */}
-          <div className="border rounded-xl p-6 mb-6" style={styles.card}>
-            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
-              {profileData.profile.profileDetails.title}
-            </h2>
-            <p className="text-sm mb-6" style={styles.textSecondary}>{profileData.profile.profileDetails.description}</p>
-            
-            <div className="space-y-6">
-              {/* Headline */}
-              <div>
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.headline}</label>
-                <p className="text-xs mb-2" style={styles.textTertiary}>{profileData.profile.profileDetails.headlineDescription}</p>
-                <input
-                  type="text"
-                  value={formData.headline}
-                  onChange={(e) => setFormData({...formData, headline: e.target.value})}
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                  style={styles.input}
-                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                />
-              </div>
-
-              {/* Biography */}
-              <div>
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.biography}</label>
-                <p className="text-xs mb-2" style={styles.textTertiary}>{profileData.profile.profileDetails.biographyDescription}</p>
-                <textarea
-                  rows={4}
-                  value={formData.biography}
-                  onChange={(e) => setFormData({...formData, biography: e.target.value})}
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors resize-none"
-                  style={styles.input}
-                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                />
-              </div>
-
-              {/* Location & Demographics */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.countryOfResidence}</label>
-                  <select 
-                    className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                    style={styles.input}
-                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                  >
-                    <option>Select...</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.nationality}</label>
-                  <select 
-                    className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                    style={styles.input}
-                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                  >
-                    <option>Select...</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Languages and Interests */}
-              <div className="grid grid-cols-1 gap-6">
-                <div>
-                  <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.spokenLanguages}</label>
-                  <select 
-                    className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                    style={styles.input}
-                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                  >
-                    <option>Select...</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.themesOfInterest}</label>
-                  <select 
-                    className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                    style={styles.input}
-                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                  >
-                    <option>Select...</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.profileDetails.industriesOfInterest}</label>
-                  <select 
-                    className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                    style={styles.input}
-                    onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                    onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                  >
-                    <option>Select...</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Education Section */}
-          <div className="border rounded-xl p-6 mb-6" style={styles.card}>
-            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
-              {profileData.profile.education.title}
-            </h2>
-            <p className="text-sm mb-6" style={styles.textSecondary}>{profileData.profile.education.description}</p>
-            
-            <div>
-              <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.education.levelOfEducation}</label>
-              <select 
-                className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                style={styles.input}
-                onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-              >
-                <option>Choose one</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Skills Section */}
-          <div className="border rounded-xl p-6 mb-6" style={styles.card}>
-            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
-              {profileData.profile.skills.title}
-            </h2>
-            <p className="text-sm mb-6" style={styles.textSecondary}>{profileData.profile.skills.description}</p>
-            
-            <div className="space-y-4">
-              <div>
-                <input
-                  type="text"
-                  placeholder="Type to search for skills"
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                  style={styles.input}
-                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.skills.levelOfExpertise}</label>
-                <div className="flex flex-wrap gap-2">
-                  {profileData.profile.skills.levels.map((level, index) => (
-                    <label key={index} className="flex items-center space-x-2 text-sm" style={styles.textSecondary}>
-                      <input 
-                        type="radio" 
-                        name="skillLevel" 
-                        className="focus:ring-2"
-                        style={{
-                          backgroundColor: colors.white.opacity5,
-                          borderColor: colors.white.opacity15,
-                          accentColor: colors.primary.opacity100
-                        }}
-                      />
-                      <span>{level}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-              
-              <MainButton variant="primary" size="sm" showIcon={false}>
-                ADD
-              </MainButton>
-            </div>
-          </div>
-
-          {/* Professional Roles Section */}
-          <div className="border rounded-xl p-6 mb-6" style={styles.card}>
-            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
-              {profileData.profile.professionalRoles.title}
-            </h2>
-            <p className="text-sm mb-6" style={styles.textSecondary}>{profileData.profile.professionalRoles.description}</p>
-            
-            <div className="space-y-4">
-              <div>
-                <input
-                  type="text"
-                  placeholder="Type to search for roles"
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                  style={styles.input}
-                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.professionalRoles.yearsOfExperience}</label>
-                <div className="flex flex-wrap gap-2">
-                  {profileData.profile.professionalRoles.experienceRanges.map((range, index) => (
-                    <label key={index} className="flex items-center space-x-2 text-sm" style={styles.textSecondary}>
-                      <input 
-                        type="radio" 
-                        name="experience" 
-                        className="focus:ring-2"
-                        style={{
-                          backgroundColor: colors.white.opacity5,
-                          borderColor: colors.white.opacity15,
-                          accentColor: colors.primary.opacity100
-                        }}
-                      />
-                      <span>{range}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-              
-              <MainButton variant="primary" size="sm" showIcon={false}>
-                ADD
-              </MainButton>
-            </div>
-          </div>
-
-          {/* Recruitment Preferences Section */}
-          <div className="border rounded-xl p-6 mb-6" style={styles.card}>
-            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
-              {profileData.profile.recruitmentPreferences.title}
-            </h2>
-            <p className="text-sm mb-6" style={styles.textSecondary}>{profileData.profile.recruitmentPreferences.description}</p>
-            
-            <select 
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-              style={styles.input}
-              onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-              onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-            >
-              <option>Choose one</option>
-            </select>
-          </div>
-
-          {/* Additional Links Section */}
-          <div className="border rounded-xl p-6 mb-8" style={styles.card}>
-            <h2 className="text-2xl font-bold mb-4 font-[var(--font-space-grotesk)]" style={styles.text}>
-              {profileData.profile.additionalLinks.title}
-            </h2>
-            <p className="text-sm mb-6" style={styles.textSecondary}>{profileData.profile.additionalLinks.description}</p>
-            
-            <div className="space-y-6">
-              {/* CV */}
-              <div>
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.additionalLinks.cv}</label>
-                <p className="text-xs mb-2" style={styles.textTertiary}>{profileData.profile.additionalLinks.cvDescription}</p>
-                <input
-                  type="url"
-                  value={formData.cv}
-                  onChange={(e) => setFormData({...formData, cv: e.target.value})}
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                  style={styles.input}
-                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                />
-              </div>
-
-              {/* Portfolio */}
-              <div>
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.additionalLinks.portfolio}</label>
-                <p className="text-xs mb-2" style={styles.textTertiary}>{profileData.profile.additionalLinks.portfolioDescription}</p>
-                <input
-                  type="url"
-                  value={formData.portfolio}
-                  onChange={(e) => setFormData({...formData, portfolio: e.target.value})}
-                  className="w-full border rounded-lg px-3 py-2 focus:outline-none transition-colors"
-                  style={styles.input}
-                  onFocus={(e) => e.target.style.borderColor = colors.primary.opacity50}
-                  onBlur={(e) => e.target.style.borderColor = colors.white.opacity15}
-                />
-              </div>
-
-              {/* GitHub */}
-              <div>
-                <label className="block text-sm mb-2" style={styles.textSecondary}>{profileData.profile.additionalLinks.github}</label>
-                <p className="text-xs mb-2" style={styles.textTertiary}>{profileData.profile.additionalLinks.githubDescription}</p>
-                <input
-                  type="url"
-                  value={formData.github}
-                  onChange={(e) => setFormData({...formData, github: e.target.value})}
-                  className="w-full bg-white/5 border border-white/15 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400/50 transition-colors"
-                />
-              </div>
-
-              {/* LinkedIn */}
-              <div>
-                <label className="block text-white/60 text-sm mb-2">{profileData.profile.additionalLinks.linkedin}</label>
-                <p className="text-white/40 text-xs mb-2">{profileData.profile.additionalLinks.linkedinDescription}</p>
-                <input
-                  type="url"
-                  value={formData.linkedin}
-                  onChange={(e) => setFormData({...formData, linkedin: e.target.value})}
-                  className="w-full bg-white/5 border border-white/15 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-400/50 transition-colors"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Save Button */}
-          <div className="flex justify-end">
-            <MainButton 
-              variant="primary" 
-              size="lg" 
-              showIcon={false}
-              onClick={handleSaveProfile}
-            >
-              Save Profile
-            </MainButton>
+          
+          <div>
+            <h1 className={`text-4xl ${font.grotesk.heavy} mb-2 text-[${colors.light.opacity100}]`}>
+              {profileData.profile.title}
+            </h1>
+            <p className={`text-lg text-[${colors.light.opacity60}]`}>Manage your personal information and preferences</p>
           </div>
         </div>
 
-        <Footer />
+        {/* Personal Information Section */}
+        <div className={`${box.gray.bottom} p-6 mb-6`}>
+          <h2 className={`text-2xl ${font.grotesk.main} mb-4 text-[${colors.light.opacity100}]`}>
+            Personal Information
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* First Name */}
+            <div>
+              <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.personalInfo.firstName}</label>
+              <InputField
+                value={formData.firstName}
+                onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+              />
+            </div>
+
+            {/* Last Name */}
+            <div>
+              <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.personalInfo.lastName}</label>
+              <InputField
+                value={formData.lastName}
+                onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+              />
+            </div>
+
+            {/* Email Address */}
+            <div className="md:col-span-2">
+              <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.personalInfo.emailAddress}</label>
+              <InputField
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+              />
+              <p className={`text-xs mt-1 text-[${colors.light.opacity40}]`}>{profileData.profile.personalInfo.emailDescription}</p>
+            </div>
+
+            {/* Phone Number */}
+            <div className="md:col-span-2">
+              <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.personalInfo.phoneNumber}</label>
+              <div className="flex space-x-2">
+                <SelectField
+                  value={formData.countryCode}
+                  onChange={(e) => setFormData({...formData, countryCode: e.target.value})}
+                >
+                  <option value="Select...">Select...</option>
+                  {countryOptions.map(country => (
+                    <option key={country} value={country}>{country}</option>
+                  ))}
+                </SelectField>
+                <InputField
+                  type="tel"
+                  placeholder="Phone number"
+                  value={formData.phoneNumber}
+                  onChange={(e) => setFormData({...formData, phoneNumber: e.target.value})}
+                />
+              </div>
+              <p className={`text-xs mt-1 text-[${colors.light.opacity40}]`}>{profileData.profile.personalInfo.phoneDescription}</p>
+            </div>
+
+            {/* Date of Birth */}
+            <div className="md:col-span-2">
+              <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.personalInfo.dateOfBirth}</label>
+              <div className="grid grid-cols-12 gap-2">
+                <div className="col-span-3">
+                  <SelectField
+                    value={formData.dateOfBirth.day}
+                    onChange={(e) => setFormData({...formData, dateOfBirth: {...formData.dateOfBirth, day: e.target.value}})}
+                  >
+                    <option value="Select...">Day</option>
+                    {days.map(day => (
+                      <option key={day} value={day.toString()}>{day}</option>
+                    ))}
+                  </SelectField>
+                </div>
+                <div className="col-span-6">
+                  <SelectField
+                    value={formData.dateOfBirth.month}
+                    onChange={(e) => setFormData({...formData, dateOfBirth: {...formData.dateOfBirth, month: e.target.value}})}
+                  >
+                    <option value="Select...">Month</option>
+                    {months.map(month => (
+                      <option key={month} value={month}>{month}</option>
+                    ))}
+                  </SelectField>
+                </div>
+                <div className="col-span-3">
+                  <SelectField
+                    value={formData.dateOfBirth.year}
+                    onChange={(e) => setFormData({...formData, dateOfBirth: {...formData.dateOfBirth, year: e.target.value}})}
+                  >
+                    <option value="Select...">Year</option>
+                    {years.map(year => (
+                      <option key={year} value={year.toString()}>{year}</option>
+                    ))}
+                  </SelectField>
+                </div>
+              </div>
+            </div>
+
+            {/* Gender */}
+            <div>
+              <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.personalInfo.gender}</label>
+              <SelectField
+                value={formData.gender}
+                onChange={(e) => setFormData({...formData, gender: e.target.value})}
+              >
+                <option value="Select...">Select...</option>
+                {genderOptions.map(gender => (
+                  <option key={gender} value={gender}>{gender}</option>
+                ))}
+              </SelectField>
+            </div>
+          </div>
+        </div>
+
+        {/* Profile Details Section */}
+        <div className={`${box.gray.bottom} p-6 mb-6`}>
+          <h2 className={`text-2xl ${font.grotesk.main} mb-4 text-[${colors.light.opacity100}]`}>
+            {profileData.profile.profileDetails.title}
+          </h2>
+          <p className={`text-sm mb-6 text-[${colors.light.opacity60}]`}>{profileData.profile.profileDetails.description}</p>
+          
+          <div className="space-y-6">
+            {/* Headline */}
+            <div>
+              <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.profileDetails.headline}</label>
+              <p className={`text-xs mb-2 text-[${colors.light.opacity40}]`}>{profileData.profile.profileDetails.headlineDescription}</p>
+              <InputField
+                value={formData.headline}
+                onChange={(e: any) => setFormData({...formData, headline: e.target.value})}
+              />
+            </div>
+
+            {/* Biography */}
+            <div>
+              <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.profileDetails.biography}</label>
+              <p className={`text-xs mb-2 text-[${colors.light.opacity40}]`}>{profileData.profile.profileDetails.biographyDescription}</p>
+              <InputField
+                type="textarea"
+                rows={4}
+                value={formData.biography}
+                onChange={(e: any) => setFormData({...formData, biography: e.target.value})}
+              />
+            </div>
+
+            {/* Location & Demographics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.profileDetails.countryOfResidence}</label>
+                <SelectField
+                  value={formData.countryOfResidence}
+                  onChange={(e: any) => setFormData({...formData, countryOfResidence: e.target.value})}
+                >
+                  <option value="Select...">Select...</option>
+                  {countries.map(country => (
+                    <option key={country} value={country}>{country}</option>
+                  ))}
+                </SelectField>
+              </div>
+              
+              <div>
+                <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.profileDetails.nationality}</label>
+                <SelectField
+                  value={formData.nationality}
+                  onChange={(e: any) => setFormData({...formData, nationality: e.target.value})}
+                >
+                  <option value="Select...">Select...</option>
+                  {countries.map(country => (
+                    <option key={country} value={country}>{country}</option>
+                  ))}
+                </SelectField>
+              </div>
+            </div>
+
+            {/* Languages and Interests */}
+            <div className="grid grid-cols-1 gap-6">
+              <MultiSelectField
+                label={profileData.profile.profileDetails.spokenLanguages}
+                options={languageOptions}
+                value={formData.spokenLanguages}
+                onChange={(lang) => {
+                  if (formData.spokenLanguages.includes(lang)) {
+                    removeFromArray('spokenLanguages', lang)
+                  } else {
+                    addToArray('spokenLanguages', lang)
+                  }
+                }}
+              />
+              
+              <MultiSelectField
+                label={profileData.profile.profileDetails.themesOfInterest}
+                options={themeOptions}
+                value={formData.themesOfInterest}
+                onChange={(theme) => {
+                  if (formData.themesOfInterest.includes(theme)) {
+                    removeFromArray('themesOfInterest', theme)
+                  } else {
+                    addToArray('themesOfInterest', theme)
+                  }
+                }}
+                maxSelections={3}
+              />
+              
+              <div>
+                <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.profileDetails.industriesOfInterest}</label>
+                <SelectField
+                  value={formData.industriesOfInterest}
+                  onChange={(e: any) => setFormData({...formData, industriesOfInterest: e.target.value})}
+                >
+                  <option value="Select...">Select...</option>
+                  {industryOptions.map(industry => (
+                    <option key={industry} value={industry}>{industry}</option>
+                  ))}
+                </SelectField>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Education Section */}
+        <div className={`${box.gray.bottom} p-6 mb-6`}>
+          <h2 className={`text-2xl ${font.grotesk.main} mb-4 text-[${colors.light.opacity100}]`}>
+            {profileData.profile.education.title}
+          </h2>
+          <p className={`text-sm mb-6 text-[${colors.light.opacity60}]`}>{profileData.profile.education.description}</p>
+          
+          <div>
+            <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.education.levelOfEducation}</label>
+            <SelectField
+              value={formData.levelOfEducation}
+              onChange={(e: any) => setFormData({...formData, levelOfEducation: e.target.value})}
+            >
+              <option value="Choose one">Choose one</option>
+              {educationLevels.map(level => (
+                <option key={level} value={level}>{level}</option>
+              ))}
+            </SelectField>
+          </div>
+        </div>
+
+        {/* Skills Section */}
+        <div className={`${box.gray.bottom} p-6 mb-6`}>
+          <h2 className={`text-2xl ${font.grotesk.main} mb-4 text-[${colors.light.opacity100}]`}>
+            {profileData.profile.skills.title}
+          </h2>
+          <p className={`text-sm mb-6 text-[${colors.light.opacity60}]`}>{profileData.profile.skills.description}</p>
+          
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>Choose a skill</label>
+                <SelectField
+                  value={newSkill}
+                  onChange={(e: any) => setNewSkill(e.target.value)}
+                >
+                  <option value="">Select a skill...</option>
+                  {skillOptions.sort().map(skill => (
+                    <option key={skill} value={skill}>{skill}</option>
+                  ))}
+                </SelectField>
+              </div>
+              
+              <div>
+                <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.skills.levelOfExpertise}</label>
+                <div className="space-y-2">
+                  {expertiseOptions.map(option => (
+                    <label key={option.value} className={`flex items-center space-x-2 text-sm text-[${colors.light.opacity60}]`}>
+                      <input
+                        type="radio"
+                        name="newSkillExpertise"
+                        value={option.value}
+                        checked={newSkillExpertise === option.value}
+                        onChange={(e) => setNewSkillExpertise(e.target.value)}
+                        className="w-4 h-4 text-[#55D186] border-[#FFFFFF33] focus:ring-[#55D186]"
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            <MainButton 
+              variant="primary" 
+              size="sm" 
+              showIcon={false}
+              onClick={addSkill}
+              disabled={!newSkill || !newSkillExpertise || formData.skills.length >= 10}
+            >
+              ADD
+            </MainButton>
+
+            {formData.skills.length > 0 && (
+              <div className="mt-4 space-y-2">
+                {formData.skills.map(skill => (
+                  <div key={skill.id} className={`flex items-center justify-between bg-[${colors.white.opacity5}] rounded-lg px-4 py-2 border border-[${colors.white.opacity15}]`}>
+                    <span className={`text-[${colors.light.opacity100}]`}>
+                      {skill.skill} - {expertiseOptions.find(opt => opt.value === skill.expertise)?.label}
+                    </span>
+                    <button
+                      onClick={() => removeSkill(skill.id)}
+                      className={`text-[#FF8383] hover:text-[${colors.light.opacity100}] ${perf.transition.fast}`}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 6L6 18"/>
+                        <path d="M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Professional Roles Section */}
+        <div className={`${box.gray.bottom} p-6 mb-6`}>
+          <h2 className={`text-2xl ${font.grotesk.main} mb-4 text-[${colors.light.opacity100}]`}>
+            {profileData.profile.professionalRoles.title}
+          </h2>
+          <p className={`text-sm mb-6 text-[${colors.light.opacity60}]`}>{profileData.profile.professionalRoles.description}</p>
+          
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>Choose a role</label>
+                <SelectField
+                  value={newRole}
+                  onChange={(e: any) => setNewRole(e.target.value)}
+                >
+                  <option value="">Select a role...</option>
+                  {roleOptions.sort().map(role => (
+                    <option key={role} value={role}>{role}</option>
+                  ))}
+                </SelectField>
+              </div>
+              
+              <div>
+                <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.professionalRoles.yearsOfExperience}</label>
+                <div className="space-y-2">
+                  {experienceOptions.map(option => (
+                    <label key={option.value} className={`flex items-center space-x-2 text-sm text-[${colors.light.opacity60}]`}>
+                      <input
+                        type="radio"
+                        name="newRoleExperience"
+                        value={option.value}
+                        checked={newRoleExperience === option.value}
+                        onChange={(e) => setNewRoleExperience(e.target.value)}
+                        className="w-4 h-4 text-[#55D186] border-[#FFFFFF33] focus:ring-[#55D186]"
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            <MainButton 
+              variant="primary" 
+              size="sm" 
+              showIcon={false}
+              onClick={addRole}
+              disabled={!newRole || !newRoleExperience || formData.professionalRoles.length >= 5}
+            >
+              ADD
+            </MainButton>
+
+            {formData.professionalRoles.length > 0 && (
+              <div className="mt-4 space-y-2">
+                {formData.professionalRoles.map(role => (
+                  <div key={role.id} className={`flex items-center justify-between bg-[${colors.white.opacity5}] rounded-lg px-4 py-2 border border-[${colors.white.opacity15}]`}>
+                    <span className={`text-[${colors.light.opacity100}]`}>
+                      {role.role} - {experienceOptions.find(opt => opt.value === role.experience)?.label}
+                    </span>
+                    <button
+                      onClick={() => removeRole(role.id)}
+                      className={`text-[#FF8383] hover:text-[${colors.light.opacity100}] ${perf.transition.fast}`}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M18 6L6 18"/>
+                        <path d="M6 6l12 12"/>
+                      </svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Recruitment Preferences Section */}
+        <div className={`${box.gray.bottom} p-6 mb-6`}>
+          <h2 className={`text-2xl ${font.grotesk.main} mb-4 text-[${colors.light.opacity100}]`}>
+            {profileData.profile.recruitmentPreferences.title}
+          </h2>
+          <p className={`text-sm mb-6 text-[${colors.light.opacity60}]`}>{profileData.profile.recruitmentPreferences.description}</p>
+          
+          <SelectField
+            value={formData.recruitmentPreferences}
+            onChange={(e: any) => setFormData({...formData, recruitmentPreferences: e.target.value})}
+          >
+            <option value="Choose one">Choose one</option>
+            {recruitmentOptions.map(option => (
+              <option key={option} value={option}>{option}</option>
+            ))}
+          </SelectField>
+        </div>
+
+        {/* Additional Links Section */}
+        <div className={`${box.gray.bottom} p-6 mb-8`}>
+          <h2 className={`text-2xl ${font.grotesk.main} mb-4 text-[${colors.light.opacity100}]`}>
+            {profileData.profile.additionalLinks.title}
+          </h2>
+          <p className={`text-sm mb-6 text-[${colors.light.opacity60}]`}>{profileData.profile.additionalLinks.description}</p>
+          
+          <div className="space-y-6">
+            {/* CV */}
+            <div>
+              <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.additionalLinks.cv}</label>
+              <p className={`text-xs mb-2 text-[${colors.light.opacity40}]`}>{profileData.profile.additionalLinks.cvDescription}</p>
+              <InputField
+                type="url"
+                value={formData.cv}
+                onChange={(e: any) => setFormData({...formData, cv: e.target.value})}
+              />
+            </div>
+
+            {/* Portfolio */}
+            <div>
+              <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.additionalLinks.portfolio}</label>
+              <p className={`text-xs mb-2 text-[${colors.light.opacity40}]`}>{profileData.profile.additionalLinks.portfolioDescription}</p>
+              <InputField
+                type="url"
+                value={formData.portfolio}
+                onChange={(e: any) => setFormData({...formData, portfolio: e.target.value})}
+              />
+            </div>
+
+            {/* GitHub */}
+            <div>
+              <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.additionalLinks.github}</label>
+              <p className={`text-xs mb-2 text-[${colors.light.opacity40}]`}>{profileData.profile.additionalLinks.githubDescription}</p>
+              <InputField
+                type="url"
+                value={formData.github}
+                onChange={(e: any) => setFormData({...formData, github: e.target.value})}
+              />
+            </div>
+
+            {/* LinkedIn */}
+            <div>
+              <label className={`block text-sm mb-2 text-[${colors.light.opacity60}]`}>{profileData.profile.additionalLinks.linkedin}</label>
+              <p className={`text-xs mb-2 text-[${colors.light.opacity40}]`}>{profileData.profile.additionalLinks.linkedinDescription}</p>
+              <InputField
+                type="url"
+                value={formData.linkedin}
+                onChange={(e: any) => setFormData({...formData, linkedin: e.target.value})}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Save Button */}
+        <div className="flex justify-end mb-8">
+          <MainButton 
+            variant="primary" 
+            size="lg" 
+            showIcon={false}
+            onClick={handleSaveProfile}
+          >
+            Save Profile
+          </MainButton>
+        </div>
       </div>
     </div>
   )
