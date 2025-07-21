@@ -8,6 +8,7 @@ import { Footer } from "@/components/footer"
 import Navbar from '@/components/navi'
 import * as style from '@/styles/design-system'
 import Loading from '@/components/loading'
+import { EventCard } from '@/components/event-card' 
 
 interface Event {
   event_id: number
@@ -149,14 +150,14 @@ const ChallengeCard = ({ challenge }: { challenge: Challenge }) => {
   
   return (
     <div className={`bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] ${style.border.radius.middle} overflow-hidden p-2`}>
-      <div className="flex">
+      <div className="flex flex-col md:flex-row">
         {/* Left side - CO badge - darker */}
-        <div className={`w-1/4 aspect-square bg-[var(--color-dark-opacity50)] flex items-center justify-center border border-[var(--color-white-opacity10)] ${style.border.radius.inner} flex-shrink-0`}>
+        <div className={`w-full md:w-1/4 aspect-square bg-[var(--color-dark-opacity50)] flex items-center justify-center border border-[var(--color-white-opacity10)] ${style.border.radius.inner} flex-shrink-0`}>
           <div className="text-[var(--color-light-opacity60)] text-6xl font-bold font-space-grotesk">CO</div>
         </div>
         
         {/* Right side - Content */}
-        <div className="w-3/4 p-6 flex flex-col justify-between">
+        <div className="w-full md:w-3/4 p-2 md:p-6 flex flex-col justify-between">
           <div>
             <h3 className={`${style.font.grotesk.medium} text-[var(--color-primary-opacity100)] text-[1.4rem] mb-2`}>
               {challenge.name || 'Sustainable Generative AI Assistant For Insights'}
@@ -280,11 +281,11 @@ export default function EventDetailPage() {
   const getStatusColor = useCallback((status: string) => {
     switch (status) {
       case 'PUBLISHED':
-        return 'bg-[var(--color-primary-opacity20)] text-[var(--color-primary-opacity100)] border-[var(--color-primary-opacity40)]'
+        return 'bg-[var(--color-light-opacity100)] text-[var(--color-dark-opacity100)] border-[var(--color-light-opacity100)]'
       case 'ONGOING':
-        return 'bg-[var(--color-secondary-opacity20)] text-[var(--color-secondary-opacity100)] border-[var(--color-secondary-opacity40)]'
+        return 'bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] border-[var(--color-primary-opacity100)]'
       case 'CANCELLED':
-        return 'bg-[var(--color-alerts-opacity20)] text-[var(--color-alerts-opacity100)] border-[var(--color-alerts-opacity40)]'
+        return 'bg-[var(--color-alerts-opacity100)] text-[var(--color-light-opacity100)] border-[var(--color-alerts-opacity100)]'
       default:
         return 'bg-[var(--color-white-opacity10)] text-[var(--color-light-opacity100)] border-[var(--color-white-opacity20)]'
     }
@@ -328,12 +329,10 @@ export default function EventDetailPage() {
   return (
     <div className="min-h-screen bg-[var(--color-dark-opacity100)] text-[var(--color-light-opacity100)] font-space-grotesk">
       {/* Header */}
-      <div className={`fixed top-0 left-0 right-0 z-50 ${showChallengesPopup ? 'bg-[var(--color-white-opacity10)]' : 'bg-[var(--color-dark-opacity100)]/80'} backdrop-blur-md`}>
-        <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-      </div>
+      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* Demo Toggle - Fixed at top right */}
-      <div className="fixed top-20 right-6 z-40">
+      <div className="fixed top-20 right-6 z-5">
         <div className="bg-[var(--color-white-opacity10)] border border-[var(--color-white-opacity20)] rounded-lg p-3">
           <div className="flex items-center space-x-3">
             <span className="text-sm text-[var(--color-light-opacity60)]">Demo:</span>
@@ -385,9 +384,9 @@ export default function EventDetailPage() {
                 </div>
                 
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--color-dark-opacity100)]/80 to-transparent p-6">
-                  <div className="flex items-center space-x-3 mb-2">
+                  <div className="flex items-start space-x-3 mb-2">
                     <h1 className="text-3xl font-bold text-[var(--color-light-opacity100)] font-space-grotesk">{event.name}</h1>
-                    <span className={`px-3 py-1 text-xs font-medium rounded-full ${getStatusColor(event.status)}`}>
+                    <span className={`px-3 py-1 mt-2 text-xs font-medium rounded-full ${getStatusColor(event.status)}`}>
                       {event.status || 'LIVE'}
                     </span>
                   </div>
@@ -433,20 +432,24 @@ export default function EventDetailPage() {
                 <h2 className="text-xl font-semibold text-[var(--color-light-opacity100)] mb-6 font-space-grotesk">Schedule</h2>
                 
                 <div className="space-y-1">
-                  <div className="flex items-center justify-between py-4 border-b border-[var(--color-white-opacity10)] last:border-b-0">
-                    <div className="flex items-center space-x-4">
-                      <span className="text-[var(--color-light-opacity60)] text-sm w-12 font-space-grotesk">Day 1</span>
-                      <span className="text-[var(--color-light-opacity100)] text-sm font-medium font-space-grotesk">Hackathon Announcement & Building</span>
+                  <div className="py-4 border-b border-[var(--color-white-opacity10)] last:border-b-0">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-0">
+                      <div className="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-1 md:space-y-0">
+                        <span className="text-[var(--color-light-opacity60)] text-sm w-12 font-space-grotesk">Day 1</span>
+                        <span className="text-[var(--color-light-opacity100)] text-sm font-medium font-space-grotesk">Hackathon Announcement & Building</span>
+                      </div>
+                      <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ml-0 md:ml-0">10:00 - 18:00</span>
                     </div>
-                    <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk">10:00 - 18:00</span>
                   </div>
                   
-                  <div className="flex items-center justify-between py-4">
-                    <div className="flex items-center space-x-4">
-                      <span className="text-[var(--color-light-opacity60)] text-sm w-12 font-space-grotesk">Day 3</span>
-                      <span className="text-[var(--color-light-opacity100)] text-sm font-medium font-space-grotesk">Final Submissions & Pitches</span>
+                  <div className="py-4">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-0">
+                      <div className="flex flex-col md:flex-row md:items-center md:space-x-4 space-y-1 md:space-y-0">
+                        <span className="text-[var(--color-light-opacity60)] text-sm w-12 font-space-grotesk">Day 3</span>
+                        <span className="text-[var(--color-light-opacity100)] text-sm font-medium font-space-grotesk">Final Submissions & Pitches</span>
+                      </div>
+                      <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk ml-0 md:ml-0">10:00 - 18:00</span>
                     </div>
-                    <span className="text-[var(--color-light-opacity60)] text-sm font-space-grotesk">10:00 - 18:00</span>
                   </div>
                 </div>
               </div>
@@ -469,7 +472,7 @@ export default function EventDetailPage() {
                         
                         {/* Right side - Just title */}
                         <div className="flex-1 p-4">
-                          <h3 className="text-[var(--color-light-opacity100)] text-lg font-medium font-space-grotesk">
+                          <h3 className="text-[var(--color-light-opacity100)] text-md lg:text-lg font-medium font-space-grotesk">
                             {eventChallenges[0].name || 'Sustainable Generative AI Assistant For Insights'}
                           </h3>
                         </div>
@@ -663,82 +666,28 @@ export default function EventDetailPage() {
             </div>
           </div>
 
-            {/* Similar Events Section - Full Width */}
-            <div className={style.sectionGap.top}>
-              <h2 className={style.sectionTitle.grotesk}>Similar Events</h2>
-              
+          {/* Similar Events Section - Full Width */}
+          <div className={style.sectionGap.top}>
+            <h2 className={style.sectionTitle.grotesk}>Similar Events</h2>
+            
+            {similarEvents.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {similarEvents.map((similarEvent, index) => (
-                  <div key={similarEvent.event_id} className="bg-[var(--color-white-opacity5)] border border-[var(--color-white-opacity10)] rounded-lg overflow-hidden group hover:border-[var(--color-white-opacity20)] transition-all cursor-pointer"
-                        onClick={() => handleSimilarEventClick(similarEvent.event_id)}>
-                    <div className="relative h-48 bg-[var(--color-white-opacity10)] overflow-hidden">
-                      <img 
-                        src={similarEvent.cover_image_url || getPlaceholderImage(index)}
-                        alt={similarEvent.name}
-                        className="w-full h-full object-cover grayscale"
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-[var(--color-dark-opacity100)]/90 to-transparent p-4">
-                        <h3 className="text-[var(--color-light-opacity100)] text-lg font-bold mb-2 font-space-grotesk">{similarEvent.name}</h3>
-                        <div className="flex items-center space-x-4 text-[var(--color-light-opacity60)] text-xs mb-3 font-space-grotesk">
-                          <span className="flex items-center space-x-1">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                              <line x1="16" y1="2" x2="16" y2="6"/>
-                              <line x1="8" y1="2" x2="8" y2="6"/>
-                              <line x1="3" y1="10" x2="21" y2="10"/>
-                            </svg>
-                            <span>{formatDate(similarEvent.start_date)}</span>
-                          </span>
-                          <span className="flex items-center space-x-1">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                              <circle cx="12" cy="10" r="3"/>
-                            </svg>
-                            <span>{similarEvent.location || 'Location'}</span>
-                          </span>
-                          <span className="flex items-center space-x-1">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <circle cx="12" cy="12" r="10"/>
-                              <line x1="2" y1="12" x2="22" y2="12"/>
-                              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-                            </svg>
-                            <span>Type of event</span>
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap gap-1 mb-3">
-                          <span className="px-2 py-1 bg-[var(--color-white-opacity20)] text-[var(--color-light-opacity60)] text-xs rounded-full font-space-grotesk">AI</span>
-                          <span className="px-2 py-1 bg-[var(--color-white-opacity20)] text-[var(--color-light-opacity60)] text-xs rounded-full font-space-grotesk">Machine Learning</span>
-                          <span className="px-2 py-1 bg-[var(--color-white-opacity20)] text-[var(--color-light-opacity60)] text-xs rounded-full font-space-grotesk">Innovation</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <div className="flex items-center justify-between">
-                        <MainButton 
-                          variant="primary"
-                          size="sm"
-                          className="justify-center"
-                          showIcon={false}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleRegistration(similarEvent.event_id)
-                          }}
-                        >
-                          Register now
-                        </MainButton>
-                        <div className="flex items-center space-x-1 text-[var(--color-light-opacity60)] text-xs font-space-grotesk">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12,6 12,12 16,14"/>
-                          </svg>
-                          <span>Registration ends {formatDate(similarEvent.end_date)}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <EventCard
+                    key={similarEvent.event_id}
+                    event={similarEvent}
+                    index={index}
+                    onEventClick={handleSimilarEventClick}
+                    onRegister={handleRegistration}
+                  />
                 ))}
               </div>
-            </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-[var(--color-light-opacity60)]">No similar events found</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       
