@@ -19,41 +19,46 @@ interface InfoSectionProps {
 
 export function InfoSection({ title, items, variant = 'default' }: InfoSectionProps) {
   if (items.length === 0) return null
-  
+
   return (
-    <div className="bg-[#1A1A1A] border border-white/10 rounded-xl p-5 mb-4">
-      <h3 className="text-white text-lg font-semibold mb-4">{title}</h3>
+    <div className="bg-[#1A1A1A] border border-white/10 rounded-2xl p-6 mb-4">
+      <h2 className="text-white text-2xl font-semibold mb-4">{title}</h2>
       <div className="space-y-3">
         {items.map((item, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between"
-          >
-            <div className="flex-1 min-w-0">
-              {item.url ? (
+          <div key={index}>
+            {item.url ? (
+              <div className="bg-[#0D0D0D] rounded-lg p-4">
                 <a
                   href={item.url}
-                  className="text-white/50 text-sm hover:text-[#55D186] transition-colors flex items-center gap-2 break-all group"
+                  className="text-white/60 text-sm hover:text-white transition-colors flex items-center justify-between group"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <span className="flex-1">{item.label}</span>
-                  <ExternalLink className="w-4 h-4 flex-shrink-0 opacity-70 group-hover:opacity-100" />
+                  <span className="truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[80%]">
+                    {item.url}
+                  </span>
+                  <ExternalLink className="w-4 h-4 flex-shrink-0 ml-3 opacity-60 group-hover:opacity-100" />
                 </a>
-              ) : (
-                <span className="text-white/70 text-sm">{item.label}</span>
-              )}
-              {item.value && (
-                <div className="text-white/40 text-xs mt-1 break-all">{item.value}</div>
-              )}
-            </div>
-            {item.action && (
-              <button
-                onClick={item.action.onClick}
-                className="text-white/50 text-xs hover:text-[#55D186] transition-colors flex-shrink-0 ml-3"
-              >
-                {item.action.label}
-              </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div className="flex-1 min-w-0">
+                  <span className="text-white/70 text-sm">{item.label}</span>
+                  {item.value && (
+                    <div className="text-white/40 text-xs mt-1 break-all">
+                      {item.value}
+                    </div>
+                  )}
+                </div>
+                {item.action && (
+                  <button
+                    onClick={item.action.onClick}
+                    className="text-white/50 text-xs hover:text-[#55D186] transition-colors flex-shrink-0 ml-3"
+                  >
+                    {item.action.label}
+                  </button>
+                )}
+              </div>
             )}
           </div>
         ))}

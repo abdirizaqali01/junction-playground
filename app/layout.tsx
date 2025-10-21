@@ -5,6 +5,8 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { LoadingProvider } from "@/components/loading-context"
 import { colors } from "@/styles/design-system"
+import { ProjectsProvider } from "@/hooks/useProjects"
+import { NotificationProvider } from "@/components/Notifications/NotificationContext"
 
 const spaceGrotesk = Space_Grotesk({
   weight: ["300", "400", "500", "600", "700"],
@@ -146,7 +148,11 @@ export default function RootLayout({
       <body className={`${spaceMono.variable} ${spaceGrotesk.variable}`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <LoadingProvider>
-            {children}
+            <ProjectsProvider>
+              <NotificationProvider>
+                {children}
+              </NotificationProvider>
+            </ProjectsProvider>
           </LoadingProvider>
         </ThemeProvider>
       </body>

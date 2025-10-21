@@ -8,10 +8,13 @@ import ProjectCard from '@/components/Cards/ProjectCard'
 import ReviewCard from '@/components/Cards/ReviewCard'
 import MiniProjectCard from '@/components/Cards/MiniProjectCard'
 import HorizontalScrollSection from '@/components/Layout/HorizontalScrollSection'
-import { useProjects } from '@/hooks/useProjects'
+import { DEFAULT_REVIEWER, useProjects } from '@/hooks/useProjects'
+import { useRouter } from 'next/navigation'
 
 export default function DashboardPage() {
-  const { projects, toggleBookmark } = useProjects()
+  const router = useRouter()
+  const { projects, recentReviews, lastViewedProjectId } = useProjects()
+  const currentUserId = DEFAULT_REVIEWER.id
 
   // Calculate stats from projects
   const totalSubmissions = projects.length
@@ -29,36 +32,16 @@ export default function DashboardPage() {
     { label: 'Average Rating', value: averageRating },
   ]
 
-  // Get most recently viewed (last reviewed project)
-  const recentlyViewedProject = projects.filter(p => p.reviewed).slice(-1)[0] || projects[0]
-
-  // Mock review data - replace with real data when available
-  const recentReviews = [
-    {
-      teamName: 'Team Mate 2',
-      rating: 8,
-      projectName: 'Project Name',
-      feedback: "This is going to be text from either the partner themselves, or any of their teammates feedback on the submitted project. It's supposed to help the partner better evaluate which project they want to place in the top 3, and express their views to the participant...",
-      timestamp: '14 minutes ago',
-    },
-    {
-      teamName: 'Team Mate 3',
-      rating: 9,
-      projectName: 'Project Name',
-      feedback: "This is going to be text from either the partner themselves, or any of their teammates feedback on the submitted project. It's supposed to help the partner better evaluate which project they want to place in the top 3, and express their views to the participant...",
-      timestamp: '3 minutes ago',
-    },
-    {
-      teamName: 'Team Mate 4',
-      rating: 7.5,
-      projectName: 'Project Name',
-      feedback: "This is going to be text from either the partner themselves, or any of their teammates feedback on the submitted project.",
-      timestamp: '25 minutes ago',
-    },
-  ]
+  // Get most recently viewed submission
+  const recentlyViewedProject =
+    (lastViewedProjectId && projects.find(p => p.id === lastViewedProjectId)) ||
+    projects.filter(p => p.reviewed).slice(-1)[0] ||
+    projects[0]
 
   // Get unreviewed submissions for review queue
-  const submissionsToReview = projects.filter(p => !p.reviewed)
+  const submissionsToReview = projects.filter(
+    p => !p.reviews.some(review => review.reviewerId === currentUserId)
+  )
 
   return (
     <div className="flex min-h-screen bg-[#0D0D0D] text-white overflow-hidden">
@@ -66,16 +49,19 @@ export default function DashboardPage() {
         <Sidebar />
       </div>
 
-      <main className="flex-1 ml-[280px] overflow-y-auto h-screen">
-        <div className="sticky top-0 z-40 bg-[#0D0D0D] px-8 pt-8">
+      <main className="flex-1 ml-0 lg:ml-[clamp(220px,18vw,320px)] overflow-y-auto h-screen">
+        <div className="px-[4%] pt-[3%]">
           <PageHeader title="Dashboard" timer="T 18:46:09" />
         </div>
-        <div className="w-full max-w-[1200px] px-8 pb-8">
+        <div className="w-full flex justify-center px-[4%] pb-[2%]">
+          <div className="w-full max-w-[1280px]">
 
           {/* Stats Section */}
-          <section className="mb-8">
-            <h2 className="text-lg text-white/60 mb-4">Your Challenge's Stats</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <section className="mb-10 w-full">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
+              <h2 className="text-base sm:text-lg lg:text-xl text-white/70">Your Challenge's Stats</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5 w-full">
               {stats.map((stat, index) => (
                 <StatCard key={index} label={stat.label} value={stat.value} />
               ))}
@@ -83,52 +69,84 @@ export default function DashboardPage() {
           </section>
 
           {/* Most Recently Viewed Submission */}
-          <section className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-white">Most Recently Viewed Submission</h2>
-              <button className="text-sm text-[#55D186] border border-[#55D186] rounded-lg px-4 py-1.5 hover:bg-[#55D186]/10 transition-colors">
-                View all Submissions
-              </button>
-            </div>
-            <ProjectCard
-              title={recentlyViewedProject.title}
-              team={recentlyViewedProject.team}
-              description={recentlyViewedProject.description}
-              imageUrl={recentlyViewedProject.imageUrl}
-              rating={recentlyViewedProject.rating}
-              time={recentlyViewedProject.time}
-              comments={recentlyViewedProject.comments}
-            />
-          </section>
+          {recentlyViewedProject && (
+            <section className="mb-8">
+              <div className="flex items-center justify-between gap-4 flex-nowrap overflow-x-auto mb-4 pb-1">
+                <h2 className="text-lg sm:text-xl font-semibold text-white whitespace-nowrap">
+                  Most Recently Viewed Submission
+                </h2>
+                <button
+                  onClick={() => router.push('/partners/submissions')}
+                  className="text-sm text-[#55D186] border border-[#55D186] rounded-lg px-5 py-2 whitespace-nowrap flex-shrink-0 hover:bg-[#55D186]/10 transition-colors"
+                >
+                  View all Submissions
+                </button>
+              </div>
+              <ProjectCard
+                id={recentlyViewedProject.id}
+                title={recentlyViewedProject.title}
+                team={recentlyViewedProject.team}
+                description={recentlyViewedProject.description}
+                imageUrl={recentlyViewedProject.imageUrl}
+                rating={recentlyViewedProject.rating}
+                time={recentlyViewedProject.time}
+                comments={recentlyViewedProject.comments}
+              />
+            </section>
+          )}
 
           {/* Most Recent Reviews */}
           <HorizontalScrollSection
             title="Most Recent Reviews"
             viewAllText="View all Reviews"
-            onViewAll={() => console.log('View all reviews')}
+            onViewAll={() => router.push('/partners/submissions')}
           >
-            {recentReviews.map((review, index) => (
-              <ReviewCard key={index} {...review} />
+            {recentReviews.slice(0, 6).map((review) => (
+              <ReviewCard
+                key={`${review.projectId}-${review.reviewerId}-${review.reviewedAt}`}
+                reviewerName={review.reviewerName ?? review.reviewerId}
+                rating={review.score}
+                projectName={review.projectTitle}
+                feedback={review.feedback}
+                timestamp={review.reviewedAt}
+                onProjectClick={() => router.push(`/partners/${review.projectId}/review`)}
+              />
             ))}
           </HorizontalScrollSection>
 
           {/* Submissions To Review Next */}
           <HorizontalScrollSection
             title="Submissions To Review Next"
-            onViewAll={() => console.log('View all submissions')}
+            onViewAll={() => router.push('/partners/submissions')}
           >
-            {submissionsToReview.map((submission, index) => (
-              <MiniProjectCard
-                key={index}
-                title={submission.title}
-                team={submission.team}
-                description={submission.description}
-                imageUrl={submission.imageUrl}
-                rating={submission.rating}
-                onReview={() => console.log('Review', submission.title)}
-              />
-            ))}
+            {submissionsToReview.map((submission) => {
+              const fallbackRating = submission.reviews.length
+                ? parseFloat(
+                    (
+                      submission.reviews.reduce((acc, curr) => acc + curr.score, 0) /
+                      submission.reviews.length
+                    ).toFixed(1)
+                  )
+                : undefined
+
+              return (
+                <MiniProjectCard
+                  key={submission.id}
+                  title={submission.title}
+                  team={submission.team}
+                  description={submission.description}
+                  imageUrl={submission.imageUrl}
+                  rating={
+                    submission.reviews.length
+                      ? submission.rating ?? fallbackRating ?? null
+                      : undefined
+                  }
+                  onReview={() => router.push(`/partners/${submission.id}/review`)}
+                />
+              )
+            })}
           </HorizontalScrollSection>
+        </div>
         </div>
       </main>
     </div>

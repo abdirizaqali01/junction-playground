@@ -1,36 +1,89 @@
-import React from 'react'
+'use client'
 
-interface Review {
-  score: number
-  feedback: string
-  reviewedBy: string
-  reviewedAt: string
-}
+import React, { useState } from 'react'
+import type { Review as ProjectReview } from '@/hooks/useProjects'
 
 interface ScoringSectionProps {
-  reviews?: Review[]
+  reviews?: ProjectReview[]
 }
 
 export function ScoringSection({ reviews = [] }: ScoringSectionProps) {
+  const [expanded, setExpanded] = useState<number | null>(null)
+
   return (
-    <div className="bg-[#1A1A1A] rounded-xl p-6 mb-6">
-      <h2 className="text-xl font-semibold text-white mb-4">Your Team's Scoring & Feedback</h2>
-      {reviews.length === 0 ? (
-        <div className="text-center py-8 text-white/40">
+    <div className="bg-[#1A1A1A] rounded-2xl p-8">
+      <h2 className="text-2xl font-bold text-white mb-8">
+        Your Team’s Scoring & Feedback
+      </h2>
+
+      {reviews?.length === 0 ? (
+        <div className="text-center py-10 text-white/40">
           No Ratings Or Reviews Yet
         </div>
       ) : (
-        <div className="space-y-4">
-          {reviews.map((review, index) => (
-            <div key={index} className="border border-[#55D186]/10 bg-[#55D186]/10 rounded-lg p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-[#55D186] text-2xl font-bold">{review.score}</span>
-                <span className="text-white/50 text-xs">{review.reviewedAt}</span>
+        <div className="space-y-6">
+          {reviews.map((review: ProjectReview, index) => {
+            const isExpanded = expanded === index
+            const isLong = review.feedback.length > 250
+            const reviewerDisplayName =
+              review.reviewerName || `Reviewer ${review.reviewerId}`
+            const timestampDisplay =
+              !Number.isNaN(Date.parse(review.reviewedAt))
+                ? new Date(review.reviewedAt).toLocaleString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })
+                : review.reviewedAt
+
+            return (
+              <div
+                key={index}
+                className="border border-[#55D186] rounded-lg p-6 bg-[#55D186]/10 transition-all duration-300"
+              >
+                {/* Reviewer and score */}
+                <h3 className="text-[#55D186] text-2xl font-semibold leading-tight">
+                  {reviewerDisplayName}
+                </h3>
+                <p className="text-white/80 text-base mt-1 mb-5">
+                  {reviewerDisplayName} gave a score of{' '}
+                  <span className="text-[#55D186] font-semibold">
+                    {review.score}/10
+                  </span>
+                </p>
+
+                {/* Feedback section */}
+                <h4 className="text-[#55D186] text-lg font-semibold mb-1">
+                  Feedback
+                </h4>
+                <p
+                  className={`text-white/80 text-base leading-relaxed transition-all duration-300 ${
+                    !isExpanded && isLong ? 'line-clamp-3' : ''
+                  }`}
+                >
+                  {review.feedback}
+                </p>
+
+                {/* View full toggle */}
+                {isLong && (
+                  <button
+                    onClick={() =>
+                      setExpanded(isExpanded ? null : index)
+                    }
+                    className="text-white font-semibold underline text-base mt-1 hover:text-[#55D186] transition-colors"
+                  >
+                    {isExpanded ? 'View less' : 'View full'}
+                  </button>
+                )}
+
+                {/* Timestamp */}
+                <p className="text-white/40 text-sm mt-4">
+                  {timestampDisplay}
+                </p>
               </div>
-              <p className="text-white/70 text-sm mb-2">{review.feedback}</p>
-              <p className="text-white/50 text-xs">— {review.reviewedBy}</p>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>

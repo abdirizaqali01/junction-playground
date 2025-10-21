@@ -1,11 +1,13 @@
 'use client'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import ProjectThumbnail from './ProjectThumbnail'
 import ProjectContent from './ProjectContent'
 import ProjectRating from './ProjectRating'
 import BookmarkButton from './BookmarkButton'
 
 interface ProjectCardProps {
+  id?: string | number
   title: string
   team: string
   description: string
@@ -18,6 +20,7 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({
+  id,
   title,
   team,
   description,
@@ -29,6 +32,7 @@ export default function ProjectCard({
   onBookmarkToggle,
 }: ProjectCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const router = useRouter()
 
   return (
     <div
@@ -54,6 +58,7 @@ export default function ProjectCard({
           description={description}
           time={time}
           comments={comments}
+          onViewClick={() => router.push(`/partners/${id}/review`)}
         />
       </div>
 

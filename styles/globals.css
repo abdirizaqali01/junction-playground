@@ -36,6 +36,14 @@ body {
   font-display: block;
 }
 
+.blurred-content {
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
 /* Preload critical fonts */
 @font-face {
   font-family: 'Space Grotesk Preload';

@@ -1,5 +1,4 @@
 'use client'
-
 import React from 'react'
 import Sidebar from '@/components/Sidebar/Sidebar'
 import SearchBar from '@/components/Bar/SearchBar'
@@ -23,31 +22,28 @@ export default function ProjectSubmissionsPage() {
       <div className="fixed top-0 left-0 h-screen z-50">
         <Sidebar />
       </div>
-
-      <main className="flex-1 ml-[280px] px-8 py-8 flex flex-col items-center">
-        <div className="w-full max-w-[960px]">
-          <PageHeader title="Project Submissions" />
-
-          <ProjectStats projects={projects} />
-
-          <section className="flex justify-between items-center mb-6">
-            <SortControls 
-              activeSort={activeSort} 
-              onSortClick={handleSortClick} 
+      <main className="flex-1 ml-0 lg:ml-[clamp(220px,18vw,320px)] overflow-auto">
+        <div className="w-full flex justify-center px-[4%] py-[2%]">
+          <div className="w-full max-w-[1200px] flex flex-col">
+            <PageHeader title="Project Submissions" />
+            <ProjectStats projects={projects} />
+            <section className="flex justify-between items-center mb-6 w-full">
+              <SortControls
+                activeSort={activeSort}
+                onSortClick={handleSortClick}
+              />
+              <SearchBar
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search submissions..."
+              />
+            </section>
+            <ProjectList
+              projects={filteredProjects}
+              allProjects={projects}
+              onBookmarkToggle={toggleBookmark}
             />
-            
-            <SearchBar 
-              value={searchQuery} 
-              onChange={handleSearchChange} 
-              placeholder="Search submissions..." 
-            />
-          </section>
-
-          <ProjectList 
-            projects={filteredProjects}
-            allProjects={projects}
-            onBookmarkToggle={toggleBookmark}
-          />
+          </div>
         </div>
       </main>
     </div>

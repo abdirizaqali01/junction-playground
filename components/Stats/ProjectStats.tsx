@@ -14,12 +14,20 @@ export default function ProjectStats({ projects }: ProjectStatsProps) {
     teams: new Set(projects.map(p => p.team)).size,
   }
 
+  const statEntries: Array<{ label: string; value: number }> = [
+    { label: 'Total Submissions', value: stats.total },
+    { label: 'Submissions Reviewed', value: stats.reviewed },
+    { label: 'Submissions Pending', value: stats.pending },
+    { label: 'Teams', value: stats.teams },
+  ]
+
   return (
-    <section className="grid grid-cols-4 gap-4 mb-6">
-      <StatCard label="Total Submissions" value={stats.total} />
-      <StatCard label="Submissions Reviewed" value={stats.reviewed} />
-      <StatCard label="Submissions Pending" value={stats.pending} />
-      <StatCard label="Teams" value={stats.teams} />
+    <section className="w-full mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5">
+        {statEntries.map((stat) => (
+          <StatCard key={stat.label} label={stat.label} value={stat.value} />
+        ))}
+      </div>
     </section>
   )
 }
