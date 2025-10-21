@@ -1,4 +1,5 @@
 import React from 'react'
+import { partnerColors } from '@/components/partner/designSystem'
 import { ExternalLink } from 'lucide-react'
 
 type InfoItem = {
@@ -21,13 +22,19 @@ export function InfoSection({ title, items, variant = 'default' }: InfoSectionPr
   if (items.length === 0) return null
 
   return (
-    <div className="bg-[#1A1A1A] border border-white/10 rounded-2xl p-6 mb-4">
+    <div
+      className="rounded-2xl p-6 mb-4 border"
+      style={{ backgroundColor: partnerColors.surface, borderColor: partnerColors.border }}
+    >
       <h2 className="text-white text-2xl font-semibold mb-4">{title}</h2>
       <div className="space-y-3">
         {items.map((item, index) => (
           <div key={index}>
             {item.url ? (
-              <div className="bg-[#0D0D0D] rounded-lg p-4">
+              <div
+                className="rounded-lg p-4"
+                style={{ backgroundColor: partnerColors.background }}
+              >
                 <a
                   href={item.url}
                   className="text-white/60 text-sm hover:text-white transition-colors flex items-center justify-between group"

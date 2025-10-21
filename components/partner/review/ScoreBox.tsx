@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
 import { DEFAULT_REVIEWER, useProjects } from '@/hooks/useProjects'
+import { PartnerButton, partnerColors } from '@/components/partner/designSystem'
 
 interface ScoreBoxProps {
   projectId: string
@@ -67,10 +68,17 @@ export function ScoreBox({
   }, [onCancel])
 
   return (
-    <div className="fixed left-0 lg:left-[clamp(220px,18vw,320px)] right-0 top-1/2 -translate-y-1/2 flex items-center justify-center z-[101] px-[3%]">
+    <div
+      className="fixed left-0 right-0 top-1/2 -translate-y-1/2 flex items-center justify-center z-[101] px-[3%]"
+      style={{ left: 'var(--partner-sidebar-width)' }}
+    >
       <div
         ref={containerRef}
-        className="bg-[#161616] rounded-2xl px-10 py-8 shadow-2xl w-full max-w-[720px] border border-white/10"
+        className="rounded-2xl px-10 py-8 shadow-2xl w-full max-w-[720px] border"
+        style={{
+          backgroundColor: partnerColors.surface,
+          borderColor: partnerColors.border,
+        }}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
@@ -136,22 +144,21 @@ export function ScoreBox({
             )}
           </div>
           <div className="flex gap-3 ml-auto">
-            <button
+            <PartnerButton
+              variant={existingReview ? 'danger' : 'secondary'}
               onClick={() => {
                 if (existingReview) setEditMode(false)
                 else onCancel()
               }}
-              className="rounded-xl border border-[#FF8A8A] px-6 py-2 text-sm font-medium text-[#FF8A8A] hover:bg-[#FF8A8A]/10 transition-colors"
             >
               Cancel
-            </button>
-            <button
+            </PartnerButton>
+            <PartnerButton
               onClick={handleSubmit}
               disabled={!feedback.trim() || rating === 0}
-              className="rounded-xl bg-[#55D186] px-6 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#55D186]/90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {existingReview ? 'Update Review' : 'Submit'}
-            </button>
+            </PartnerButton>
           </div>
         </div>
       </div>

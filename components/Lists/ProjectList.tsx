@@ -1,16 +1,14 @@
 import React from 'react'
-import ProjectCard from '@/components/Cards/ProjectCard'
+import ProjectCard from '@/components/partner/cards/ProjectCard'
 import { Project } from '@/hooks/useProjects'
 
 interface ProjectListProps {
   projects: Project[]
-  allProjects: Project[]
-  onBookmarkToggle: (index: number) => void
+  onBookmarkToggle: (projectId: string) => void
 }
 
 export default function ProjectList({ 
   projects, 
-  allProjects, 
   onBookmarkToggle 
 }: ProjectListProps) {
   if (projects.length === 0) {
@@ -23,22 +21,19 @@ export default function ProjectList({
 
   return (
     <section className="flex flex-col gap-4">
-      {projects.map((project) => {
-        const originalIndex = allProjects.findIndex(p => p === project)
-        return (
-          <div
-            key={originalIndex}
-            className="relative rounded-xl overflow-hidden aspect-[1231/199]"
-          >
-            <div className="absolute inset-0 bg-white/10 pointer-events-none rounded-xl" />
-            <ProjectCard 
-              {...project} 
-              isBookmarked={project.bookmarked}
-              onBookmarkToggle={() => onBookmarkToggle(originalIndex)}
-            />
-          </div>
-        )
-      })}
+      {projects.map((project) => (
+        <div
+          key={project.id}
+          className="relative rounded-xl overflow-hidden aspect-[1231/199]"
+        >
+          <div className="absolute inset-0 bg-white/10 pointer-events-none rounded-xl" />
+          <ProjectCard 
+            {...project} 
+            isBookmarked={project.bookmarked}
+            onBookmarkToggle={() => onBookmarkToggle(project.id)}
+          />
+        </div>
+      ))}
     </section>
   )
 }

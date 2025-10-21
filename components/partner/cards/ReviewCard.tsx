@@ -1,3 +1,7 @@
+"use client"
+
+import { PartnerButton } from '@/components/partner/designSystem'
+
 interface ReviewCardProps {
     reviewerName: string
     rating: number
@@ -57,12 +61,13 @@ export default function ReviewCard({
               View full
             </button>
             {onProjectClick && (
-              <button
+              <PartnerButton
+                variant="secondary"
                 onClick={onProjectClick}
-                className="text-xs text-[#55D186] border border-[#55D186] rounded-full px-3 py-1 hover:bg-[#55D186]/10 transition-colors"
+                className="text-xs px-3 py-1"
               >
                 To project
-              </button>
+              </PartnerButton>
             )}
           </div>
         </div>

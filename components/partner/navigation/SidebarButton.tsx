@@ -7,7 +7,6 @@ interface SidebarButtonProps {
   label: string;
   active?: boolean;
   href?: string;
-  collapsed?: boolean;
 }
 
 const SidebarButton: React.FC<SidebarButtonProps> = ({
@@ -15,19 +14,18 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
   label,
   active = false,
   href = '#',
-  collapsed = false,
 }) => {
   return (
     <a
       href={href}
-      className={`flex items-center ${collapsed ? 'justify-center gap-0' : 'gap-2.5'} px-2 py-2 rounded-lg text-[11px] transition-colors ${
+      className={`flex items-center gap-3 px-3 py-2 rounded-xl text-[11px] transition-colors ${
         active
-          ? 'bg-white/5 text-white font-medium'
-          : 'text-gray-400 hover:text-white'
+          ? 'bg-white/10 text-white font-medium'
+          : 'text-white/50 hover:text-white'
       }`}
     >
       <Icon size={16} />
-      {!collapsed && <span>{label}</span>}
+      <span className="text-[12px] tracking-wide">{label}</span>
     </a>
   );
 };

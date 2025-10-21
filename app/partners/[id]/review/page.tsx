@@ -2,17 +2,18 @@
 
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import Sidebar from '@/components/Sidebar/Sidebar'
-import PageHeader from '@/components/Layout/PageHeader'
+import Sidebar from '@/components/partner/navigation/Sidebar'
+import PageHeader from '@/components/partner/layout/PageHeader'
 import { DEFAULT_REVIEWER, useProjects } from '@/hooks/useProjects'
-import { CollapsibleSection } from '@/components/CollapsibleSection'
-import { InfoSection } from '@/components/InfoSection'
-import { VideoPlayer } from '@/components/VideoPlayer'
-import { ImageGallery } from '@/components/ImageGallery'
-import { ScoringSection } from '@/components/ScoringSection'
+import { partnerEffects } from '@/components/partner/designSystem'
+import { CollapsibleSection } from '@/components/partner/sections/CollapsibleSection'
+import { InfoSection } from '@/components/partner/sections/InfoSection'
+import { VideoPlayer } from '@/components/partner/media/VideoPlayer'
+import { ImageGallery } from '@/components/partner/media/ImageGallery'
+import { ScoringSection } from '@/components/partner/review/ScoringSection'
 import { ArrowLeft } from 'lucide-react'
-import { ScoreBox } from '@/components/ScoreBox'
-import { ScoreSubmittedCard } from '@/components/ScoreSubmittedCard'
+import { ScoreBox } from '@/components/partner/review/ScoreBox'
+import { ScoreSubmittedCard } from '@/components/partner/review/ScoreSubmittedCard'
 
 export default function ProjectReviewPage() {
   const params = useParams()
@@ -44,18 +45,16 @@ export default function ProjectReviewPage() {
     return (
       <div className="flex min-h-screen bg-[#0D0D0D] text-white">
         <Sidebar />
-        <main className="flex-1 ml-0 lg:ml-[clamp(220px,18vw,320px)] overflow-auto">
-          <div className="w-full flex justify-center px-[4%] py-[4%]">
-            <div className="w-full max-w-[1200px] text-center">
-              <div className="py-[8%]">
-                <h1 className="text-2xl font-semibold mb-4">Project Not Found</h1>
-                <button
-                  onClick={() => router.push('/partners/submissions')}
-                  className="text-emerald-400 hover:text-emerald-300"
-                >
-                  ← Back to Submissions
-                </button>
-              </div>
+        <main className="flex-1 flex items-center justify-center overflow-auto">
+          <div className="w-full max-w-[1200px] px-[4%] py-[4%] text-center">
+            <div className="py-[8%]">
+              <h1 className="text-2xl font-semibold mb-4">Project Not Found</h1>
+              <button
+                onClick={() => router.push('/partners/submissions')}
+                className="text-emerald-400 hover:text-emerald-300"
+              >
+                ← Back to Submissions
+              </button>
             </div>
           </div>
         </main>
@@ -71,59 +70,60 @@ export default function ProjectReviewPage() {
     else if (index === 1) router.push('/partners/submissions')
   }
 
+  const shouldFrostBackground = isReviewing || showSubmitted
+
   return (
     <div className="flex min-h-screen bg-[#0D0D0D] text-white">
-      {(isReviewing || showSubmitted) && (
-        <div className="fixed inset-0 left-0 lg:left-[clamp(220px,18vw,320px)] bg-[rgba(0,0,0,0.15)] backdrop-blur-md z-[90] pointer-events-none" />
-      )}
-
-      {/* Sidebar */}
-      <div className="fixed top-0 left-0 h-screen z-50">
+      <div className="fixed top-0 left-0 z-50 h-screen">
         <Sidebar />
       </div>
 
-      {/* Main Content */}
-      <main className="flex-1 ml-0 lg:ml-[clamp(220px,18vw,320px)] overflow-auto">
-        {/* Header */}
-        <div className="px-[4%] pt-[3%]">
-          <div className="flex items-center gap-4 mb-6">
-            <button
-              onClick={() => router.back()}
-              className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <div className="flex-1">
-              <PageHeader
-                title="Project Submissions"
-                timer={project.timer}
-                breadcrumbItems={breadcrumbItems}
-                status={project.status}
-                onBreadcrumbClick={handleBreadcrumbClick}
-                breadcrumbDropdownItems={projectDropdownItems}
-                onBreadcrumbDropdownSelect={(id) =>
-                  router.push(`/partners/${id}/review`)
-                }
-                currentItemId={project.id}
-              />
-            </div>
-          </div>
-        </div>
+      <div
+        className="flex flex-1 items-start justify-center overflow-auto"
+        style={{ marginLeft: 'var(--partner-sidebar-width)' }}
+      >
+        {shouldFrostBackground && (
+          <div
+            className={`fixed inset-y-0 right-0 z-[90] pointer-events-none ${partnerEffects.frostedBackdrop}`}
+            style={{ left: 'var(--partner-sidebar-width)' }}
+          />
+        )}
 
-        <div className="w-full flex justify-center px-[4%] pb-[2%]">
-          <div className="w-full max-w-[1200px] relative">
-            {/* Title */}
+        <main className="w-full" style={{ maxWidth: '1200px' }}>
+          <div className="relative w-full px-[4%] pt-[3%] pb-[2%]">
+            <div className="mb-6 flex items-center gap-4">
+              <button
+                onClick={() => router.back()}
+                className="rounded-lg p-2 transition-colors hover:bg-white/5"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </button>
+              <div className="flex-1">
+                <PageHeader
+                  title="Project Submissions"
+                  timer={project.timer}
+                  breadcrumbItems={breadcrumbItems}
+                  status={project.status}
+                  onBreadcrumbClick={handleBreadcrumbClick}
+                  breadcrumbDropdownItems={projectDropdownItems}
+                  onBreadcrumbDropdownSelect={(id) =>
+                    router.push(`/partners/${id}/review`)
+                  }
+                  currentItemId={project.id}
+                />
+              </div>
+            </div>
+
             <div className="mb-6">
               <h1 className="text-3xl font-semibold text-white">
                 {project.title}{' '}
-                <span className="text-[#55D186] font-normal">by {project.team}</span>
+                <span className="font-normal text-[#55D186]">by {project.team}</span>
               </h1>
             </div>
 
-            <div className="grid grid-cols-3 gap-6 items-start">
-              {/* Left Column */}
+            <div className="grid grid-cols-3 items-start gap-6">
               <div className="col-span-3 lg:col-span-2">
-                <p className="text-white/80 text-sm leading-relaxed mb-6">
+                <p className="mb-6 text-sm leading-relaxed text-white/80">
                   {project.description}
                 </p>
 
@@ -148,31 +148,27 @@ export default function ProjectReviewPage() {
                   </CollapsibleSection>
                 )}
 
-                {/* Scoring Section */}
                 <div className="relative z-[95]">
                   <ScoringSection reviews={project.reviews} />
                 </div>
 
-                {/* Review Section */}
                 {!isReviewing && !showSubmitted && (
                   <>
                     {!existingReview ? (
-                      // 🟢 Normal "Review" button for new reviews
                       <button
                         onClick={() => setIsReviewing(true)}
-                        className="w-full bg-[#55D186] hover:bg-[#55D186]/90 text-white font-medium py-[2.5%] rounded-xl transition-colors"
+                        className="w-full rounded-xl bg-[#55D186] py-[2.5%] font-medium text-white transition-colors hover:bg-[#55D186]/90"
                       >
                         Review
                       </button>
                     ) : (
-                      // 🟩 Green info box for users who already submitted
-                      <div className="w-full bg-[#55D186] rounded-xl px-[6%] py-[5%] text-center text-white">
-                        <p className="text-lg font-medium mb-4">
+                      <div className="w-full rounded-xl bg-[#55D186] px-[6%] py-[5%] text-center text-white">
+                        <p className="mb-4 text-lg font-medium">
                           You have submitted a Review already
                         </p>
                         <button
                           onClick={() => setIsReviewing(true)}
-                          className="bg-white text-[#1A1A1A] font-semibold px-[6%] py-[2%] rounded-lg hover:bg-white/90 transition"
+                          className="rounded-lg bg-white px-[6%] py-[2%] font-semibold text-[#1A1A1A] transition hover:bg-white/90"
                         >
                           edit rating
                         </button>
@@ -182,8 +178,7 @@ export default function ProjectReviewPage() {
                 )}
               </div>
 
-              {/* Right Column */}
-              <div className="col-span-3 lg:col-span-1 mt-[5%] lg:mt-0">
+              <div className="col-span-3 mt-[5%] lg:col-span-1 lg:mt-0">
                 {project.demoUrl && (
                   <InfoSection
                     title="Links"
@@ -212,7 +207,6 @@ export default function ProjectReviewPage() {
               </div>
             </div>
 
-            {/* Review Overlay (modal) */}
             {isReviewing && (
               <ScoreBox
                 projectId={projectId}
@@ -226,7 +220,6 @@ export default function ProjectReviewPage() {
               />
             )}
 
-            {/* Submitted Overlay (confirmation card) */}
             {showSubmitted && (
               <ScoreSubmittedCard
                 projectId={projectId}
@@ -235,8 +228,8 @@ export default function ProjectReviewPage() {
               />
             )}
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   )
 }

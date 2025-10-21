@@ -1,4 +1,7 @@
+"use client"
+
 import ProjectRating from './ProjectRating'
+import { PartnerButton } from '@/components/partner/designSystem'
 
 interface MiniProjectCardProps {
   title: string
@@ -53,13 +56,14 @@ export default function MiniProjectCard({
           </div>
 
           {onReview && (
-            <button
+            <PartnerButton
+              variant="ghost"
               onClick={onReview}
-              className="mt-4 self-start text-sm font-medium text-white hover:text-[#55D186] transition-colors flex items-center gap-2"
+              className="group mt-4 self-start text-sm font-medium text-white/80 hover:text-white flex items-center gap-2 px-0"
             >
-              Go To Reviewing
-              <span>→</span>
-            </button>
+              <span>Go To Reviewing</span>
+              <span className="transition-transform group-hover:translate-x-1">→</span>
+            </PartnerButton>
           )}
         </div>
       </div>

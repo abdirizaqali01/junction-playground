@@ -1,3 +1,5 @@
+"use client"
+
 import { Bookmark } from 'lucide-react'
 import clsx from 'clsx'
 

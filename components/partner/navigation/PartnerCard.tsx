@@ -3,7 +3,7 @@ interface PartnerCardProps {
   email: string
 }
 
-export default function UserCard({ name, email }: PartnerCardProps) {
+export default function PartnerCard({ name, email }: PartnerCardProps) {
   return (
     <div className="bg-white/5 border border-white/5 rounded-xl p-2.5 flex items-center gap-2.5 mt-5">
       <div className="bg-white/5 w-8 h-8 flex items-center justify-center rounded-full text-xs font-semibold text-white/80">

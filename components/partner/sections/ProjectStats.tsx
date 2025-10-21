@@ -1,5 +1,5 @@
 import React from 'react'
-import StatCard from '@/components/Cards/StatCard'
+import StatCard from '@/components/partner/cards/StatCard'
 import { Project } from '@/hooks/useProjects'
 
 interface ProjectStatsProps {

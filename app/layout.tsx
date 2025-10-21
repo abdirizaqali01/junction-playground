@@ -7,6 +7,7 @@ import { LoadingProvider } from "@/components/loading-context"
 import { colors } from "@/styles/design-system"
 import { ProjectsProvider } from "@/hooks/useProjects"
 import { NotificationProvider } from "@/components/Notifications/NotificationContext"
+import { SidebarProvider } from "@/components/partner/navigation/SidebarContext"
 
 const spaceGrotesk = Space_Grotesk({
   weight: ["300", "400", "500", "600", "700"],
@@ -145,13 +146,15 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${spaceMono.variable} ${spaceGrotesk.variable}`}>
+      <body className={`${spaceMono.variable} ${spaceGrotesk.variable} sidebar-expanded`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <LoadingProvider>
             <ProjectsProvider>
-              <NotificationProvider>
-                {children}
-              </NotificationProvider>
+              <SidebarProvider>
+                <NotificationProvider>
+                  {children}
+                </NotificationProvider>
+              </SidebarProvider>
             </ProjectsProvider>
           </LoadingProvider>
         </ThemeProvider>

@@ -1,8 +1,11 @@
+'use client'
+
 import React, { useMemo, useState } from 'react'
 import { Breadcrumb } from './Breadcrumb'
 import { NotificationBell } from '@/components/Notifications/NotificationBell'
 import { NotificationDropdown, type NotificationItem } from '@/components/Notifications/NotificationDropdown'
 import { useNotifications } from '@/components/Notifications/NotificationContext'
+import { partnerColors } from '@/components/partner/designSystem'
 
 interface PageHeaderProps {
   title: string
@@ -46,7 +49,10 @@ export default function PageHeader({
   )
 
   return (
-    <header className="sticky top-0 z-40 bg-[#0D0D0D] py-4 mb-6">
+    <header
+      className="sticky top-0 z-40 py-4 mb-6"
+      style={{ backgroundColor: partnerColors.background }}
+    >
       {breadcrumbItems && (
         <Breadcrumb 
           items={breadcrumbItems} 

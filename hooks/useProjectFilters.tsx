@@ -1,16 +1,5 @@
 import { useMemo } from 'react'
-
-interface Project {
-  title: string
-  team: string
-  description: string
-  imageUrl: string
-  rating: number | undefined
-  time: string
-  comments: number
-  reviewed: boolean
-  bookmarked: boolean
-}
+import type { Project } from '@/hooks/useProjects'
 
 export function useProjectFilters(
   projects: Project[],

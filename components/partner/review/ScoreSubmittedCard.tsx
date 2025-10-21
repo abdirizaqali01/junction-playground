@@ -3,6 +3,7 @@
 import React from 'react'
 import { X } from 'lucide-react'
 import { useProjects } from '@/hooks/useProjects'
+import { PartnerButton, partnerColors } from '@/components/partner/designSystem'
 
 interface ScoreSubmittedCardProps {
   projectId: string
@@ -22,8 +23,14 @@ export function ScoreSubmittedCard({
   if (!project || !review) return null
 
   return (
-    <div className="fixed left-0 lg:left-[clamp(220px,18vw,320px)] right-0 top-1/2 -translate-y-1/2 flex items-center justify-center z-[101] px-[4%] pointer-events-none">
-      <div className="bg-[#1A1A1A] rounded-xl py-[5%] px-[6%] shadow-2xl w-full max-w-[92%] lg:max-w-[55%] text-center pointer-events-auto relative">
+    <div
+      className="fixed left-0 right-0 top-1/2 -translate-y-1/2 flex items-center justify-center z-[101] px-[4%] pointer-events-none"
+      style={{ left: 'var(--partner-sidebar-width)' }}
+    >
+      <div
+        className="rounded-2xl py-[5%] px-[6%] shadow-2xl w-full max-w-[92%] lg:max-w-[55%] text-center pointer-events-auto relative border"
+        style={{ backgroundColor: partnerColors.surface, borderColor: partnerColors.border }}
+      >
         {/* Close Button */}
         <button
           onClick={onClose}
@@ -57,15 +64,14 @@ export function ScoreSubmittedCard({
         </div>
 
         {/* Continue Button */}
-        <button
+        <PartnerButton
           onClick={() => {
             persistProjects()
             onClose()
           }}
-          className="px-[6%] py-[2.5%] bg-[#55D186] hover:bg-[#55D186]/90 text-white font-semibold rounded-lg transition-colors"
         >
           Continue
-        </button>
+        </PartnerButton>
       </div>
     </div>
   )
