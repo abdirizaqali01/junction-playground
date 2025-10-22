@@ -108,15 +108,15 @@ export default function DashboardPage() {
               onViewAll={() => router.push('/partners/submissions')}
             >
               {recentReviews.slice(0, 6).map((review) => (
-                <ReviewCard
-                  key={`${review.projectId}-${review.reviewerId}-${review.reviewedAt}`}
-                  reviewerName={review.reviewerName ?? review.reviewerId}
-                  rating={review.score}
-                  projectName={review.projectTitle}
-                  feedback={review.feedback}
-                  timestamp={review.reviewedAt}
-                  onProjectClick={() => router.push(`/partners/${review.projectId}/review`)}
-                />
+              <ReviewCard
+                key={`${review.projectId}-${review.reviewerId}-${review.reviewedAt}`}
+                reviewerName={review.reviewerName ?? review.reviewerId}
+                rating={review.averageScore}
+                projectName={review.projectTitle}
+                feedback={review.feedback}
+                timestamp={review.reviewedAt}
+                onProjectClick={() => router.push(`/partners/${review.projectId}/review`)}
+              />
               ))}
             </HorizontalScrollSection>
 
@@ -129,7 +129,10 @@ export default function DashboardPage() {
                 const fallbackRating = submission.reviews.length
                   ? parseFloat(
                       (
-                        submission.reviews.reduce((acc, curr) => acc + curr.score, 0) /
+                        submission.reviews.reduce(
+                          (acc, curr) => acc + curr.averageScore,
+                          0
+                        ) /
                         submission.reviews.length
                       ).toFixed(1)
                     )

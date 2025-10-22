@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { X } from 'lucide-react'
-import { useProjects } from '@/hooks/useProjects'
+import { REVIEW_CRITERIA, useProjects } from '@/hooks/useProjects'
 import { PartnerButton, partnerColors } from '@/components/partner/designSystem'
 
 interface ScoreSubmittedCardProps {
@@ -45,15 +45,31 @@ export function ScoreSubmittedCard({
         {/* Score Circle */}
         <div className="flex justify-center mb-4">
           <div className="w-20 h-20 rounded-full bg-[#55D186] flex items-center justify-center">
-            <span className="text-3xl font-bold text-white">{review.score}</span>
+            <span className="text-3xl font-bold text-white">{review.averageScore.toFixed(1)}</span>
           </div>
         </div>
 
         {/* Subtext */}
         <p className="text-white text-base mb-8 leading-snug">
           You’ve rated <span className="font-semibold">{project.team}’s</span> <br /> project a{' '}
-          <span className="text-[#55D186] font-semibold">{review.score}/10</span>. Amazing!
+          <span className="text-[#55D186] font-semibold">{review.averageScore.toFixed(1)}/10</span>. Amazing!
         </p>
+
+        <div className="grid gap-3 mb-8 text-left sm:grid-cols-3">
+          {REVIEW_CRITERIA.map((criterion) => (
+            <div
+              key={criterion.id}
+              className="rounded-xl border border-white/10 bg-white/5 p-4"
+            >
+              <p className="text-xs uppercase tracking-[0.12em] text-white/60">
+                {criterion.label}
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-white">
+                {review.scores[criterion.id]}/10
+              </p>
+            </div>
+          ))}
+        </div>
 
         {/* Feedback Section */}
         <div className="text-left mb-8">

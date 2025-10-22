@@ -11,12 +11,29 @@ import {
   type ReactNode,
 } from "react"
 
+export const REVIEW_CRITERIA = [
+  { id: "innovation", label: "Innovation" },
+  { id: "impact", label: "Impact" },
+  { id: "execution", label: "Execution" },
+] as const
+
+export type ReviewCriterionId = (typeof REVIEW_CRITERIA)[number]["id"]
+
+export type ReviewScores = Record<ReviewCriterionId, number>
+
 export type Review = {
   reviewerId: string
   reviewerName?: string
-  score: number
+  scores: ReviewScores
+  averageScore: number
   feedback: string
   reviewedAt: string
+}
+
+export type ReviewInput = {
+  reviewerName?: string
+  scores: ReviewScores
+  feedback: string
 }
 
 export type TeamMember = {
@@ -61,7 +78,29 @@ export const DEFAULT_REVIEWER = {
   name: "Partner Judge 1",
 }
 
-const STORAGE_KEY = "junction-projects-state"
+export const STORAGE_KEY = "junction-projects-state-v2"
+
+export const createDefaultReviewScores = (fillValue = 0): ReviewScores => {
+  return REVIEW_CRITERIA.reduce((acc, criterion) => {
+    acc[criterion.id] = fillValue
+    return acc
+  }, {} as ReviewScores)
+}
+
+export const clampScore = (value: number): number => {
+  if (typeof value !== "number" || Number.isNaN(value)) return 0
+  if (value < 0) return 0
+  if (value > 10) return 10
+  return parseFloat(value.toFixed(1))
+}
+
+export const calculateAverageScore = (scores: ReviewScores): number => {
+  const total = REVIEW_CRITERIA.reduce(
+    (acc, criterion) => acc + (scores[criterion.id] ?? 0),
+    0
+  )
+  return parseFloat((total / REVIEW_CRITERIA.length).toFixed(1))
+}
 
 const INITIAL_PROJECTS: Project[] = [
   {
@@ -170,7 +209,7 @@ const INITIAL_PROJECTS: Project[] = [
     description:
       "This paragraph is actually a description of the solution that the team has developed for this challenge. It's meant to be a short text that really gives a good insight into the exact problem it's tackling, what its features are, and how it solves the problem.",
     imageUrl: "/mock-thumb-1.png",
-    rating: 8.9,
+    rating: 8.7,
     time: "Today at 11:05",
     comments: 3,
     reviewed: true,
@@ -200,7 +239,12 @@ const INITIAL_PROJECTS: Project[] = [
       "React, Node.js, MongoDB, AWS IoT Core, TensorFlow for ML models.",
     reviews: [
       {
-        score: 8.9,
+        scores: {
+          innovation: 9,
+          impact: 9,
+          execution: 8,
+        },
+        averageScore: 8.7,
         feedback:
           "Excellent implementation with great attention to detail. The solution is innovative and well-executed.",
         reviewerId: "partner-3",
@@ -218,7 +262,7 @@ type ProjectsContextValue = {
   addOrUpdateReview: (
     projectId: string,
     reviewerId: string,
-    reviewData: Omit<Review, "reviewedAt" | "reviewerId">
+    reviewData: ReviewInput
   ) => void
   getReviewForUser: (projectId: string, reviewerId: string) => Review | undefined
   deleteReview: (projectId: string, reviewerId: string) => void
@@ -317,10 +361,20 @@ export const ProjectsProvider = ({ children }: { children: ReactNode }) => {
           (reviewerId === DEFAULT_REVIEWER.id ? DEFAULT_REVIEWER.name : undefined)
         const reviewedAt = formatReviewTimestamp()
 
+        const normalizedScores = createDefaultReviewScores()
+        REVIEW_CRITERIA.forEach((criterion) => {
+          normalizedScores[criterion.id] = clampScore(
+            reviewData.scores?.[criterion.id] ?? 0
+          )
+        })
+
+        const averageScore = calculateAverageScore(normalizedScores)
+
         const updatedReview: Review = {
           reviewerId,
           reviewerName,
-          score: reviewData.score,
+          scores: normalizedScores,
+          averageScore,
           feedback: reviewData.feedback,
           reviewedAt,
         }
@@ -329,16 +383,19 @@ export const ProjectsProvider = ({ children }: { children: ReactNode }) => {
           existingIndex !== -1
             ? project.reviews.map((review, index) =>
                 index === existingIndex
-                  ? { ...review, ...updatedReview }
+                  ? { ...updatedReview }
                   : review
               )
             : [...project.reviews, updatedReview]
 
-        const averageScore =
+        const projectAverageScore =
           updatedReviews.length > 0
             ? parseFloat(
                 (
-                  updatedReviews.reduce((acc, curr) => acc + curr.score, 0) /
+                  updatedReviews.reduce(
+                    (acc, curr) => acc + curr.averageScore,
+                    0
+                  ) /
                   updatedReviews.length
                 ).toFixed(1)
               )
@@ -347,8 +404,8 @@ export const ProjectsProvider = ({ children }: { children: ReactNode }) => {
         return {
           ...project,
           reviews: updatedReviews,
-          reviewed: true,
-          rating: averageScore,
+          reviewed: updatedReviews.length > 0,
+          rating: projectAverageScore,
         }
       })
     )
@@ -391,7 +448,10 @@ export const ProjectsProvider = ({ children }: { children: ReactNode }) => {
           filteredReviews.length > 0
             ? parseFloat(
                 (
-                  filteredReviews.reduce((acc, curr) => acc + curr.score, 0) /
+                  filteredReviews.reduce(
+                    (acc, curr) => acc + curr.averageScore,
+                    0
+                  ) /
                   filteredReviews.length
                 ).toFixed(1)
               )

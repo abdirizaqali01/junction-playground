@@ -2,8 +2,17 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { X } from 'lucide-react'
-import { DEFAULT_REVIEWER, useProjects } from '@/hooks/useProjects'
+import {
+  DEFAULT_REVIEWER,
+  REVIEW_CRITERIA,
+  calculateAverageScore,
+  createDefaultReviewScores,
+  useProjects,
+  type ReviewScores,
+  type ReviewCriterionId,
+} from '@/hooks/useProjects'
 import { PartnerButton, partnerColors } from '@/components/partner/designSystem'
+import { cn } from '@/lib/utils'
 
 interface ScoreBoxProps {
   projectId: string
@@ -24,25 +33,56 @@ export function ScoreBox({
   const existingReview = getReviewForUser(projectId, currentUserId)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const [rating, setRating] = useState<number>(existingReview?.score || 0)
+  const [scores, setScores] = useState<ReviewScores>(() =>
+    createDefaultReviewScores()
+  )
   const [feedback, setFeedback] = useState<string>(existingReview?.feedback || '')
-  const [editMode, setEditMode] = useState(!existingReview) // show scoring if no review yet
+
+  const scoreOptions = Array.from({ length: 10 }, (_, index) => index + 1)
+  const criteriaDescriptions: Record<ReviewCriterionId, string> = {
+    innovation: 'Originality and boldness of the solution.',
+    impact: 'Value created for users, partners, or the wider challenge.',
+    execution: 'Quality of implementation, polish, and presentation.',
+  }
 
   useEffect(() => {
-    if (existingReview) {
-      setRating(existingReview.score)
-      setFeedback(existingReview.feedback)
-    }
+    if (!existingReview) return
+
+    const normalizedScores = createDefaultReviewScores()
+    REVIEW_CRITERIA.forEach((criterion) => {
+      const value = existingReview.scores?.[criterion.id]
+      if (typeof value === 'number') {
+        normalizedScores[criterion.id] = value
+      }
+    })
+
+    setScores(normalizedScores)
+    setFeedback(existingReview.feedback)
   }, [existingReview])
 
+  const handleScoreSelect = (criterionId: ReviewCriterionId, value: number) => {
+    setScores((prev) => ({
+      ...prev,
+      [criterionId]: value,
+    }))
+  }
+
+  const allCriteriaRated = REVIEW_CRITERIA.every(({ id }) => scores[id] > 0)
+  const averageScore = calculateAverageScore(scores)
+
   const handleSubmit = () => {
-    if (!feedback.trim() || rating === 0) return
+    if (!feedback.trim() || !allCriteriaRated) return
     const reviewerId = currentUserId || DEFAULT_REVIEWER.id
     const reviewerName = currentUserName ?? DEFAULT_REVIEWER.name
 
+    const scoresPayload = createDefaultReviewScores()
+    REVIEW_CRITERIA.forEach((criterion) => {
+      scoresPayload[criterion.id] = scores[criterion.id]
+    })
+
     addOrUpdateReview(projectId, reviewerId, {
       reviewerName,
-      score: rating,
+      scores: scoresPayload,
       feedback,
     })
     onSubmit()
@@ -50,7 +90,7 @@ export function ScoreBox({
 
   const handleDelete = () => {
     deleteReview(projectId, currentUserId)
-    setRating(0)
+    setScores(createDefaultReviewScores())
     setFeedback('')
     onCancel()
   }
@@ -94,27 +134,90 @@ export function ScoreBox({
         </div>
 
         <p className="text-white/65 text-sm mb-6">
-          Evaluate this submission using the 1–10 scale below. Your rating will
-          be averaged with other partners’ scores to determine the project’s
-          final ranking.
+          Score each criterion from 1–10. We’ll average them to create your overall rating for this submission.
         </p>
 
-        {/* Rating Circles */}
-        <div className="grid grid-cols-10 gap-2.5 mb-8">
-          {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-            <button
-              key={num}
-              onClick={() => setRating(num)}
-              className={`w-full aspect-square rounded-full flex items-center justify-center font-semibold text-lg border border-white/50 transition-all duration-200
-                ${
-                  rating === num
-                    ? 'bg-white text-[#1A1A1A]'
-                    : 'bg-[#55D186] text-white hover:bg-[#66E49A]'
-                }`}
-            >
-              {num}
-            </button>
-          ))}
+        <div className="mb-8 flex flex-col gap-6 lg:flex-row">
+          <div className="flex-1 space-y-5">
+            {REVIEW_CRITERIA.map((criterion) => {
+              const criterionScore = scores[criterion.id]
+              const description = criteriaDescriptions[criterion.id]
+              return (
+                <div
+                  key={criterion.id}
+                  className="rounded-2xl border border-white/10 bg-[#111111] p-5"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h4 className="text-lg font-semibold text-white">
+                        {criterion.label}
+                      </h4>
+                      <p className="mt-1 text-xs text-white/50">
+                        {description}
+                      </p>
+                    </div>
+                    <span className="text-sm font-semibold text-white/80">
+                      {criterionScore > 0 ? `${criterionScore}/10` : '—'}
+                    </span>
+                  </div>
+                  <div className="mt-4 grid grid-cols-5 gap-2.5 sm:grid-cols-10">
+                    {scoreOptions.map((value) => {
+                      const isSelected = value === criterionScore
+                      return (
+                        <button
+                          key={value}
+                          onClick={() => handleScoreSelect(criterion.id, value)}
+                          className={cn(
+                            'h-10 rounded-full border text-sm font-semibold transition-all duration-200',
+                            isSelected
+                              ? 'bg-white text-[#121212] border-white'
+                              : 'bg-[#1F1F1F] text-white/70 border-white/10 hover:bg-[#55D186] hover:text-white hover:border-[#55D186]'
+                          )}
+                        >
+                          {value}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          <aside className="lg:w-[240px]">
+            <div className="rounded-2xl border border-[#55D186]/40 bg-[#102219] p-6 text-center">
+              <span className="text-xs uppercase tracking-[0.18em] text-[#55D186]/80">
+                Overall
+              </span>
+              <div className="mt-5 flex justify-center">
+                <div
+                  className={cn(
+                    'flex h-24 w-24 items-center justify-center rounded-full text-3xl font-bold',
+                    allCriteriaRated
+                      ? 'bg-[#55D186] text-white'
+                      : 'bg-white/10 text-white/30'
+                  )}
+                >
+                  {allCriteriaRated ? averageScore.toFixed(1) : '—'}
+                </div>
+              </div>
+              <p className="mt-4 text-xs text-white/60">
+                Calculated as the average of all criteria.
+              </p>
+              <div className="mt-5 space-y-2 text-left text-sm">
+                {REVIEW_CRITERIA.map((criterion) => (
+                  <div
+                    key={criterion.id}
+                    className="flex items-center justify-between text-white/70"
+                  >
+                    <span>{criterion.label}</span>
+                    <span className="font-semibold text-white">
+                      {scores[criterion.id] > 0 ? scores[criterion.id] : '—'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </aside>
         </div>
 
         {/* Feedback Section */}
@@ -146,16 +249,13 @@ export function ScoreBox({
           <div className="flex gap-3 ml-auto">
             <PartnerButton
               variant={existingReview ? 'danger' : 'secondary'}
-              onClick={() => {
-                if (existingReview) setEditMode(false)
-                else onCancel()
-              }}
+              onClick={onCancel}
             >
               Cancel
             </PartnerButton>
             <PartnerButton
               onClick={handleSubmit}
-              disabled={!feedback.trim() || rating === 0}
+              disabled={!feedback.trim() || !allCriteriaRated}
             >
               {existingReview ? 'Update Review' : 'Submit'}
             </PartnerButton>
