@@ -53,6 +53,8 @@ export type TeamMember = {
   name: string
   email: string
   showProfile: boolean
+  role?: string
+  linkedin?: string
 }
 
 export type FileItem = {
@@ -144,9 +146,26 @@ const INITIAL_PROJECTS: Project[] = [
       { name: "presentation.ppt", url: "project1-presentation.ppt" },
     ],
     teamMembers: [
-      { name: "Jason Hu", email: "jason@team1.com", showProfile: true },
-      { name: "Sarah Chen", email: "sarah@team1.com", showProfile: false },
-      { name: "Mike Johnson", email: "mike@team1.com", showProfile: false },
+      {
+        name: "Jason Hu",
+        email: "jason@team1.com",
+        showProfile: true,
+        role: "Designer",
+        linkedin: "https://linkedin.com/in/jason-hu",
+      },
+      {
+        name: "Sarah Chen",
+        email: "sarah@team1.com",
+        showProfile: false,
+        role: "Developer",
+        linkedin: "https://linkedin.com/in/sarah-chen",
+      },
+      {
+        name: "Mike Johnson",
+        email: "mike@team1.com",
+        showProfile: false,
+        role: "Product Manager",
+      },
     ],
     fullDescription:
       "This is the full detailed description of the project including all technical aspects, implementation details, and future roadmap.",
@@ -177,8 +196,19 @@ const INITIAL_PROJECTS: Project[] = [
     images: ["/mock-img-1.png", "/mock-img-2.png"],
     files: [{ name: "documentation.pdf", url: "project2-docs.pdf" }],
     teamMembers: [
-      { name: "Alex Rivera", email: "alex@team2.com", showProfile: true },
-      { name: "Emma Wilson", email: "emma@team2.com", showProfile: false },
+      {
+        name: "Alex Rivera",
+        email: "alex@team2.com",
+        showProfile: true,
+        role: "Engineer",
+        linkedin: "https://linkedin.com/in/alex-rivera",
+      },
+      {
+        name: "Emma Wilson",
+        email: "emma@team2.com",
+        showProfile: false,
+        role: "Designer",
+      },
     ],
     fullDescription: "Complete project description with implementation details.",
     problemStatement:
@@ -206,7 +236,13 @@ const INITIAL_PROJECTS: Project[] = [
     images: ["/mock-img-1.png"],
     files: [],
     teamMembers: [
-      { name: "Chris Park", email: "chris@team3.com", showProfile: true },
+      {
+        name: "Chris Park",
+        email: "chris@team3.com",
+        showProfile: true,
+        role: "Developer",
+        linkedin: "https://linkedin.com/in/chris-park",
+      },
     ],
     fullDescription:
       "Detailed overview of the project architecture and features.",
