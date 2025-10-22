@@ -1,50 +1,44 @@
 import type { ButtonHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
+import { partnerTheme } from '@/styles/design-system'
+import { mainButtonVariants } from '@/components/attachables/main-button'
 
-export const partnerColors = {
-  background: '#0D0D0D',
-  surface: '#161616',
-  surfaceSubtle: '#1C1C1C',
-  surfaceMuted: 'rgba(255,255,255,0.05)',
-  accent: '#55D186',
-  accentHover: '#66F1A0',
-  danger: '#FF8A8A',
-  border: 'rgba(255,255,255,0.12)',
-  textPrimary: 'rgba(255,255,255,0.95)',
-  textSecondary: 'rgba(255,255,255,0.65)',
-  textMuted: 'rgba(255,255,255,0.45)',
-}
-
-export const partnerTypography = {
-  heading: 'font-semibold text-white',
-  body: 'text-sm text-white/70',
-  label: 'text-xs uppercase tracking-[0.12em] text-white/60',
-}
-
-export const partnerEffects = {
-  frostedBackdrop: 'bg-[rgba(0,0,0,0.15)] backdrop-blur-[12px]',
-}
+export const partnerColors = partnerTheme.colors
+export const partnerTypography = partnerTheme.typography
+export const partnerEffects = partnerTheme.effects
 
 export type PartnerButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
 
-const baseButton = 'inline-flex items-center justify-center rounded-xl px-5 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50'
+const commonBaseClasses =
+  'inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50'
+
+const attachableVariants: Partial<Record<PartnerButtonVariant, string>> = {
+  primary: mainButtonVariants({ variant: 'primary', size: 'sm' }),
+  danger: mainButtonVariants({ variant: 'alerts', size: 'sm' }),
+  ghost: mainButtonVariants({ variant: 'ghost', size: 'sm' }),
+}
 
 const variantClasses: Record<PartnerButtonVariant, string> = {
-  primary: 'bg-[#55D186] text-white hover:bg-[#55D186]/90',
-  secondary: 'border border-white/20 text-white/80 hover:text-white hover:border-white/40',
-  ghost: 'text-white/70 hover:text-white',
-  danger: 'border border-[#FF8A8A] text-[#FF8A8A] hover:bg-[#FF8A8A]/10',
+  primary: cn(attachableVariants.primary, 'rounded-xl px-5'),
+  danger: cn(attachableVariants.danger, 'rounded-xl px-5'),
+  ghost: cn(attachableVariants.ghost, 'rounded-xl px-5'),
+  secondary: cn(
+    'px-5 py-2 border bg-transparent',
+    'text-white/80 hover:text-white',
+    'border-white/20 hover:border-white/40'
+  ),
 }
 
 export interface PartnerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: PartnerButtonVariant
 }
 
-export function PartnerButton({ variant = 'primary', className, ...props }: PartnerButtonProps) {
-  return (
-    <button
-      className={cn(baseButton, variantClasses[variant], className)}
-      {...props}
-    />
-  )
+export function PartnerButton({
+  variant = 'primary',
+  className,
+  ...props
+}: PartnerButtonProps) {
+  const mergedClassName = cn(commonBaseClasses, variantClasses[variant], className)
+
+  return <button className={mergedClassName} {...props} />
 }

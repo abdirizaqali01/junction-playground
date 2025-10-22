@@ -57,7 +57,7 @@ export default function ReviewCard({
           </div>
           
           <div className="flex items-center justify-between mt-2">
-            <button className="text-xs text-[#55D186] hover:underline self-start">
+            <button className="text-xs text-white hover:underline self-start">
               View full
             </button>
             {onProjectClick && (

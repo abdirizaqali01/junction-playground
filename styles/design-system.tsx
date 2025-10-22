@@ -185,3 +185,28 @@ export const perf = {
         slideOut: 'animate-out slide-out-to-bottom duration-300',
     }
 }
+
+// Partner-specific theme tokens built on top of core design system
+export const partnerTheme = {
+    colors: {
+        background: colors.dark.opacity100,
+        surface: '#161616',
+        surfaceSubtle: '#1C1C1C',
+        surfaceMuted: colors.white.opacity5,
+        accent: colors.primary.opacity100,
+        accentHover: '#66F1A0',
+        danger: colors.alerts.opacity100,
+        border: 'rgba(255,255,255,0.12)',
+        textPrimary: colors.white.opacity90,
+        textSecondary: colors.white.opacity60,
+        textMuted: colors.white.opacity40,
+    },
+    typography: {
+        heading: 'font-semibold text-white',
+        body: 'text-sm text-white/70',
+        label: 'text-xs uppercase tracking-[0.12em] text-white/60',
+    },
+    effects: {
+        frostedBackdrop: 'bg-[rgba(0,0,0,0.15)] backdrop-blur-[12px]',
+    },
+}
