@@ -2,6 +2,7 @@
 
 import ProjectRating from './ProjectRating'
 import { PartnerButton, partnerBorders, partnerSurfaces, partnerText } from '@/styles/design-system'
+import { withVars } from '@/components/partner/utils/style'
 
 interface MiniProjectCardProps {
   title: string
@@ -23,11 +24,13 @@ export default function MiniProjectCard({
   return (
     <div
       className="min-w-[480px] border rounded-2xl overflow-hidden transition-all hover:border-[var(--mini-border-hover)]"
-      style={{
-        backgroundColor: partnerSurfaces.card,
-        borderColor: partnerBorders.subtle,
-        ['--mini-border-hover' as '--mini-border-hover']: partnerBorders.hover,
-      }}
+      style={withVars(
+        {
+          backgroundColor: partnerSurfaces.card,
+          borderColor: partnerBorders.subtle,
+        },
+        { '--mini-border-hover': partnerBorders.hover }
+      )}
     >
       <div className="flex gap-6 p-5">
         {/* Thumbnail */}
@@ -78,10 +81,10 @@ export default function MiniProjectCard({
               variant="ghost"
               onClick={onReview}
               className="group mt-4 self-start text-sm font-medium flex items-center gap-2 px-0 hover:text-[var(--review-link-hover)]"
-              style={{
-                color: partnerText.secondary,
-                ['--review-link-hover' as '--review-link-hover']: partnerText.primary,
-              }}
+              style={withVars(
+                { color: partnerText.secondary },
+                { '--review-link-hover': partnerText.primary }
+              )}
             >
               <span>Go To Reviewing</span>
               <span className="transition-transform group-hover:translate-x-1">→</span>

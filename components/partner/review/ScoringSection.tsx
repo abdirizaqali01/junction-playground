@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { REVIEW_CRITERIA, type Review as ProjectReview } from '@/hooks/useProjects'
 import { colors, partnerAccents, partnerBorders, partnerSurfaces, partnerText } from '@/styles/design-system'
+import { withVars } from '@/components/partner/utils/style'
 
 interface ScoringSectionProps {
   reviews?: ProjectReview[]
@@ -129,10 +130,10 @@ export function ScoringSection({ reviews = [] }: ScoringSectionProps) {
                       setExpanded(isExpanded ? null : index)
                     }
                     className="font-semibold underline text-base mt-1 transition-colors hover:text-[var(--feedback-hover)]"
-                    style={{
-                      color: partnerText.primary,
-                      ['--feedback-hover' as '--feedback-hover']: partnerAccents.solid,
-                    }}
+                    style={withVars(
+                      { color: partnerText.primary },
+                      { '--feedback-hover': partnerAccents.solid }
+                    )}
                   >
                     {isExpanded ? 'View less' : 'View full'}
                   </button>

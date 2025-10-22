@@ -19,6 +19,7 @@ import {
   partnerSurfaces,
   partnerText,
 } from '@/styles/design-system'
+import { withVars } from '@/components/partner/utils/style'
 
 interface ScoreBoxProps {
   projectId: string
@@ -154,7 +155,7 @@ export function ScoreBox({
           <button
             onClick={onCancel}
             className="p-2 rounded-lg transition-colors hover:bg-[var(--close-hover)]"
-            style={{ ['--close-hover' as '--close-hover']: partnerSurfaces.muted }}
+            style={withVars({}, { '--close-hover': partnerSurfaces.muted })}
           >
             <X className="w-5 h-5" style={{ color: partnerText.primary }} />
           </button>
@@ -186,10 +187,7 @@ export function ScoreBox({
                   key={criterion.id}
                   onClick={() => setActiveCriterion(criterion.id)}
                   className="rounded-full border px-4 py-2 text-sm transition-all duration-150 hover:text-[var(--criterion-hover)]"
-                  style={{
-                    ...buttonStyle,
-                    ['--criterion-hover' as '--criterion-hover']: partnerText.primary,
-                  }}
+                  style={withVars(buttonStyle, { '--criterion-hover': partnerText.primary })}
                 >
                   <span>{criterion.label}</span>
                   {hasScore && (
@@ -255,11 +253,10 @@ export function ScoreBox({
                     key={value}
                     onClick={() => handleScoreSelect(activeCriterion, value)}
                     className="h-11 rounded-xl border text-sm font-semibold transition-all duration-200 hover:bg-[var(--option-hover)] hover:text-[var(--option-hover-text)]"
-                    style={{
-                      ...optionStyle,
-                      ['--option-hover' as '--option-hover']: partnerSurfaces.muted,
-                      ['--option-hover-text' as '--option-hover-text']: partnerText.primary,
-                    }}
+                    style={withVars(optionStyle, {
+                      '--option-hover': partnerSurfaces.muted,
+                      '--option-hover-text': partnerText.primary,
+                    })}
                   >
                     {value}
                   </button>
@@ -318,15 +315,19 @@ export function ScoreBox({
           onChange={(e) => setFeedback(e.target.value)}
           placeholder="Type your feedback..."
           rows={5}
-          className="w-full border rounded-xl px-5 py-4 text-sm focus:outline-none resize-none mb-6 placeholder:text-[var(--textarea-placeholder)] focus:border-[var(--textarea-focus-border)]"
-          style={{
-            backgroundColor: partnerSurfaces.base,
-            borderColor: colors.primary.opacity40,
-            color: partnerText.primary,
-            ['--textarea-placeholder' as '--textarea-placeholder']: partnerText.secondary,
-            ['--textarea-focus-border' as '--textarea-focus-border']: partnerAccents.solid,
-          }}
-        />
+            className="w-full border rounded-xl px-5 py-4 text-sm focus:outline-none resize-none mb-6 placeholder:text-[var(--textarea-placeholder)] focus:border-[var(--textarea-focus-border)]"
+            style={withVars(
+              {
+                backgroundColor: partnerSurfaces.base,
+                borderColor: colors.primary.opacity40,
+                color: partnerText.primary,
+              },
+              {
+                '--textarea-placeholder': partnerText.secondary,
+                '--textarea-focus-border': partnerAccents.solid,
+              }
+            )}
+          />
 
         {/* Action Buttons */}
         <div className="flex flex-wrap justify-between gap-3 items-center">
@@ -335,10 +336,7 @@ export function ScoreBox({
               <button
                 onClick={handleDelete}
                 className="text-xs uppercase tracking-wide transition-colors hover:text-[var(--delete-hover)]"
-                style={{
-                  color: partnerText.soft,
-                  ['--delete-hover' as '--delete-hover']: colors.alerts.opacity60,
-                }}
+                style={withVars({ color: partnerText.soft }, { '--delete-hover': colors.alerts.opacity60 })}
               >
                 delete review
               </button>

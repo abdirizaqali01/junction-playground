@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { partnerBorders, partnerSurfaces, partnerText } from '@/styles/design-system'
+import { withVars } from '@/components/partner/utils/style'
 
 interface CollapsibleSectionProps {
   title: string
@@ -21,10 +22,10 @@ export function CollapsibleSection({ title, children, defaultOpen = false }: Col
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-5 py-4 flex items-center justify-between transition-colors hover:bg-[var(--header-hover)]"
-        style={{
-          backgroundColor: partnerSurfaces.raised,
-          ['--header-hover' as '--header-hover']: partnerSurfaces.raisedHover,
-        }}
+        style={withVars(
+          { backgroundColor: partnerSurfaces.raised },
+          { '--header-hover': partnerSurfaces.raisedHover }
+        )}
       >
         <span
           className="font-medium"

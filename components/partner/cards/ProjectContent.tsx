@@ -1,5 +1,6 @@
 import { MessageSquare } from 'lucide-react'
 import { partnerAccents, partnerText } from '@/styles/design-system'
+import { withVars } from '@/components/partner/utils/style'
 
 interface ProjectContentProps {
   title: string
@@ -60,10 +61,10 @@ export default function ProjectContent({
         <button
           onClick={onViewClick}
           className="flex items-center gap-1.5 text-xs sm:text-[13px] transition-colors hover:text-[var(--view-hover-color)]"
-          style={{
-            color: partnerText.secondary,
-            ['--view-hover-color' as '--view-hover-color']: partnerText.primary,
-          }}
+          style={withVars(
+            { color: partnerText.secondary },
+            { '--view-hover-color': partnerText.primary }
+          )}
         >
           View
           <svg

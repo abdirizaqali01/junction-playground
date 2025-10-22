@@ -75,7 +75,7 @@ export default function ProjectReviewPage() {
   return (
     <div className="flex min-h-screen bg-[#0D0D0D] text-white">
       <div className="fixed top-0 left-0 z-50 h-screen">
-        <Sidebar />
+        <Sidebar forcedActivePath="/partners/submissions" />
       </div>
 
       <div

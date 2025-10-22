@@ -6,6 +6,7 @@ import ProjectContent from './ProjectContent'
 import ProjectRating from './ProjectRating'
 import BookmarkButton from './BookmarkButton'
 import { partnerBorders, partnerSurfaces } from '@/styles/design-system'
+import { withVars } from '@/components/partner/utils/style'
 
 interface ProjectCardProps {
   id?: string | number
@@ -38,11 +39,13 @@ export default function ProjectCard({
   return (
     <div
       className="relative flex border rounded-xl overflow-hidden transition-all w-full h-full hover:border-[var(--project-border-hover)]"
-      style={{
-        backgroundColor: partnerSurfaces.card,
-        borderColor: partnerBorders.subtle,
-        ['--project-border-hover' as '--project-border-hover']: partnerBorders.hover,
-      }}
+      style={withVars(
+        {
+          backgroundColor: partnerSurfaces.card,
+          borderColor: partnerBorders.subtle,
+        },
+        { '--project-border-hover': partnerBorders.hover }
+      )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

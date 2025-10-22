@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { partnerBorders, partnerSurfaces, partnerText } from '@/styles/design-system'
+import { withVars } from '@/components/partner/utils/style'
 
 interface BreadcrumbProps {
   items: string[]
@@ -53,10 +54,10 @@ export function Breadcrumb({
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   className="flex items-center gap-1 transition-colors hover:text-[var(--breadcrumb-hover)]"
-                  style={{
-                    color: partnerText.primary,
-                    ['--breadcrumb-hover' as '--breadcrumb-hover']: partnerText.secondary,
-                  }}
+                  style={withVars(
+                    { color: partnerText.primary },
+                    { '--breadcrumb-hover': partnerText.secondary }
+                  )}
                 >
                   {item}
                   <ChevronDown className="w-4 h-4" style={{ color: partnerText.secondary }} />
@@ -79,13 +80,15 @@ export function Breadcrumb({
                             setIsDropdownOpen(false)
                           }}
                           className="w-full text-left px-4 py-2.5 text-sm transition-colors hover:text-[var(--dropdown-hover)]"
-                          style={{
-                            color:
-                              dropdownItem.id === currentItemId
-                                ? partnerText.primary
-                                : partnerText.soft,
-                            ['--dropdown-hover' as '--dropdown-hover']: partnerText.primary,
-                          }}
+                          style={withVars(
+                            {
+                              color:
+                                dropdownItem.id === currentItemId
+                                  ? partnerText.primary
+                                  : partnerText.soft,
+                            },
+                            { '--dropdown-hover': partnerText.primary }
+                          )}
                         >
                           {dropdownItem.title}
                         </button>
@@ -98,10 +101,10 @@ export function Breadcrumb({
               <button
                 onClick={() => onItemClick(index)}
                 className="transition-colors hover:text-[var(--breadcrumb-muted-hover)]"
-                style={{
-                  color: partnerText.soft,
-                  ['--breadcrumb-muted-hover' as '--breadcrumb-muted-hover']: partnerText.secondary,
-                }}
+                style={withVars(
+                  { color: partnerText.soft },
+                  { '--breadcrumb-muted-hover': partnerText.secondary }
+                )}
               >
                 {item}
               </button>

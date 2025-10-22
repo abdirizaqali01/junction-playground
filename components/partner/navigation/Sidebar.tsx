@@ -11,12 +11,13 @@ import { partnerSurfaces, partnerText } from '@/styles/design-system'
 
 const BANNER_IMAGE = '/path/to/banner.png'
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC<{ forcedActivePath?: string }> = ({ forcedActivePath }) => {
   const pathname = usePathname()
+  const currentPath = forcedActivePath ?? pathname
 
   // Helper function to check if a path is active
   const isActive = (path: string) => {
-    return pathname === path || pathname.startsWith(`${path}/`)
+    return currentPath === path || currentPath.startsWith(`${path}/`)
   }
 
   return (

@@ -7,17 +7,19 @@ import { layoutStyles } from '@/styles/design-system'
 interface PartnerLayoutProps {
   children: React.ReactNode
   maxWidth?: string
+  forcedActivePath?: string
 }
 
 export default function PartnerLayout({ 
   children, 
-  maxWidth = '1280px' 
+  maxWidth = '1280px',
+  forcedActivePath,
 }: PartnerLayoutProps) {
   return (
     <div className={layoutStyles.partner.pageContainer}>
       {/* Fixed Sidebar */}
       <div className={layoutStyles.partner.sidebarContainer}>
-        <Sidebar />
+        <Sidebar forcedActivePath={forcedActivePath} />
       </div>
 
       {/* Main Content Area */}

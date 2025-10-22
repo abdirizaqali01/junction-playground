@@ -11,6 +11,7 @@ import {
   partnerSurfaces,
   partnerText,
 } from '@/styles/design-system'
+import { withVars } from '@/components/partner/utils/style'
 
 interface ScoreSubmittedCardProps {
   projectId: string
@@ -46,7 +47,7 @@ export function ScoreSubmittedCard({
         <button
           onClick={onClose}
           className="absolute top-[4%] right-[4%] p-[1.5%] rounded-lg transition-colors hover:bg-[var(--close-hover)]"
-          style={{ ['--close-hover' as '--close-hover']: partnerSurfaces.muted }}
+          style={withVars({}, { '--close-hover': partnerSurfaces.muted })}
         >
           <X className="w-5 h-5" style={{ color: partnerText.primary }} />
         </button>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { partnerAccents, partnerBorders, partnerSurfaces, partnerText } from '@/styles/design-system'
 import { ExternalLink } from 'lucide-react'
+import { withVars } from '@/components/partner/utils/style'
 
 type InfoItem = {
   label: string
@@ -44,10 +45,10 @@ export function InfoSection({ title, items, variant = 'default' }: InfoSectionPr
                 <a
                   href={item.url}
                   className="text-sm transition-colors flex items-center justify-between group hover:text-[var(--link-hover)]"
-                  style={{
-                    color: partnerText.secondary,
-                    ['--link-hover' as '--link-hover']: partnerText.primary,
-                  }}
+                  style={withVars(
+                    { color: partnerText.secondary },
+                    { '--link-hover': partnerText.primary }
+                  )}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -79,10 +80,10 @@ export function InfoSection({ title, items, variant = 'default' }: InfoSectionPr
                   <button
                     onClick={item.action.onClick}
                     className="text-xs transition-colors flex-shrink-0 ml-3 hover:text-[var(--action-hover)]"
-                    style={{
-                      color: partnerText.soft,
-                      ['--action-hover' as '--action-hover']: partnerAccents.hover,
-                    }}
+                    style={withVars(
+                      { color: partnerText.soft },
+                      { '--action-hover': partnerAccents.hover }
+                    )}
                   >
                     {item.action.label}
                   </button>
