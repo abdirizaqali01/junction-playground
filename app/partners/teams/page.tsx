@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react'
 import { ExternalLink } from 'lucide-react'
 import Sidebar from '@/components/partner/navigation/Sidebar'
 import SearchBar from '@/components/Bar/SearchBar'
-import { PartnerButton } from '@/components/partner/designSystem'
+import { PartnerButton } from '@/styles/design-system'
 import { useProjects } from '@/hooks/useProjects'
 import { cn } from '@/lib/utils'
 

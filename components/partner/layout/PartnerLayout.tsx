@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Sidebar from '@/components/partner/navigation/Sidebar'
-import * as style from '@/styles/design-system'
+import { layoutStyles } from '@/styles/design-system'
 
 interface PartnerLayoutProps {
   children: React.ReactNode
@@ -14,22 +14,22 @@ export default function PartnerLayout({
   maxWidth = '1280px' 
 }: PartnerLayoutProps) {
   return (
-    <div className={style.layout.partner.container.className}>
+    <div className={layoutStyles.partner.pageContainer}>
       {/* Fixed Sidebar */}
-      <div className="fixed top-0 left-0 h-screen z-50">
+      <div className={layoutStyles.partner.sidebarContainer}>
         <Sidebar />
       </div>
 
       {/* Main Content Area */}
       <div
-        className={style.layout.partner.main.className}
-        style={{
-          marginLeft: style.layout.partner.main.marginLeft,
-          width: style.layout.partner.main.width,
-        }}
+        className={layoutStyles.partner.mainContainer}
+        style={layoutStyles.partner.mainStyle}
       >
-        <main className="w-full" style={{ maxWidth }}>
-          <div className="w-full px-[4%] pt-[3%] pb-[2%]">
+        <main
+          className={layoutStyles.partner.mainContentWrapper}
+          style={{ ...layoutStyles.partner.contentMaxWidth, maxWidth }}
+        >
+          <div className={layoutStyles.partner.mainContentPadding}>
             {children}
           </div>
         </main>

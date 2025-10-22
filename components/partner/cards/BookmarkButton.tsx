@@ -2,6 +2,7 @@
 
 import { Bookmark } from 'lucide-react'
 import clsx from 'clsx'
+import { partnerAccents, partnerText } from '@/styles/design-system'
 
 interface BookmarkButtonProps {
   isVisible: boolean
@@ -24,10 +25,9 @@ export default function BookmarkButton({
     >
       <Bookmark
         size={28}
-        className={clsx(
-          'transition-colors',
-          isBookmarked ? 'text-[#55D186] fill-[#55D186]/5' : 'text-white/70'
-        )}
+        className="transition-colors"
+        color={isBookmarked ? partnerAccents.solid : partnerText.secondary}
+        fill={isBookmarked ? partnerAccents.tint : 'none'}
       />
     </button>
   )

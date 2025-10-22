@@ -6,8 +6,8 @@ import { Home, List, Users, FileText, Upload } from 'lucide-react'
 import SidebarSection from './SidebarSection'
 import SidebarButton from './SidebarButton'
 import PartnerCard from './PartnerCard'
-import { partnerColors } from '@/components/partner/designSystem'
 import * as style from '@/styles/design-system'
+import { partnerSurfaces, partnerText } from '@/styles/design-system'
 
 const BANNER_IMAGE = '/path/to/banner.png'
 
@@ -21,7 +21,8 @@ const Sidebar: React.FC = () => {
 
   return (
     <aside
-      className={`pl-5 pt-5 pb-5 ${style.layoutStyles.partner.sidebarWidth} h-screen text-white`}
+      className={`pl-5 pt-5 pb-5 ${style.layoutStyles.partner.sidebarWidth} h-screen`}
+      style={{ color: partnerText.primary }}
     >
         <div
         className={`h-full flex flex-col justify-between gap-5 px-4 py-4 ${style.gradientBorder.boxContainer.className} cursor-default`}
@@ -29,11 +30,19 @@ const Sidebar: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col gap-2.5">
           <div className="flex items-center justify-between w-full">
-            <h1 className="text-[1.5rem] ml-2 font-semibold">Partner's Corner</h1>
+            <h1
+              className="text-[1.5rem] ml-2 font-semibold"
+              style={{ color: partnerText.primary }}
+            >
+              Partner's Corner
+            </h1>
           </div>
           <div
-            className="bg-white/5 rounded-xl overflow-hidden w-full"
-            style={{ aspectRatio: '301 / 172' }}
+            className="rounded-xl overflow-hidden w-full"
+            style={{
+              aspectRatio: '301 / 172',
+              backgroundColor: partnerSurfaces.muted,
+            }}
           >
             <img
               src={BANNER_IMAGE}

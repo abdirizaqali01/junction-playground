@@ -1,7 +1,7 @@
 "use client"
 
 import ProjectRating from './ProjectRating'
-import { PartnerButton } from '@/components/partner/designSystem'
+import { PartnerButton, partnerBorders, partnerSurfaces, partnerText } from '@/styles/design-system'
 
 interface MiniProjectCardProps {
   title: string
@@ -21,10 +21,20 @@ export default function MiniProjectCard({
   onReview,
 }: MiniProjectCardProps) {
   return (
-    <div className="min-w-[480px] bg-[#1B1B1B] border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all">
+    <div
+      className="min-w-[480px] border rounded-2xl overflow-hidden transition-all hover:border-[var(--mini-border-hover)]"
+      style={{
+        backgroundColor: partnerSurfaces.card,
+        borderColor: partnerBorders.subtle,
+        ['--mini-border-hover' as '--mini-border-hover']: partnerBorders.hover,
+      }}
+    >
       <div className="flex gap-6 p-5">
         {/* Thumbnail */}
-        <div className="w-[220px] h-[200px] flex-shrink-0 bg-white/5 rounded-lg overflow-hidden">
+        <div
+          className="w-[220px] h-[200px] flex-shrink-0 rounded-lg overflow-hidden"
+          style={{ backgroundColor: partnerSurfaces.muted }}
+        >
           <img
             src={imageUrl}
             alt={title}
@@ -37,10 +47,15 @@ export default function MiniProjectCard({
           <div>
             <div className="flex items-center justify-between mb-1">
               <div>
-                <h3 className="text-lg font-semibold text-white leading-tight">
+                <h3
+                  className="text-lg font-semibold leading-tight"
+                  style={{ color: partnerText.primary }}
+                >
                   {title}
                 </h3>
-                <p className="text-sm text-white/60">{team}</p>
+                <p className="text-sm" style={{ color: partnerText.secondary }}>
+                  {team}
+                </p>
               </div>
 
               {rating !== null && rating !== undefined && (
@@ -50,7 +65,10 @@ export default function MiniProjectCard({
               )}
             </div>
 
-            <p className="text-sm text-white/70 mt-3 line-clamp-4">
+            <p
+              className="text-sm mt-3 line-clamp-4"
+              style={{ color: partnerText.secondary }}
+            >
               {description}
             </p>
           </div>
@@ -59,7 +77,11 @@ export default function MiniProjectCard({
             <PartnerButton
               variant="ghost"
               onClick={onReview}
-              className="group mt-4 self-start text-sm font-medium text-white/80 hover:text-white flex items-center gap-2 px-0"
+              className="group mt-4 self-start text-sm font-medium flex items-center gap-2 px-0 hover:text-[var(--review-link-hover)]"
+              style={{
+                color: partnerText.secondary,
+                ['--review-link-hover' as '--review-link-hover']: partnerText.primary,
+              }}
             >
               <span>Go To Reviewing</span>
               <span className="transition-transform group-hover:translate-x-1">→</span>

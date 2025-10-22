@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Sidebar from '@/components/partner/navigation/Sidebar'
 import PageHeader from '@/components/partner/layout/PageHeader'
 import { DEFAULT_REVIEWER, useProjects } from '@/hooks/useProjects'
-import { partnerEffects } from '@/components/partner/designSystem'
+import { partnerEffects } from '@/styles/design-system'
 import { CollapsibleSection } from '@/components/partner/sections/CollapsibleSection'
 import { InfoSection } from '@/components/partner/sections/InfoSection'
 import { VideoPlayer } from '@/components/partner/media/VideoPlayer'
@@ -85,7 +85,7 @@ export default function ProjectReviewPage() {
         {shouldFrostBackground && (
           <div
             className={`fixed inset-y-0 right-0 z-[90] pointer-events-none ${partnerEffects.frostedBackdrop}`}
-            style={{ left: 'var(--partner-sidebar-width)' }}
+            style={{ left: 'calc(var(--partner-sidebar-width) + 1.25rem)' }}
           />
         )}
 

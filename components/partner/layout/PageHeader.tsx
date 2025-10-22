@@ -5,7 +5,7 @@ import { Breadcrumb } from './Breadcrumb'
 import { NotificationBell } from '@/components/Notifications/NotificationBell'
 import { NotificationDropdown, type NotificationItem } from '@/components/Notifications/NotificationDropdown'
 import { useNotifications } from '@/components/Notifications/NotificationContext'
-import { partnerColors } from '@/components/partner/designSystem'
+import { partnerAccents, partnerColors, partnerText } from '@/styles/design-system'
 
 interface PageHeaderProps {
   title: string
@@ -63,16 +63,27 @@ export default function PageHeader({
         />
       )}
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-white">
+        <h1
+          className="text-2xl font-semibold"
+          style={{ color: partnerText.primary }}
+        >
           {title}
         </h1>
         <div className="flex items-center gap-4">
           {status && (
-            <div className="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-xs font-medium">
+            <div
+              className="px-3 py-1 rounded-full text-xs font-medium"
+              style={{
+                backgroundColor: partnerAccents.tint,
+                color: partnerAccents.solid,
+              }}
+            >
               Status: {status}
             </div>
           )}
-          <div className="text-xs text-white/50">{timer}</div>
+          <div className="text-xs" style={{ color: partnerText.soft }}>
+            {timer}
+          </div>
           <div className="relative">
             <NotificationBell
               hasNotifications={unreadCount > 0}

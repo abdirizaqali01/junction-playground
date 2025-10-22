@@ -1,4 +1,5 @@
 import * as style from '@/styles/design-system'
+import { partnerBorders, partnerSurfaces, partnerText } from '@/styles/design-system'
 
 interface PartnerCardProps {
   name: string
@@ -7,13 +8,35 @@ interface PartnerCardProps {
 
 export default function PartnerCard({ name, email }: PartnerCardProps) {
   return (
-    <div className={`bg-white/5 border border-white/5 ${style.border.radius.outer} p-3 flex items-center gap-2.5 mt-5 cursor-pointer`}>
-      <div className={`bg-white/5 w-10 h-10 flex items-center justify-center rounded-full text-xs font-semibold text-white/80 ${style.border.radius.middle}`}>
+    <div
+      className={`${style.border.radius.outer} p-3 flex items-center gap-2.5 mt-5 cursor-pointer border`}
+      style={{
+        backgroundColor: partnerSurfaces.muted,
+        borderColor: partnerBorders.subtle,
+      }}
+    >
+      <div
+        className={`w-10 h-10 flex items-center justify-center rounded-full text-xs font-semibold ${style.border.radius.middle}`}
+        style={{
+          backgroundColor: partnerSurfaces.muted,
+          color: partnerText.secondary,
+        }}
+      >
         {name.charAt(0).toUpperCase()}
       </div>
       <div className="flex flex-col leading-tight">
-        <span className="text-[0.9rem] font-medium text-white">{name}</span>
-        <span className="text-[0.8rem] text-white/60 text-light">{email}</span>
+        <span
+          className="text-[0.9rem] font-medium"
+          style={{ color: partnerText.primary }}
+        >
+          {name}
+        </span>
+        <span
+          className="text-[0.8rem] text-light"
+          style={{ color: partnerText.secondary }}
+        >
+          {email}
+        </span>
       </div>
     </div>
   )

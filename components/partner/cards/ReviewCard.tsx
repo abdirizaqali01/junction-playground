@@ -1,6 +1,6 @@
 "use client"
 
-import { PartnerButton } from '@/components/partner/designSystem'
+import { PartnerButton, partnerAccents, partnerBorders, partnerColors, partnerText } from '@/styles/design-system'
 
 interface ReviewCardProps {
     reviewerName: string
@@ -29,35 +29,56 @@ export default function ReviewCard({
       : timestamp
 
   return (
-    <div className="min-w-[480px] h-[200px] bg-[#0D0D0D] rounded-xl border border-[#55D186] p-5 flex flex-col relative overflow-hidden">
+    <div
+      className="min-w-[480px] h-[200px] rounded-xl border p-5 flex flex-col relative overflow-hidden"
+      style={{
+        backgroundColor: partnerColors.background,
+        borderColor: partnerBorders.accent,
+        color: partnerText.primary,
+      }}
+    >
       {/* Green tint overlay */}
-      <div className="absolute inset-0 bg-[#55D186] opacity-10 pointer-events-none rounded-xl" />
+      <div
+        className="absolute inset-0 pointer-events-none rounded-xl"
+        style={{ backgroundColor: partnerAccents.tint }}
+      />
         
         <div className="relative z-10 flex flex-col h-full">
           <div className="flex items-start justify-between gap-3 mb-3">
             <div className="flex flex-col">
-              <h3 className="text-base font-semibold text-white">{reviewerName}</h3>
-              <p className="text-xs text-white/50">on {projectName}</p>
+              <h3 className="text-base font-semibold" style={{ color: partnerText.primary }}>
+                {reviewerName}
+              </h3>
+              <p className="text-xs" style={{ color: partnerText.soft }}>
+                on {projectName}
+              </p>
             </div>
-            <span className="text-white/50 text-xs whitespace-nowrap">{displayTimestamp}</span>
+            <span className="text-xs whitespace-nowrap" style={{ color: partnerText.soft }}>
+              {displayTimestamp}
+            </span>
           </div>
           
-          <p className="text-xs text-white/60 mb-1">
+          <p className="text-xs mb-1" style={{ color: partnerText.secondary }}>
             Score:{' '}
-            <span className="text-[#55D186] font-semibold">
+            <span className="font-semibold" style={{ color: partnerAccents.solid }}>
               {rating}/10
             </span>
           </p>
           
           <div className="flex-1 mt-2">
-            <h4 className="text-xs font-semibold text-white mb-1.5">Feedback</h4>
-            <p className="text-xs text-white/70 line-clamp-3">
+            <h4 className="text-xs font-semibold mb-1.5" style={{ color: partnerText.primary }}>
+              Feedback
+            </h4>
+            <p className="text-xs line-clamp-3" style={{ color: partnerText.secondary }}>
               {feedback}
             </p>
           </div>
           
           <div className="flex items-center justify-between mt-2">
-            <button className="text-xs text-white hover:underline self-start">
+            <button
+              className="text-xs hover:underline self-start"
+              style={{ color: partnerText.primary }}
+            >
               View full
             </button>
             {onProjectClick && (

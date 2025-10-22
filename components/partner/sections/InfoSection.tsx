@@ -1,5 +1,5 @@
 import React from 'react'
-import { partnerColors } from '@/components/partner/designSystem'
+import { partnerAccents, partnerBorders, partnerSurfaces, partnerText } from '@/styles/design-system'
 import { ExternalLink } from 'lucide-react'
 
 type InfoItem = {
@@ -24,35 +24,53 @@ export function InfoSection({ title, items, variant = 'default' }: InfoSectionPr
   return (
     <div
       className="rounded-2xl p-6 mb-4 border"
-      style={{ backgroundColor: partnerColors.surface, borderColor: partnerColors.border }}
+      style={{
+        backgroundColor: partnerSurfaces.raised,
+        borderColor: partnerBorders.default,
+        color: partnerText.primary,
+      }}
     >
-      <h2 className="text-white text-2xl font-semibold mb-4">{title}</h2>
+      <h2 className="text-2xl font-semibold mb-4" style={{ color: partnerText.primary }}>
+        {title}
+      </h2>
       <div className="space-y-3">
         {items.map((item, index) => (
           <div key={index}>
             {item.url ? (
               <div
                 className="rounded-lg p-4"
-                style={{ backgroundColor: partnerColors.background }}
+                style={{ backgroundColor: partnerSurfaces.sunken }}
               >
                 <a
                   href={item.url}
-                  className="text-white/60 text-sm hover:text-white transition-colors flex items-center justify-between group"
+                  className="text-sm transition-colors flex items-center justify-between group hover:text-[var(--link-hover)]"
+                  style={{
+                    color: partnerText.secondary,
+                    ['--link-hover' as '--link-hover']: partnerText.primary,
+                  }}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <span className="truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[80%]">
                     {item.url}
                   </span>
-                  <ExternalLink className="w-4 h-4 flex-shrink-0 ml-3 opacity-60 group-hover:opacity-100" />
+                  <ExternalLink
+                    className="w-4 h-4 flex-shrink-0 ml-3 transition-opacity group-hover:opacity-100"
+                    style={{ color: partnerText.secondary, opacity: 0.6 }}
+                  />
                 </a>
               </div>
             ) : (
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
-                  <span className="text-white/70 text-sm">{item.label}</span>
+                  <span className="text-sm" style={{ color: partnerText.secondary }}>
+                    {item.label}
+                  </span>
                   {item.value && (
-                    <div className="text-white/40 text-xs mt-1 break-all">
+                    <div
+                      className="text-xs mt-1 break-all"
+                      style={{ color: partnerText.muted }}
+                    >
                       {item.value}
                     </div>
                   )}
@@ -60,7 +78,11 @@ export function InfoSection({ title, items, variant = 'default' }: InfoSectionPr
                 {item.action && (
                   <button
                     onClick={item.action.onClick}
-                    className="text-white/50 text-xs hover:text-[#55D186] transition-colors flex-shrink-0 ml-3"
+                    className="text-xs transition-colors flex-shrink-0 ml-3 hover:text-[var(--action-hover)]"
+                    style={{
+                      color: partnerText.soft,
+                      ['--action-hover' as '--action-hover']: partnerAccents.hover,
+                    }}
                   >
                     {item.action.label}
                   </button>

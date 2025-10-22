@@ -2,6 +2,7 @@
 import React from 'react';
 import { LucideIcon } from 'lucide-react';
 import * as style from '@/styles/design-system'
+import { partnerSurfaces, partnerText } from '@/styles/design-system'
 
 interface SidebarButtonProps {
   icon: LucideIcon;
@@ -19,11 +20,13 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
   return (
     <a
       href={href}
-      className={`flex items-center gap-3 px-3 py-2.5 ${style.border.radius.middle} transition-colors ${
-        active
-          ? 'bg-white/10 text-white font-medium'
-          : 'text-white/50 hover:text-white'
-      }`}
+      className={`flex items-center gap-3 px-3 py-2.5 ${style.border.radius.middle} transition-colors hover:text-[var(--sidebar-hover)]`}
+      style={{
+        backgroundColor: active ? partnerSurfaces.muted : 'transparent',
+        color: active ? partnerText.primary : partnerText.soft,
+        fontWeight: active ? 600 : undefined,
+        ['--sidebar-hover' as '--sidebar-hover']: partnerText.secondary,
+      }}
     >
       <Icon size={18} />
       <span className="text-[0.89rem]">{label}</span>

@@ -1,6 +1,7 @@
 "use client"
 
 import React from 'react'
+import { partnerSurfaces } from '@/styles/design-system'
 
 interface ImageGalleryProps {
   images: string[]
@@ -14,7 +15,8 @@ export function ImageGallery({ images }: ImageGalleryProps) {
       {images.map((img, index) => (
         <div 
           key={index} 
-          className="bg-[#464646]/50 rounded-lg aspect-video flex items-center justify-center overflow-hidden"
+          className="rounded-lg aspect-video flex items-center justify-center overflow-hidden"
+          style={{ backgroundColor: partnerSurfaces.placeholder }}
         >
           <img 
             src={img} 

@@ -5,6 +5,7 @@ import ProjectThumbnail from './ProjectThumbnail'
 import ProjectContent from './ProjectContent'
 import ProjectRating from './ProjectRating'
 import BookmarkButton from './BookmarkButton'
+import { partnerBorders, partnerSurfaces } from '@/styles/design-system'
 
 interface ProjectCardProps {
   id?: string | number
@@ -36,7 +37,12 @@ export default function ProjectCard({
 
   return (
     <div
-      className="relative flex bg-[#1B1B1B] border border-white/10 rounded-xl overflow-hidden transition-all hover:border-white/20 w-full h-full"
+      className="relative flex border rounded-xl overflow-hidden transition-all w-full h-full hover:border-[var(--project-border-hover)]"
+      style={{
+        backgroundColor: partnerSurfaces.card,
+        borderColor: partnerBorders.subtle,
+        ['--project-border-hover' as '--project-border-hover']: partnerBorders.hover,
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

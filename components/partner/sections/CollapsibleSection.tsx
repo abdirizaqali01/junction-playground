@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
+import { partnerBorders, partnerSurfaces, partnerText } from '@/styles/design-system'
 
 interface CollapsibleSectionProps {
   title: string
@@ -13,18 +14,37 @@ export function CollapsibleSection({ title, children, defaultOpen = false }: Col
   const [isOpen, setIsOpen] = useState(defaultOpen)
   
   return (
-    <div className="border border-white/10 rounded-xl overflow-hidden mb-3">
+    <div
+      className="border rounded-xl overflow-hidden mb-3"
+      style={{ borderColor: partnerBorders.subtle }}
+    >
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-5 py-4 bg-[#1A1A1A] flex items-center justify-between hover:bg-[#202020] transition-colors"
+        className="w-full px-5 py-4 flex items-center justify-between transition-colors hover:bg-[var(--header-hover)]"
+        style={{
+          backgroundColor: partnerSurfaces.raised,
+          ['--header-hover' as '--header-hover']: partnerSurfaces.raisedHover,
+        }}
       >
-        <span className="text-white font-medium">{title}</span>
-        <ChevronDown 
-          className={`w-5 h-5 text-white/50 transition-transform ${isOpen ? 'rotate-180' : ''}`} 
+        <span
+          className="font-medium"
+          style={{ color: partnerText.primary }}
+        >
+          {title}
+        </span>
+        <ChevronDown
+          className={`w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          style={{ color: partnerText.secondary }}
         />
       </button>
       {isOpen && (
-        <div className="px-5 py-4 bg-[#151515] text-white/70 text-sm leading-relaxed">
+        <div
+          className="px-5 py-4 text-sm leading-relaxed"
+          style={{
+            backgroundColor: partnerSurfaces.sunken,
+            color: partnerText.secondary,
+          }}
+        >
           {children}
         </div>
       )}

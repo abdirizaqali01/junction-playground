@@ -3,7 +3,10 @@
 //----------------------------------------------------------------//
 
 // FONTS - Optimized for instant loading
+import type { ButtonHTMLAttributes } from 'react'
 import { Space_Grotesk, Space_Mono } from 'next/font/google'
+import { cn } from '@/lib/utils'
+import { mainButtonVariants } from '@/components/attachables/main-button'
 
 export const spaceGrotesk = Space_Grotesk({
     subsets: ['latin', 'latin-ext'],
@@ -270,13 +273,22 @@ export const partnerTheme = {
         surface: '#161616',
         surfaceSubtle: '#1C1C1C',
         surfaceMuted: colors.white.opacity5,
+        surfaceCard: '#1B1B1B',
+        surfaceRaised: '#1A1A1A',
+        surfaceRaisedHover: '#202020',
+        surfaceSunken: '#151515',
+        surfaceSuccess: '#102219',
+        mediaPlaceholder: 'rgba(70, 70, 70, 0.5)',
         accent: colors.primary.opacity100,
         accentHover: '#66F1A0',
+        accentTint: colors.primary.opacity10,
         danger: colors.alerts.opacity100,
         border: 'rgba(255,255,255,0.12)',
+        borderSubtle: colors.white.opacity10,
         textPrimary: colors.white.opacity90,
         textSecondary: colors.white.opacity60,
         textMuted: colors.white.opacity40,
+        textSoft: colors.white.opacity50,
     },
     typography: {
         heading: 'font-semibold text-white',
@@ -286,4 +298,76 @@ export const partnerTheme = {
     effects: {
         frostedBackdrop: 'bg-[rgba(0,0,0,0.15)] backdrop-blur-[12px]',
     },
+}
+
+export const partnerColors = partnerTheme.colors
+export const partnerTypography = partnerTheme.typography
+export const partnerEffects = partnerTheme.effects
+
+export const partnerSurfaces = {
+    base: partnerTheme.colors.surface,
+    card: partnerTheme.colors.surfaceCard,
+    raised: partnerTheme.colors.surfaceRaised,
+    raisedHover: partnerTheme.colors.surfaceRaisedHover,
+    sunken: partnerTheme.colors.surfaceSunken,
+    muted: partnerTheme.colors.surfaceMuted,
+    success: partnerTheme.colors.surfaceSuccess,
+    placeholder: partnerTheme.colors.mediaPlaceholder,
+}
+
+export const partnerBorders = {
+    default: partnerTheme.colors.border,
+    subtle: partnerTheme.colors.borderSubtle,
+    hover: colors.white.opacity20,
+    accent: partnerTheme.colors.accent,
+}
+
+export const partnerText = {
+    primary: partnerTheme.colors.textPrimary,
+    secondary: partnerTheme.colors.textSecondary,
+    muted: partnerTheme.colors.textMuted,
+    soft: partnerTheme.colors.textSoft,
+}
+
+export const partnerAccents = {
+    solid: partnerTheme.colors.accent,
+    hover: partnerTheme.colors.accentHover,
+    tint: partnerTheme.colors.accentTint,
+    danger: partnerTheme.colors.danger,
+}
+
+export type PartnerButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
+
+const partnerButtonBaseClasses =
+    'inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50'
+
+const partnerAttachableVariants: Partial<Record<PartnerButtonVariant, string>> = {
+    primary: mainButtonVariants({ variant: 'primary', size: 'sm' }),
+    danger: mainButtonVariants({ variant: 'alerts', size: 'sm' }),
+    ghost: mainButtonVariants({ variant: 'ghost', size: 'sm' }),
+}
+
+const partnerButtonVariants: Record<PartnerButtonVariant, string> = {
+    primary: cn(partnerAttachableVariants.primary, 'rounded-xl px-5'),
+    danger: cn(partnerAttachableVariants.danger, 'rounded-xl px-5'),
+    ghost: cn(partnerAttachableVariants.ghost, 'rounded-xl px-5'),
+    secondary: cn(
+        'px-5 py-2 border bg-transparent',
+        'text-white/80 hover:text-white',
+        'border-white/20 hover:border-white/40'
+    ),
+}
+
+export interface PartnerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    variant?: PartnerButtonVariant
+}
+
+export function PartnerButton({
+    variant = 'primary',
+    className,
+    ...props
+}: PartnerButtonProps) {
+    const mergedClassName = cn(partnerButtonBaseClasses, partnerButtonVariants[variant], className)
+
+    return <button className={mergedClassName} {...props} />
 }

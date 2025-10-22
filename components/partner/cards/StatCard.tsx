@@ -1,4 +1,4 @@
-import { partnerColors } from '@/components/partner/designSystem'
+import { partnerAccents, partnerBorders, partnerSurfaces, partnerText } from '@/styles/design-system'
 
 interface StatCardProps {
   label: string
@@ -8,14 +8,25 @@ interface StatCardProps {
 export default function StatCard({ label, value }: StatCardProps) {
   return (
     <div
-      className="relative w-full border rounded-xl bg-white/10 px-6 py-5 sm:px-8 sm:py-6"
-      style={{ borderColor: partnerColors.accent }}
+      className="relative w-full border rounded-xl px-6 py-5 sm:px-8 sm:py-6"
+      style={{
+        backgroundColor: partnerSurfaces.muted,
+        borderColor: partnerBorders.accent,
+      }}
     >
-      <div className="absolute inset-[2px] border border-white/10 rounded-lg pointer-events-none" />
+      <div
+        className="absolute inset-[2px] border rounded-lg pointer-events-none"
+        style={{ borderColor: partnerBorders.subtle }}
+      />
 
       <div className="relative flex flex-col justify-center gap-1">
-        <h3 className="text-[11px] text-white/60 uppercase tracking-wide">{label}</h3>
-        <p className="text-[27px] font-bold" style={{ color: partnerColors.accent }}>
+        <h3
+          className="text-[11px] uppercase tracking-wide"
+          style={{ color: partnerText.secondary }}
+        >
+          {label}
+        </h3>
+        <p className="text-[27px] font-bold" style={{ color: partnerAccents.solid }}>
           {value}
         </p>
       </div>

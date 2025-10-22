@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { REVIEW_CRITERIA, type Review as ProjectReview } from '@/hooks/useProjects'
+import { colors, partnerAccents, partnerBorders, partnerSurfaces, partnerText } from '@/styles/design-system'
 
 interface ScoringSectionProps {
   reviews?: ProjectReview[]
@@ -11,13 +12,22 @@ export function ScoringSection({ reviews = [] }: ScoringSectionProps) {
   const [expanded, setExpanded] = useState<number | null>(null)
 
   return (
-    <div className="bg-[#1A1A1A] rounded-2xl p-8">
-      <h2 className="text-2xl font-bold text-white mb-8">
+    <div
+      className="rounded-2xl p-8"
+      style={{ backgroundColor: partnerSurfaces.raised }}
+    >
+      <h2
+        className="text-2xl font-bold mb-8"
+        style={{ color: partnerText.primary }}
+      >
         Your Team’s Scoring & Feedback
       </h2>
 
       {reviews?.length === 0 ? (
-        <div className="text-center py-10 text-white/40">
+        <div
+          className="text-center py-10"
+          style={{ color: partnerText.muted }}
+        >
           No Ratings Or Reviews Yet
         </div>
       ) : (
@@ -40,29 +50,56 @@ export function ScoringSection({ reviews = [] }: ScoringSectionProps) {
             return (
               <div
                 key={index}
-                className="border border-[#55D186] rounded-lg p-6 bg-[#55D186]/10 transition-all duration-300"
+                className="border rounded-lg p-6 transition-all duration-300"
+                style={{
+                  backgroundColor: partnerAccents.tint,
+                  borderColor: partnerAccents.solid,
+                  color: partnerText.primary,
+                }}
               >
                 {/* Reviewer and score */}
-                <h3 className="text-[#55D186] text-2xl font-semibold leading-tight">
+                <h3
+                  className="text-2xl font-semibold leading-tight"
+                  style={{ color: partnerAccents.solid }}
+                >
                   {reviewerDisplayName}
                 </h3>
-                <p className="text-white/80 text-base mt-1">
+                <p
+                  className="text-base mt-1"
+                  style={{ color: partnerText.primary }}
+                >
                   Overall score:{' '}
-                  <span className="text-[#55D186] font-semibold">
+                  <span
+                    className="font-semibold"
+                    style={{ color: partnerAccents.solid }}
+                  >
                     {review.averageScore.toFixed(1)}/10
                   </span>
                 </p>
 
-                <div className="mt-4 grid gap-3 text-sm text-white/70 sm:grid-cols-3">
+                <div
+                  className="mt-4 grid gap-3 text-sm sm:grid-cols-3"
+                  style={{ color: partnerText.secondary }}
+                >
                   {REVIEW_CRITERIA.map((criterion) => (
                     <div
                       key={criterion.id}
-                      className="rounded-lg border border-white/10 bg-white/5 px-4 py-3"
+                      className="rounded-lg border px-4 py-3"
+                      style={{
+                        backgroundColor: partnerSurfaces.muted,
+                        borderColor: partnerBorders.subtle,
+                      }}
                     >
-                      <p className="text-xs uppercase tracking-[0.12em] text-white/50">
+                      <p
+                        className="text-xs uppercase tracking-[0.12em]"
+                        style={{ color: partnerText.secondary }}
+                      >
                         {criterion.label}
                       </p>
-                      <p className="mt-2 text-lg font-semibold text-white">
+                      <p
+                        className="mt-2 text-lg font-semibold"
+                        style={{ color: partnerText.primary }}
+                      >
                         {review.scores[criterion.id]}/10
                       </p>
                     </div>
@@ -70,13 +107,17 @@ export function ScoringSection({ reviews = [] }: ScoringSectionProps) {
                 </div>
 
                 {/* Feedback section */}
-                <h4 className="text-[#55D186] text-lg font-semibold mt-6 mb-1">
+                <h4
+                  className="text-lg font-semibold mt-6 mb-1"
+                  style={{ color: partnerAccents.solid }}
+                >
                   Feedback
                 </h4>
                 <p
-                  className={`text-white/80 text-base leading-relaxed transition-all duration-300 ${
+                  className={`text-base leading-relaxed transition-all duration-300 ${
                     !isExpanded && isLong ? 'line-clamp-3' : ''
                   }`}
+                  style={{ color: partnerText.primary }}
                 >
                   {review.feedback}
                 </p>
@@ -87,14 +128,21 @@ export function ScoringSection({ reviews = [] }: ScoringSectionProps) {
                     onClick={() =>
                       setExpanded(isExpanded ? null : index)
                     }
-                    className="text-white font-semibold underline text-base mt-1 hover:text-[#55D186] transition-colors"
+                    className="font-semibold underline text-base mt-1 transition-colors hover:text-[var(--feedback-hover)]"
+                    style={{
+                      color: partnerText.primary,
+                      ['--feedback-hover' as '--feedback-hover']: partnerAccents.solid,
+                    }}
                   >
                     {isExpanded ? 'View less' : 'View full'}
                   </button>
                 )}
 
                 {/* Timestamp */}
-                <p className="text-white/40 text-sm mt-5">
+                <p
+                  className="text-sm mt-5"
+                  style={{ color: colors.white.opacity40 }}
+                >
                   {timestampDisplay}
                 </p>
               </div>

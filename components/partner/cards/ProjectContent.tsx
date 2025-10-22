@@ -1,4 +1,5 @@
 import { MessageSquare } from 'lucide-react'
+import { partnerAccents, partnerText } from '@/styles/design-system'
 
 interface ProjectContentProps {
   title: string
@@ -20,21 +21,36 @@ export default function ProjectContent({
   return (
     <div className="flex flex-col h-full">
       <div>
-        <h2 className="text-base sm:text-[17px] font-semibold text-white leading-snug pr-16 sm:pr-[72px]">
+        <h2
+          className="text-base sm:text-[17px] font-semibold leading-snug pr-16 sm:pr-[72px]"
+          style={{ color: partnerText.primary }}
+        >
           {title}
         </h2>
-        <p className="text-xs sm:text-[13px] text-white/70 mb-2 pr-16 sm:pr-[72px]">
+        <p
+          className="text-xs sm:text-[13px] mb-2 pr-16 sm:pr-[72px]"
+          style={{ color: partnerText.secondary }}
+        >
           {team}
         </p>
-        <p className="text-xs sm:text-[13px] font-light text-white/60 leading-[120%] tracking-[-0.02em] pr-16 sm:pr-[72px] mb-2.5 sm:mb-[11px]">
+        <p
+          className="text-xs sm:text-[13px] font-light leading-[120%] tracking-[-0.02em] pr-16 sm:pr-[72px] mb-2.5 sm:mb-[11px]"
+          style={{ color: partnerText.secondary }}
+        >
           {description}
         </p>
       </div>
 
       <div className="flex items-center justify-between shrink-0 mt-auto">
-        <div className="flex items-center gap-2.5 sm:gap-[11px] text-[10px] sm:text-[11px] text-white/50">
+        <div
+          className="flex items-center gap-2.5 sm:gap-[11px] text-[10px] sm:text-[11px]"
+          style={{ color: partnerText.soft }}
+        >
           <span>{time}</span>
-          <span className="w-[2px] h-[2px] bg-white/40 rounded-full" />
+          <span
+            className="w-[2px] h-[2px] rounded-full"
+            style={{ backgroundColor: partnerText.muted }}
+          />
           <div className="flex items-center gap-1">
             <MessageSquare size={11} />
             <span>{comments}</span>
@@ -43,7 +59,11 @@ export default function ProjectContent({
 
         <button
           onClick={onViewClick}
-          className="flex items-center gap-1.5 text-xs sm:text-[13px] text-white/70 hover:text-white transition-colors"
+          className="flex items-center gap-1.5 text-xs sm:text-[13px] transition-colors hover:text-[var(--view-hover-color)]"
+          style={{
+            color: partnerText.secondary,
+            ['--view-hover-color' as '--view-hover-color']: partnerText.primary,
+          }}
         >
           View
           <svg
