@@ -160,6 +160,40 @@ export const box = {
     light: `bg-[var(--color-light-opacity100)] ${border.solid} ${border.radius.outer} border-[var(--color-light-opacity100)]`,
 }
 
+// GRADIENT BORDERS - Reusable gradient border styles
+export const gradientBorder = {
+    // Partner sidebar style - main content with gradient border
+    boxContainer: {
+        className: 'relative',
+        style: {
+            borderRadius: '16px',
+            background: `linear-gradient(175deg, #1C1C1C 5.23%, #1A1A1A 94.69%) padding-box, 
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.12) 100%) border-box`,
+            border: '1px solid transparent',
+        }
+    },
+    
+    subtle: {
+        className: 'relative',
+        style: {
+            borderRadius: '8px',
+            background: `linear-gradient(175deg, #272727 5.23%, #272727 94.69%) padding-box, 
+                        linear-gradient(90deg, ${colors.white.opacity20} 0%, ${colors.white.opacity10} 100%) border-box`,
+            border: '1px solid transparent',
+        }
+    },
+    
+    // Helper function for custom gradients
+    custom: (contentBg: string, borderGradient: string, borderRadius: string = '12px', borderWidth: string = '1px') => ({
+        className: 'relative',
+        style: {
+            borderRadius,
+            background: `${contentBg} padding-box, ${borderGradient} border-box`,
+            border: `${borderWidth} solid transparent`,
+        }
+    })
+}
+
 // TAGS
 export const tag = {
     main: `bg-[var(--color-light-opacity10)] text-[var(--color-light-opacity90)] px-[8px] ${border.radius.middle} ${border.solid} border-[var(--color-white-opacity10)] border-[0.5px] text-[0.8rem] font-[400] leading-loose font-space-mono`,
@@ -183,6 +217,49 @@ export const perf = {
         fadeOut: 'animate-out fade-out duration-300',
         slideIn: 'animate-in slide-in-from-bottom duration-300',
         slideOut: 'animate-out slide-out-to-bottom duration-300',
+    }
+}
+
+// LAYOUT STYLES - Applicable layout classes and styles
+export const layoutStyles = {
+    // Partner layout system - 20/80 split with minimum sidebar width
+    partner: {
+        // Container for the entire page
+        pageContainer: 'flex min-h-screen overflow-hidden bg-[#0D0D0D] text-white',
+        
+        // Fixed sidebar positioning
+        sidebarContainer: 'fixed top-0 left-0 h-screen z-50',
+        sidebarWidth: 'w-full lg:w-[max(280px,20vw)]',
+        
+        // Main content area 
+        mainContainer: 'flex flex-1 items-start justify-center overflow-y-auto',
+        mainContentWrapper: 'w-full',
+        mainContentPadding: 'w-full px-[4%] pt-[3%] pb-[2%]',
+        
+        // Inline styles for main content positioning
+        mainStyle: {
+            marginLeft: 'max(280px, 20vw)',
+            width: 'calc(100vw - max(280px, 20vw))',
+        },
+        
+        // Content max-width constraint
+        contentMaxWidth: { maxWidth: '1280px' }
+    },
+    
+    // Alternative layout ratios (simple percentage-based)
+    ratios: {
+        narrow: {
+            sidebarWidth: 'w-full lg:w-[15vw]',
+            mainStyle: { marginLeft: '15vw', width: '85vw' }
+        },
+        standard: {
+            sidebarWidth: 'w-full lg:w-[20vw]', 
+            mainStyle: { marginLeft: '20vw', width: '80vw' }
+        },
+        wide: {
+            sidebarWidth: 'w-full lg:w-[25vw]',
+            mainStyle: { marginLeft: '25vw', width: '75vw' }
+        }
     }
 }
 

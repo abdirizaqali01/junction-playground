@@ -10,6 +10,7 @@ import MiniProjectCard from '@/components/partner/cards/MiniProjectCard'
 import HorizontalScrollSection from '@/components/Layout/HorizontalScrollSection'
 import { DEFAULT_REVIEWER, useProjects } from '@/hooks/useProjects'
 import { useRouter } from 'next/navigation'
+import * as style from '@/styles/design-system'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -44,20 +45,19 @@ export default function DashboardPage() {
   )
 
   return (
-    <div className="flex min-h-screen overflow-hidden bg-[#0D0D0D] text-white">
-      <div className="fixed top-0 left-0 h-screen z-50">
+    <div className={style.layoutStyles.partner.pageContainer}>
+      {/* Fixed Sidebar */}
+      <div className={style.layoutStyles.partner.sidebarContainer}>
         <Sidebar />
       </div>
 
+      {/* Main Content Area */}
       <div
-        className="flex flex-1 items-start justify-center overflow-y-auto"
-        style={{
-          marginLeft: 'var(--partner-sidebar-width)',
-          width: 'calc(100% - var(--partner-sidebar-width))',
-        }}
+        className={style.layoutStyles.partner.mainContainer}
+        style={style.layoutStyles.partner.mainStyle}
       >
-        <main className="w-full" style={{ maxWidth: '1280px' }}>
-          <div className="w-full px-[4%] pt-[3%] pb-[2%]">
+        <main className={style.layoutStyles.partner.mainContentWrapper} style={style.layoutStyles.partner.contentMaxWidth}>
+          <div className={style.layoutStyles.partner.mainContentPadding}>
             <div className="mb-8">
               <PageHeader title="Dashboard" timer="T 18:46:09" />
             </div>
