@@ -2,7 +2,13 @@
 
 import React from 'react'
 import { ExternalLink } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import {
+  partnerAccents,
+  partnerBorders,
+  partnerSurfaces,
+  partnerText,
+} from '@/styles/design-system'
+import { withVars } from '@/components/partner/utils/style'
 
 export type ParticipantRow = {
   name: string
@@ -28,11 +34,20 @@ export function ParticipantsTable({
   const visibleCount = filteredParticipants.length
 
   return (
-    <section className="mt-8">
-      <div className="rounded-2xl border border-white/5 bg-[#1A1A1A]">
-        <table className="w-full border-collapse text-left text-sm text-white">
+    <section className="mt-8" style={{ color: partnerText.secondary }}>
+      <div
+        className="rounded-2xl border"
+        style={{
+          backgroundColor: partnerSurfaces.raised,
+          borderColor: partnerBorders.subtle,
+        }}
+      >
+        <table
+          className="w-full border-collapse text-left text-sm"
+          style={{ color: partnerText.secondary }}
+        >
           <thead>
-            <tr className="text-xs uppercase tracking-[0.18em]">
+            <tr className="text-xs uppercase tracking-[0.18em]" style={{ color: partnerText.muted }}>
               <th className="px-6 py-4 font-normal">Name</th>
               <th className="px-6 py-4 font-normal">Email</th>
               <th className="px-6 py-4 font-normal">Team</th>
@@ -45,7 +60,8 @@ export function ParticipantsTable({
               <tr>
                 <td
                   colSpan={5}
-                  className="px-6 py-12 text-center text-sm text-white/50"
+                  className="px-6 py-12 text-center text-sm"
+                  style={{ color: partnerText.muted }}
                 >
                   {searchQuery
                     ? `No participants match “${searchQuery}”.`
@@ -56,23 +72,43 @@ export function ParticipantsTable({
               filteredParticipants.map((participant, index) => (
                 <tr
                   key={`${participant.email}-${participant.team}-${index}`}
-                  className="border-t border-white/5 bg-[#0D0D0D] text-white/70 transition-colors hover:bg-white/5"
+                  className="border-t transition-colors hover:bg-[var(--participant-row-hover)]"
+                  style={withVars(
+                    {
+                      borderColor: partnerBorders.subtle,
+                      backgroundColor: partnerSurfaces.sunken,
+                      color: partnerText.secondary,
+                    },
+                    { '--participant-row-hover': partnerSurfaces.raisedHover }
+                  )}
                 >
-                  <td className="px-6 py-4 text-white/90">{participant.name}</td>
-                  <td className="px-6 py-4">
-                    <span className="block truncate text-white/60">
+                  <td className="px-6 py-4" style={{ color: partnerText.primary }}>
+                    {participant.name}
+                  </td>
+                  <td className="px-6 py-4" style={{ color: partnerText.secondary }}>
+                    <span className="block truncate">
                       {participant.email}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-white/70">{participant.team}</td>
-                  <td className="px-6 py-4 text-white/60">{participant.role ?? '—'}</td>
+                  <td className="px-6 py-4" style={{ color: partnerText.secondary }}>
+                    {participant.team}
+                  </td>
+                  <td className="px-6 py-4" style={{ color: partnerText.muted }}>
+                    {participant.role ?? '—'}
+                  </td>
                   <td className="px-6 py-4 text-right">
                     {participant.linkedin ? (
                       <a
                         href={participant.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[#55D186] hover:text-[#66F1A0]"
+                        className="inline-flex items-center gap-1 transition-colors hover:text-[var(--participant-link-hover)]"
+                        style={withVars(
+                          {
+                            color: partnerAccents.solid,
+                          },
+                          { '--participant-link-hover': partnerAccents.hover }
+                        )}
                       >
                         <span className="max-w-[140px] truncate text-xs sm:text-sm">
                           {participant.linkedin.replace(/^https?:\/\//, '')}
@@ -80,7 +116,7 @@ export function ParticipantsTable({
                         <ExternalLink className="h-4 w-4 flex-shrink-0" />
                       </a>
                     ) : (
-                      <span className="text-white/30">—</span>
+                      <span style={{ color: partnerText.soft }}>—</span>
                     )}
                   </td>
                 </tr>
@@ -90,7 +126,7 @@ export function ParticipantsTable({
         </table>
       </div>
 
-      <p className="mt-4 text-xs text-white/40">
+      <p className="mt-4 text-xs" style={{ color: partnerText.muted }}>
         Showing {visibleCount} of {totalCount} participants.
       </p>
     </section>

@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import Sidebar from '@/components/partner/navigation/Sidebar'
 import PageHeader from '@/components/partner/layout/PageHeader'
 import StatCard from '@/components/partner/cards/StatCard'
 import ProjectCard from '@/components/partner/cards/ProjectCard'
@@ -10,7 +9,13 @@ import MiniProjectCard from '@/components/partner/cards/MiniProjectCard'
 import HorizontalScrollSection from '@/components/Layout/HorizontalScrollSection'
 import { DEFAULT_REVIEWER, useProjects } from '@/hooks/useProjects'
 import { useRouter } from 'next/navigation'
-import * as style from '@/styles/design-system'
+import PartnerLayout from '@/components/partner/layout/PartnerLayout'
+import {
+  PartnerButton,
+  partnerAccents,
+  partnerText,
+} from '@/styles/design-system'
+import { withVars } from '@/components/partner/utils/style'
 
 export default function DashboardPage() {
   const router = useRouter()
@@ -45,119 +50,122 @@ export default function DashboardPage() {
   )
 
   return (
-    <div className={style.layoutStyles.partner.pageContainer}>
-      {/* Fixed Sidebar */}
-      <div className={style.layoutStyles.partner.sidebarContainer}>
-        <Sidebar />
-      </div>
+    <PartnerLayout forcedActivePath="/partners/dashboard">
+      <div className="space-y-10">
+        <div>
+          <PageHeader title="Dashboard" timer="T 18:46:09" />
+        </div>
 
-      {/* Main Content Area */}
-      <div
-        className={style.layoutStyles.partner.mainContainer}
-        style={style.layoutStyles.partner.mainStyle}
-      >
-        <main className={style.layoutStyles.partner.mainContentWrapper} style={style.layoutStyles.partner.contentMaxWidth}>
-          <div className={style.layoutStyles.partner.mainContentPadding}>
-            <div className="mb-8">
-              <PageHeader title="Dashboard" timer="T 18:46:09" />
-            </div>
-
-            {/* Stats Section */}
-            <section className="mb-10 w-full">
-              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <h2 className="text-base text-white/70 sm:text-lg lg:text-xl">Your Challenge's Stats</h2>
-              </div>
-              <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4">
-                {stats.map((stat, index) => (
-                  <StatCard key={index} label={stat.label} value={stat.value} />
-                ))}
-              </div>
-            </section>
-
-            {/* Most Recently Viewed Submission */}
-            {recentlyViewedProject && (
-              <section className="mb-8">
-                <div className="mb-4 flex flex-nowrap items-center justify-between gap-4 overflow-x-auto pb-1">
-                  <h2 className="whitespace-nowrap text-lg font-semibold text-white sm:text-xl">
-                    Most Recently Viewed Submission
-                  </h2>
-                  <button
-                    onClick={() => router.push('/partners/submissions')}
-                    className="flex-shrink-0 whitespace-nowrap rounded-lg border border-[#55D186] px-5 py-2 text-sm text-[#55D186] transition-colors hover:bg-[#55D186]/10"
-                  >
-                    View all Submissions
-                  </button>
-                </div>
-                <ProjectCard
-                  id={recentlyViewedProject.id}
-                  title={recentlyViewedProject.title}
-                  team={recentlyViewedProject.team}
-                  description={recentlyViewedProject.description}
-                  imageUrl={recentlyViewedProject.imageUrl}
-                  rating={recentlyViewedProject.rating}
-                  time={recentlyViewedProject.time}
-                  comments={recentlyViewedProject.comments}
-                />
-              </section>
-            )}
-
-            {/* Most Recent Reviews */}
-            <HorizontalScrollSection
-              title="Most Recent Reviews"
-              viewAllText="View all Reviews"
-              onViewAll={() => router.push('/partners/submissions')}
+        {/* Stats Section */}
+        <section className="w-full space-y-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <h2
+              className="text-base sm:text-lg lg:text-xl"
+              style={{ color: partnerText.secondary }}
             >
-              {recentReviews.slice(0, 6).map((review) => (
-              <ReviewCard
-                key={`${review.projectId}-${review.reviewerId}-${review.reviewedAt}`}
-                reviewerName={review.reviewerName ?? review.reviewerId}
-                rating={review.averageScore}
-                projectName={review.projectTitle}
-                feedback={review.feedback}
-                timestamp={review.reviewedAt}
-                onProjectClick={() => router.push(`/partners/${review.projectId}/review`)}
-              />
-              ))}
-            </HorizontalScrollSection>
-
-            {/* Submissions To Review Next */}
-            <HorizontalScrollSection
-              title="Submissions To Review Next"
-              onViewAll={() => router.push('/partners/submissions')}
-            >
-              {submissionsToReview.map((submission) => {
-                const fallbackRating = submission.reviews.length
-                  ? parseFloat(
-                      (
-                        submission.reviews.reduce(
-                          (acc, curr) => acc + curr.averageScore,
-                          0
-                        ) /
-                        submission.reviews.length
-                      ).toFixed(1)
-                    )
-                  : undefined
-
-                return (
-                  <MiniProjectCard
-                    key={submission.id}
-                    title={submission.title}
-                    team={submission.team}
-                    description={submission.description}
-                    imageUrl={submission.imageUrl}
-                    rating={
-                      submission.reviews.length
-                        ? submission.rating ?? fallbackRating ?? null
-                        : undefined
-                    }
-                    onReview={() => router.push(`/partners/${submission.id}/review`)}
-                  />
-                )
-              })}
-            </HorizontalScrollSection>
+              Your Challenge&apos;s Stats
+            </h2>
           </div>
-        </main>
+          <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-4">
+            {stats.map((stat, index) => (
+              <StatCard key={index} label={stat.label} value={stat.value} />
+            ))}
+          </div>
+        </section>
+
+        {/* Most Recently Viewed Submission */}
+        {recentlyViewedProject && (
+          <section className="space-y-4">
+            <div className="flex flex-nowrap items-center justify-between gap-4 overflow-x-auto pb-1">
+              <h2
+                className="whitespace-nowrap text-lg font-semibold sm:text-xl"
+                style={{ color: partnerText.primary }}
+              >
+                Most Recently Viewed Submission
+              </h2>
+              <PartnerButton
+                variant="ghost"
+                onClick={() => router.push('/partners/submissions')}
+                className="flex-shrink-0 whitespace-nowrap border hover:bg-[var(--partner-button-hover)]"
+                style={withVars(
+                  {
+                    borderColor: partnerAccents.solid,
+                    color: partnerAccents.solid,
+                  },
+                  { '--partner-button-hover': partnerAccents.tint }
+                )}
+              >
+                View all Submissions
+              </PartnerButton>
+            </div>
+            <ProjectCard
+              id={recentlyViewedProject.id}
+              title={recentlyViewedProject.title}
+              team={recentlyViewedProject.team}
+              description={recentlyViewedProject.description}
+              imageUrl={recentlyViewedProject.imageUrl}
+              rating={recentlyViewedProject.rating}
+              time={recentlyViewedProject.time}
+              comments={recentlyViewedProject.comments}
+            />
+          </section>
+        )}
+
+        {/* Most Recent Reviews */}
+        <HorizontalScrollSection
+          title="Most Recent Reviews"
+          viewAllText="View all Reviews"
+          onViewAll={() => router.push('/partners/submissions')}
+        >
+          {recentReviews.slice(0, 6).map((review) => (
+            <ReviewCard
+              key={`${review.projectId}-${review.reviewerId}-${review.reviewedAt}`}
+              reviewerName={review.reviewerName ?? review.reviewerId}
+              rating={review.averageScore}
+              projectName={review.projectTitle}
+              feedback={review.feedback}
+              timestamp={review.reviewedAt}
+              onProjectClick={() => router.push(`/partners/${review.projectId}/review`)}
+            />
+          ))}
+        </HorizontalScrollSection>
+
+        {/* Submissions To Review Next */}
+        <HorizontalScrollSection
+          title="Submissions To Review Next"
+          onViewAll={() => router.push('/partners/submissions')}
+        >
+          {submissionsToReview.map((submission) => {
+            const fallbackRating = submission.reviews.length
+              ? parseFloat(
+                  (
+                    submission.reviews.reduce(
+                      (acc, curr) => acc + curr.averageScore,
+                      0
+                    ) /
+                    submission.reviews.length
+                  ).toFixed(1)
+                )
+              : undefined
+
+            return (
+              <MiniProjectCard
+                key={submission.id}
+                title={submission.title}
+                team={submission.team}
+                description={submission.description}
+                imageUrl={submission.imageUrl}
+                rating={
+                  submission.reviews.length
+                    ? submission.rating ?? fallbackRating ?? null
+                    : undefined
+                }
+                onReview={() => router.push(`/partners/${submission.id}/review`)}
+              />
+            )
+          })}
+        </HorizontalScrollSection>
       </div>
-    </div>
+    </PartnerLayout>
   )
 }
