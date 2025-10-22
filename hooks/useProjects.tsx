@@ -12,12 +12,25 @@ import {
 } from "react"
 
 export const REVIEW_CRITERIA = [
-  { id: "innovation", label: "Innovation" },
-  { id: "impact", label: "Impact" },
-  { id: "execution", label: "Execution" },
+  {
+    id: "innovation",
+    label: "Innovation",
+    description: "Originality of the idea and how boldly it pushes the challenge forward.",
+  },
+  {
+    id: "impact",
+    label: "Impact",
+    description: "Real-world value created for partners, users, or the ecosystem.",
+  },
+  {
+    id: "execution",
+    label: "Execution",
+    description: "Craft, technical quality, and presentation polish of the solution.",
+  },
 ] as const
 
-export type ReviewCriterionId = (typeof REVIEW_CRITERIA)[number]["id"]
+export type ReviewCriterion = (typeof REVIEW_CRITERIA)[number]
+export type ReviewCriterionId = ReviewCriterion["id"]
 
 export type ReviewScores = Record<ReviewCriterionId, number>
 

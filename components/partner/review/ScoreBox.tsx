@@ -37,13 +37,15 @@ export function ScoreBox({
     createDefaultReviewScores()
   )
   const [feedback, setFeedback] = useState<string>(existingReview?.feedback || '')
+  const [activeCriterion, setActiveCriterion] = useState<ReviewCriterionId>(
+    REVIEW_CRITERIA[0].id
+  )
 
   const scoreOptions = Array.from({ length: 10 }, (_, index) => index + 1)
-  const criteriaDescriptions: Record<ReviewCriterionId, string> = {
-    innovation: 'Originality and boldness of the solution.',
-    impact: 'Value created for users, partners, or the wider challenge.',
-    execution: 'Quality of implementation, polish, and presentation.',
-  }
+  const activeCriterionConfig =
+    REVIEW_CRITERIA.find((criterion) => criterion.id === activeCriterion) ??
+    REVIEW_CRITERIA[0]
+  const activeScore = scores[activeCriterion] ?? 0
 
   useEffect(() => {
     if (!existingReview) return
@@ -58,13 +60,26 @@ export function ScoreBox({
 
     setScores(normalizedScores)
     setFeedback(existingReview.feedback)
+    const nextCriterion =
+      REVIEW_CRITERIA.find((criterion) => normalizedScores[criterion.id] === 0)?.id ??
+      REVIEW_CRITERIA[0].id
+    setActiveCriterion(nextCriterion)
   }, [existingReview])
 
   const handleScoreSelect = (criterionId: ReviewCriterionId, value: number) => {
-    setScores((prev) => ({
-      ...prev,
-      [criterionId]: value,
-    }))
+    const nextValue = Math.max(0, Math.min(10, value))
+    const nextScores = {
+      ...scores,
+      [criterionId]: nextValue,
+    }
+    setScores(nextScores)
+
+    if (nextValue > 0) {
+      const nextCriterion =
+        REVIEW_CRITERIA.find((criterion) => nextScores[criterion.id] === 0)?.id ??
+        criterionId
+      setActiveCriterion(nextCriterion)
+    }
   }
 
   const allCriteriaRated = REVIEW_CRITERIA.every(({ id }) => scores[id] > 0)
@@ -92,6 +107,7 @@ export function ScoreBox({
     deleteReview(projectId, currentUserId)
     setScores(createDefaultReviewScores())
     setFeedback('')
+    setActiveCriterion(REVIEW_CRITERIA[0].id)
     onCancel()
   }
 
@@ -114,7 +130,7 @@ export function ScoreBox({
     >
       <div
         ref={containerRef}
-        className="rounded-2xl px-10 py-8 shadow-2xl w-full max-w-[720px] border"
+        className="rounded-2xl px-8 py-8 shadow-2xl w-full max-w-[640px] border"
         style={{
           backgroundColor: partnerColors.surface,
           borderColor: partnerColors.border,
@@ -134,88 +150,107 @@ export function ScoreBox({
         </div>
 
         <p className="text-white/65 text-sm mb-6">
-          Score each criterion from 1–10. We’ll average them to create your overall rating for this submission.
+          Work through each criterion tab to rate the submission from 1–10. We’ll average the three scores into your final rating.
         </p>
 
         <div className="mb-8 flex flex-col gap-6 lg:flex-row">
-          <div className="flex-1 space-y-5">
-            {REVIEW_CRITERIA.map((criterion) => {
-              const criterionScore = scores[criterion.id]
-              const description = criteriaDescriptions[criterion.id]
-              return (
-                <div
-                  key={criterion.id}
-                  className="rounded-2xl border border-white/10 bg-[#111111] p-5"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h4 className="text-lg font-semibold text-white">
-                        {criterion.label}
-                      </h4>
-                      <p className="mt-1 text-xs text-white/50">
-                        {description}
-                      </p>
-                    </div>
-                    <span className="text-sm font-semibold text-white/80">
-                      {criterionScore > 0 ? `${criterionScore}/10` : '—'}
-                    </span>
-                  </div>
-                  <div className="mt-4 grid grid-cols-5 gap-2.5 sm:grid-cols-10">
-                    {scoreOptions.map((value) => {
-                      const isSelected = value === criterionScore
-                      return (
-                        <button
-                          key={value}
-                          onClick={() => handleScoreSelect(criterion.id, value)}
-                          className={cn(
-                            'h-10 rounded-full border text-sm font-semibold transition-all duration-200',
-                            isSelected
-                              ? 'bg-white text-[#121212] border-white'
-                              : 'bg-[#1F1F1F] text-white/70 border-white/10 hover:bg-[#55D186] hover:text-white hover:border-[#55D186]'
-                          )}
-                        >
-                          {value}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-          <aside className="lg:w-[240px]">
-            <div className="rounded-2xl border border-[#55D186]/40 bg-[#102219] p-6 text-center">
-              <span className="text-xs uppercase tracking-[0.18em] text-[#55D186]/80">
-                Overall
-              </span>
-              <div className="mt-5 flex justify-center">
-                <div
-                  className={cn(
-                    'flex h-24 w-24 items-center justify-center rounded-full text-3xl font-bold',
-                    allCriteriaRated
-                      ? 'bg-[#55D186] text-white'
-                      : 'bg-white/10 text-white/30'
-                  )}
-                >
-                  {allCriteriaRated ? averageScore.toFixed(1) : '—'}
-                </div>
-              </div>
-              <p className="mt-4 text-xs text-white/60">
-                Calculated as the average of all criteria.
-              </p>
-              <div className="mt-5 space-y-2 text-left text-sm">
-                {REVIEW_CRITERIA.map((criterion) => (
-                  <div
+          <div className="flex-1">
+            <div className="flex flex-wrap gap-2">
+              {REVIEW_CRITERIA.map((criterion) => {
+                const isActive = criterion.id === activeCriterion
+                const hasScore = scores[criterion.id] > 0
+                return (
+                  <button
+                    type="button"
                     key={criterion.id}
-                    className="flex items-center justify-between text-white/70"
+                    onClick={() => setActiveCriterion(criterion.id)}
+                    className={cn(
+                      'rounded-full border px-4 py-2 text-sm transition-all duration-150',
+                      isActive
+                        ? 'border-[#55D186] bg-[#55D186]/10 text-white'
+                        : 'border-white/10 bg-white/5 text-white/60 hover:text-white'
+                    )}
                   >
                     <span>{criterion.label}</span>
-                    <span className="font-semibold text-white">
-                      {scores[criterion.id] > 0 ? scores[criterion.id] : '—'}
-                    </span>
-                  </div>
-                ))}
+                    {hasScore && (
+                      <span className="ml-2 text-xs text-white/70">
+                        {scores[criterion.id]}/10
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-white/10 bg-[#111111] p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h4 className="text-lg font-semibold text-white">
+                    {activeCriterionConfig.label}
+                  </h4>
+                  <p className="mt-1 text-xs text-white/50">
+                    {activeCriterionConfig.description}
+                  </p>
+                </div>
+                <span className="text-sm font-semibold text-white/80">
+                  {activeScore > 0 ? `${activeScore}/10` : '—'}
+                </span>
               </div>
+
+              <div className="mt-6 grid grid-cols-5 gap-2">
+                {scoreOptions.map((value) => {
+                  const isSelected = value === activeScore
+                  return (
+                    <button
+                      type="button"
+                      key={value}
+                      onClick={() => handleScoreSelect(activeCriterion, value)}
+                      className={cn(
+                        'h-11 rounded-xl border text-sm font-semibold transition-all duration-200',
+                        isSelected
+                          ? 'border-[#55D186] bg-[#55D186] text-white'
+                          : 'border-white/10 bg-[#1F1F1F] text-white/70 hover:bg-white/10 hover:text-white'
+                      )}
+                    >
+                      {value}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          <aside className="min-w-[220px] rounded-2xl border border-[#55D186]/30 bg-[#102219] p-6 text-left lg:w-[260px]">
+            <span className="text-xs uppercase tracking-[0.18em] text-[#55D186]/80">
+              Score Summary
+            </span>
+            <div className="mt-4 flex items-center gap-4">
+              <div
+                className={cn(
+                  'flex h-16 w-16 items-center justify-center rounded-full text-2xl font-bold sm:h-20 sm:w-20 sm:text-3xl',
+                  allCriteriaRated
+                    ? 'bg-[#55D186] text-white'
+                    : 'bg-white/10 text-white/30'
+                )}
+              >
+                {allCriteriaRated ? averageScore.toFixed(1) : '—'}
+              </div>
+              <p className="text-xs text-white/60">
+                Average of all criteria. Fill each score to lock in your review.
+              </p>
+            </div>
+            <div className="mt-5 space-y-3">
+              {REVIEW_CRITERIA.map((criterion) => (
+                <div
+                  key={criterion.id}
+                  className="flex items-center justify-between rounded-lg border border-white/5 bg-white/5 px-3 py-2 text-sm text-white/70"
+                >
+                  <span>{criterion.label}</span>
+                  <span className="font-semibold text-white">
+                    {scores[criterion.id] > 0 ? `${scores[criterion.id]}/10` : '—'}
+                  </span>
+                </div>
+              ))}
             </div>
           </aside>
         </div>
@@ -230,7 +265,7 @@ export function ScoreBox({
           value={feedback}
           onChange={(e) => setFeedback(e.target.value)}
           placeholder="Type your feedback..."
-          rows={7}
+          rows={5}
           className="w-full bg-[#0D0D0D] border border-[#55D186]/40 rounded-xl px-5 py-4 text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#55D186] resize-none mb-6"
         />
 
