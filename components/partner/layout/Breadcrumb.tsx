@@ -65,7 +65,7 @@ export function Breadcrumb({
                 
                 {isDropdownOpen && (
                   <div
-                    className="absolute top-full left-0 mt-2 w-64 border rounded-lg shadow-xl overflow-hidden z-50"
+                    className="absolute top-full left-1/2 mt-2 w-64 -translate-x-1/2 border rounded-lg shadow-xl overflow-hidden z-50"
                     style={{
                       backgroundColor: partnerSurfaces.raised,
                       borderColor: partnerBorders.subtle,

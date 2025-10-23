@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
+import Link from 'next/link'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import type { PartnerChallenge } from '@/hooks/usePartnerChallenges'
@@ -15,11 +16,13 @@ import { withVars } from '@/components/partner/utils/style'
 interface PartnerChallengeCardProps {
   challenge: PartnerChallenge
   compact?: boolean
+  href?: string
 }
 
 export function PartnerChallengeCard({
   challenge,
   compact = false,
+  href,
 }: PartnerChallengeCardProps) {
   const iconLabel =
     challenge.iconLabel ||
@@ -55,7 +58,7 @@ export function PartnerChallengeCard({
     color: partnerText.primary,
   }
 
-  return (
+  const card = (
     <article
       className={cn(
         'flex flex-col overflow-hidden rounded-2xl border transition-all duration-300 md:flex-row',
@@ -163,4 +166,17 @@ export function PartnerChallengeCard({
       </div>
     </article>
   )
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+      >
+        {card}
+      </Link>
+    )
+  }
+
+  return card
 }

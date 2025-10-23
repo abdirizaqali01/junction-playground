@@ -30,6 +30,7 @@ export default function PartnerChallengesPage() {
     groupedMainChallenges,
     groupedSideChallenges,
     categoryAnchors,
+    sideCategoryAnchors,
   } = usePartnerChallenges()
 
   const [selectedFilter, setSelectedFilter] = useState<ChallengeFilter>('main')
@@ -38,10 +39,12 @@ export default function PartnerChallengesPage() {
   useEffect(() => {
     if (selectedFilter === 'main' && categoryAnchors.length > 0) {
       setActiveCategory(categoryAnchors[0])
-    } else if (selectedFilter === 'side') {
+    } else if (selectedFilter === 'side' && sideCategoryAnchors.length > 0) {
+      setActiveCategory(sideCategoryAnchors[0])
+    } else {
       setActiveCategory(null)
     }
-  }, [categoryAnchors, selectedFilter])
+  }, [categoryAnchors, sideCategoryAnchors, selectedFilter])
 
   useEffect(() => {
     if (selectedFilter !== 'main' || categoryAnchors.length === 0) return
@@ -81,6 +84,8 @@ export default function PartnerChallengesPage() {
   const groupedChallenges =
     selectedFilter === 'main' ? groupedMainChallenges : groupedSideChallenges
 
+  const sideNavCategories = selectedFilter === 'main' ? categoryAnchors : sideCategoryAnchors
+
   const handleCategoryClick = useCallback((category: string) => {
     const target = document.getElementById(toAnchorId(category))
     if (target) {
@@ -94,28 +99,32 @@ export default function PartnerChallengesPage() {
 
       <section className="space-y-8">
         <div className="flex flex-wrap items-center gap-3">
-          <div
-            className="flex gap-2 rounded-2xl border p-1"
-            style={{
-              backgroundColor: partnerSurfaces.sunken,
-              borderColor: partnerBorders.subtle,
-            }}
-          >
-            {FILTER_OPTIONS.map(option => (
-              <PartnerButton
-                key={option.value}
-                variant={selectedFilter === option.value ? 'primary' : 'ghost'}
-                className={cn(
-                  'px-4 py-2 text-sm font-medium',
-                  selectedFilter === option.value
-                    ? 'shadow-[0_0_30px_rgba(85,209,134,0.2)]'
-                    : undefined
-                )}
-                onClick={() => setSelectedFilter(option.value)}
-              >
-                {option.label}
-              </PartnerButton>
-            ))}
+          <div className="flex gap-3">
+            {FILTER_OPTIONS.map(option => {
+              const isActive = selectedFilter === option.value
+              return (
+                <button
+                  key={option.value}
+                  onClick={() => setSelectedFilter(option.value)}
+                  className={cn(
+                    'rounded-[14px] border px-6 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20',
+                    isActive
+                      ? 'border-white/10 bg-white text-black shadow-[0_8px_24px_rgba(0,0,0,0.25)]'
+                      : 'text-white/60 hover:text-white'
+                  )}
+                  style={
+                    !isActive
+                      ? {
+                          backgroundColor: partnerSurfaces.sunken,
+                          borderColor: partnerBorders.subtle,
+                        }
+                      : undefined
+                  }
+                >
+                  {option.label}
+                </button>
+              )
+            })}
           </div>
         </div>
 
@@ -141,8 +150,7 @@ export default function PartnerChallengesPage() {
                 >
                   <div className="flex items-baseline justify-between">
                     <h2
-                      className="text-xl font-semibold"
-                      style={{ color: partnerAccents.solid }}
+                      className="text-xl font-semibold bg-gradient-to-r from-[rgba(85,209,134,1)] via-[rgba(85,209,134,0.85)] to-[rgba(85,209,134,0.45)] bg-clip-text text-transparent"
                     >
                       {group.category}
                     </h2>
@@ -155,18 +163,12 @@ export default function PartnerChallengesPage() {
                     </span>
                   </div>
 
-                  <div
-                    className={cn(
-                      selectedFilter === 'main'
-                        ? 'space-y-4'
-                        : 'grid grid-cols-1 gap-4 md:grid-cols-2'
-                    )}
-                  >
+                  <div className="space-y-4">
                     {group.challenges.map(challenge => (
                       <PartnerChallengeCard
                         key={challenge.id}
                         challenge={challenge}
-                        compact={selectedFilter === 'side'}
+                        href={`/partners/challenges/${challenge.id}`}
                       />
                     ))}
                   </div>
@@ -175,11 +177,14 @@ export default function PartnerChallengesPage() {
             )}
           </div>
 
-          {selectedFilter === 'main' && (
+          {sideNavCategories.length > 0 && (
             <PartnerChallengeNavigator
-              categories={categoryAnchors}
+              categories={sideNavCategories}
               activeCategory={activeCategory}
-              onCategorySelect={handleCategoryClick}
+              onCategorySelect={category => {
+                handleCategoryClick(category)
+                setActiveCategory(category)
+              }}
             />
           )}
         </div>
