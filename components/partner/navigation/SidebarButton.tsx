@@ -21,7 +21,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
   return (
     <a
       href={href}
-      className={`flex items-center gap-3 px-3 py-2.5 ${style.border.radius.middle} transition-colors hover:text-[var(--sidebar-hover)]`}
+      className={`flex items-center gap-2.5 px-2.5 py-2 ${style.border.radius.middle} transition-colors hover:text-[var(--sidebar-hover)]`}
       style={withVars(
         {
           backgroundColor: active ? partnerSurfaces.muted : 'transparent',
@@ -31,8 +31,8 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
         { '--sidebar-hover': partnerText.secondary }
       )}
     >
-      <Icon size={18} />
-      <span className="text-[0.89rem]">{label}</span>
+      <Icon size={16} />
+      <span className="text-[0.82rem]">{label}</span>
     </a>
   );
 };

@@ -9,14 +9,14 @@ interface PartnerCardProps {
 export default function PartnerCard({ name, email }: PartnerCardProps) {
   return (
     <div
-      className={`${style.border.radius.outer} p-3 flex items-center gap-2.5 mt-5 cursor-pointer border`}
+      className={`${style.border.radius.outer} p-2.5 flex items-center gap-2 mt-4 cursor-pointer border`}
       style={{
         backgroundColor: partnerSurfaces.muted,
         borderColor: partnerBorders.subtle,
       }}
     >
       <div
-        className={`w-10 h-10 flex items-center justify-center rounded-full text-xs font-semibold ${style.border.radius.middle}`}
+        className={`w-9 h-9 flex items-center justify-center rounded-full text-[0.7rem] font-semibold ${style.border.radius.middle}`}
         style={{
           backgroundColor: partnerSurfaces.muted,
           color: partnerText.secondary,
@@ -26,13 +26,13 @@ export default function PartnerCard({ name, email }: PartnerCardProps) {
       </div>
       <div className="flex flex-col leading-tight">
         <span
-          className="text-[0.9rem] font-medium"
+          className="text-[0.82rem] font-medium"
           style={{ color: partnerText.primary }}
         >
           {name}
         </span>
         <span
-          className="text-[0.8rem] text-light"
+          className="text-[0.72rem] text-light"
           style={{ color: partnerText.secondary }}
         >
           {email}

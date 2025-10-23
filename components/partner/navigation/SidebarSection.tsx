@@ -10,11 +10,11 @@ interface SidebarSectionProps {
 export default function SidebarSection({ title, children }: SidebarSectionProps) {
   return (
     <div
-      className={`${style.gradientBorder.subtle.className} px-3.5 py-4`}
+      className={`${style.gradientBorder.subtle.className} px-3 py-3`}
       style={style.gradientBorder.subtle.style}
     >
       <h3
-        className="text-[0.8rem] font-semibold mt-2 mb-3 ml-3 uppercase tracking-[0.12em]"
+        className="text-[0.72rem] font-semibold mt-1.5 mb-2.5 ml-2.5 uppercase tracking-[0.12em]"
         style={{ color: partnerText.primary }}
       >
         {title}

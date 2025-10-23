@@ -114,18 +114,18 @@ export const border = {
 
 // SECTION GAPS
 export const sectionGap = {
-    top: 'pt-[10%] lg:pt-[5%]',
-    bottom: 'pt-[10%] lg:pb-[5%]',
+    top: 'pt-[8%] lg:pt-[4%]',
+    bottom: 'pt-[8%] lg:pb-[4%]',
 }
 
 // SECTION TITLES
 export const sectionTitle = {
-    grotesk: 'text-[var(--color-light-opacity100)] font-space-grotesk font-[600] text-[1.7rem] tracking-[-0.01rem] mb-5',
+    grotesk: 'text-[var(--color-light-opacity100)] font-space-grotesk font-[600] text-[1.5rem] tracking-[-0.01rem] mb-4',
 }
 
 // STATUS BADGE
 export const status = {
-    greenLight: `bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] px-4 py-2 ${border.radius.full} text-sm font-light font-[var(--font-space-grotesk)]`,
+    greenLight: `bg-[var(--color-primary-opacity100)] text-[var(--color-light-opacity100)] px-3 py-1.5 ${border.radius.full} text-xs font-medium font-[var(--font-space-grotesk)]`,
 }
 
 // FONT STYLES - Optimized
@@ -232,36 +232,36 @@ export const layoutStyles = {
         
         // Fixed sidebar positioning
         sidebarContainer: 'fixed top-0 left-0 h-screen z-50',
-        sidebarWidth: 'w-full lg:w-[max(280px,20vw)]',
+        sidebarWidth: 'w-full lg:w-[max(256px,18vw)]',
         
         // Main content area 
         mainContainer: 'flex flex-1 items-start justify-center overflow-y-auto',
         mainContentWrapper: 'w-full',
-        mainContentPadding: 'w-full px-[4%] pt-[3%] pb-[2%]',
+        mainContentPadding: 'w-full px-[3%] pt-[2.5%] pb-[1.5%]',
         
         // Inline styles for main content positioning
         mainStyle: {
-            marginLeft: 'max(280px, 20vw)',
-            width: 'calc(100vw - max(280px, 20vw))',
+            marginLeft: 'max(256px, 18vw)',
+            width: 'calc(100vw - max(256px, 18vw))',
         },
         
         // Content max-width constraint
-        contentMaxWidth: { maxWidth: '1280px' }
+        contentMaxWidth: { maxWidth: '1180px' }
     },
     
     // Alternative layout ratios (simple percentage-based)
     ratios: {
         narrow: {
-            sidebarWidth: 'w-full lg:w-[15vw]',
-            mainStyle: { marginLeft: '15vw', width: '85vw' }
+            sidebarWidth: 'w-full lg:w-[13vw]',
+            mainStyle: { marginLeft: '13vw', width: '87vw' }
         },
         standard: {
-            sidebarWidth: 'w-full lg:w-[20vw]', 
-            mainStyle: { marginLeft: '20vw', width: '80vw' }
+            sidebarWidth: 'w-full lg:w-[18vw]', 
+            mainStyle: { marginLeft: '18vw', width: '82vw' }
         },
         wide: {
-            sidebarWidth: 'w-full lg:w-[25vw]',
-            mainStyle: { marginLeft: '25vw', width: '75vw' }
+            sidebarWidth: 'w-full lg:w-[23vw]',
+            mainStyle: { marginLeft: '23vw', width: '77vw' }
         }
     }
 }

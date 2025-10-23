@@ -22,17 +22,17 @@ const Sidebar: React.FC<{ forcedActivePath?: string }> = ({ forcedActivePath }) 
 
   return (
     <aside
-      className={`pl-5 pt-5 pb-5 ${style.layoutStyles.partner.sidebarWidth} h-screen`}
+      className={`pl-4 pt-4 pb-4 ${style.layoutStyles.partner.sidebarWidth} h-screen`}
       style={{ color: partnerText.primary }}
     >
         <div
-        className={`h-full flex flex-col justify-between gap-5 px-4 py-4 ${style.gradientBorder.boxContainer.className} cursor-default`}
+        className={`h-full flex flex-col justify-between gap-4 px-3.5 py-3.5 ${style.gradientBorder.boxContainer.className} cursor-default`}
         style={style.gradientBorder.boxContainer.style}>
         {/* Header */}
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between w-full">
             <h1
-              className="text-[1.5rem] ml-2 font-semibold"
+              className="text-[1.35rem] ml-1.5 font-semibold"
               style={{ color: partnerText.primary }}
             >
               Partner's Corner
@@ -54,7 +54,7 @@ const Sidebar: React.FC<{ forcedActivePath?: string }> = ({ forcedActivePath }) 
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto space-y-5">
+        <nav className="flex-1 overflow-y-auto space-y-4">
           <SidebarSection title="General">
             <SidebarButton
               icon={Home}
