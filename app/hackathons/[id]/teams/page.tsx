@@ -11,5 +11,5 @@ const getHackathonData = (id: string) => {
 const teams = [
   {
     id: "team1",
-    name: "CodeCrafters",\
-    description: "Looking for UI/UX designers and ML engineers
+    name: "CodeCrafters",
+    description: "Looking for UI/UX designers and ML engineers"}]

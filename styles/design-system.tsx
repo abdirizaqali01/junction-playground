@@ -235,7 +235,7 @@ export const layoutStyles = {
         sidebarWidth: 'w-full lg:w-[clamp(220px,18vw,320px)]',
         
         // Main content area 
-        mainContainer: 'flex flex-1 items-start justify-center overflow-y-auto',
+        mainContainer: 'flex flex-1 items-start justify-center overflow-visible',
         mainContentWrapper: 'w-full',
         mainContentPadding: 'w-full px-[3%] pt-[2.5%] pb-[1.5%]',
         
