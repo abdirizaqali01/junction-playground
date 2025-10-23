@@ -232,7 +232,7 @@ export const layoutStyles = {
         
         // Fixed sidebar positioning
         sidebarContainer: 'fixed top-0 left-0 h-screen z-50',
-        sidebarWidth: 'w-full lg:w-[max(256px,18vw)]',
+        sidebarWidth: 'w-full lg:w-[clamp(220px,18vw,320px)]',
         
         // Main content area 
         mainContainer: 'flex flex-1 items-start justify-center overflow-y-auto',
@@ -241,8 +241,8 @@ export const layoutStyles = {
         
         // Inline styles for main content positioning
         mainStyle: {
-            marginLeft: 'max(256px, 18vw)',
-            width: 'calc(100vw - max(256px, 18vw))',
+            marginLeft: 'clamp(220px, 18vw, 320px)',
+            width: 'calc(100vw - clamp(220px, 18vw, 320px))',
         },
         
         // Content max-width constraint
@@ -252,16 +252,16 @@ export const layoutStyles = {
     // Alternative layout ratios (simple percentage-based)
     ratios: {
         narrow: {
-            sidebarWidth: 'w-full lg:w-[13vw]',
-            mainStyle: { marginLeft: '13vw', width: '87vw' }
+            sidebarWidth: 'w-full lg:w-[clamp(200px,13vw,280px)]',
+            mainStyle: { marginLeft: 'clamp(200px, 13vw, 280px)', width: 'calc(100vw - clamp(200px, 13vw, 280px))' }
         },
         standard: {
-            sidebarWidth: 'w-full lg:w-[18vw]', 
-            mainStyle: { marginLeft: '18vw', width: '82vw' }
+            sidebarWidth: 'w-full lg:w-[clamp(220px,18vw,320px)]', 
+            mainStyle: { marginLeft: 'clamp(220px, 18vw, 320px)', width: 'calc(100vw - clamp(220px, 18vw, 320px))' }
         },
         wide: {
-            sidebarWidth: 'w-full lg:w-[23vw]',
-            mainStyle: { marginLeft: '23vw', width: '77vw' }
+            sidebarWidth: 'w-full lg:w-[clamp(240px,23vw,360px)]',
+            mainStyle: { marginLeft: 'clamp(240px, 23vw, 360px)', width: 'calc(100vw - clamp(240px, 23vw, 360px))' }
         }
     }
 }
