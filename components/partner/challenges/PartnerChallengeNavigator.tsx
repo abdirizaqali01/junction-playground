@@ -17,44 +17,31 @@ export function PartnerChallengeNavigator({
   if (categories.length === 0) return null
 
   return (
-    <aside className="hidden xl:block xl:w-56">
-      <div className="sticky top-28 space-y-4">
-        <div className="flex flex-col gap-1.5">
-          {categories.map(category => {
-            const isActive = activeCategory === category
-            return (
-              <button
-                key={category}
-                onClick={() => onCategorySelect(category)}
-                className={cn(
-                  'flex items-center justify-end text-sm transition-all duration-200 w-full text-right',
-                  isActive
-                    ? 'font-semibold'
-                    : undefined
-                )}
-                style={{
-                  color: isActive ? partnerText.primary : partnerText.secondary,
-                }}
+    <div className="hidden xl:block">
+      <div className="fixed top-28 right-10 z-30 space-y-2">
+        {categories.map(category => {
+          const isActive = activeCategory === category
+          return (
+            <button
+              key={category}
+              onClick={() => onCategorySelect(category)}
+              className={cn(
+                'flex w-40 items-center justify-end gap-2 text-sm transition-colors duration-200',
+                isActive ? 'font-medium text-white' : 'text-white/45 hover:text-white/70'
+              )}
+            >
+              <span className="text-right leading-tight">{category}</span>
+              <span
+                aria-hidden
+                className="text-base leading-none"
+                style={{ color: isActive ? partnerAccents.solid : partnerText.soft }}
               >
-                <span className="flex items-center gap-0">
-                  <span>{category}</span>
-                  <span
-                    aria-hidden
-                    className={cn(
-                      'text-base leading-none ml-[2px] transition-colors'
-                    )}
-                    style={{
-                      color: isActive ? partnerAccents.solid : partnerText.soft,
-                    }}
-                  >
-                    {isActive ? '●' : '—'}
-                  </span>
-                </span>
-              </button>
-            )
-          })}
-        </div>
+                {isActive ? '●' : '—'}
+              </span>
+            </button>
+          )
+        })}
       </div>
-    </aside>
+    </div>
   )
 }
