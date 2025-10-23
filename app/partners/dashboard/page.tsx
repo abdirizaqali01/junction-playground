@@ -53,7 +53,7 @@ export default function DashboardPage() {
     <PartnerLayout forcedActivePath="/partners/dashboard">
       <div className="space-y-10">
         <div>
-          <PageHeader title="Dashboard" timer="T 18:46:09" />
+          
         </div>
 
         {/* Stats Section */}

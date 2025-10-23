@@ -6,6 +6,7 @@ import { NotificationBell } from '@/components/Notifications/NotificationBell'
 import { NotificationDropdown, type NotificationItem } from '@/components/Notifications/NotificationDropdown'
 import { useNotifications } from '@/components/Notifications/NotificationContext'
 import { partnerAccents, partnerColors, partnerText } from '@/styles/design-system'
+import * as style from '@/styles/design-system'
 
 interface PageHeaderProps {
   title: string
@@ -50,7 +51,7 @@ export default function PageHeader({
 
   return (
     <header
-      className="sticky top-0 z-40 py-4 mb-6"
+      className={`sticky top-0 z-40 w-full mb-8`}
       style={{ backgroundColor: partnerColors.background }}
     >
       {breadcrumbItems && (
@@ -64,7 +65,7 @@ export default function PageHeader({
       )}
       <div className="flex justify-between items-center">
         <h1
-          className="text-2xl font-semibold"
+          className="text-[2rem] font-semibold"
           style={{ color: partnerText.primary }}
         >
           {title}

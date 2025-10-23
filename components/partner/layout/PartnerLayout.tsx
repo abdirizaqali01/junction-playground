@@ -2,6 +2,7 @@
 
 import React from 'react'
 import Sidebar from '@/components/partner/navigation/Sidebar'
+import PageHeader from '@/components/partner/layout/PageHeader'
 import { layoutStyles } from '@/styles/design-system'
 
 interface PartnerLayoutProps {
@@ -31,7 +32,9 @@ export default function PartnerLayout({
           className={layoutStyles.partner.mainContentWrapper}
           style={{ ...layoutStyles.partner.contentMaxWidth, maxWidth }}
         >
+          
           <div className={layoutStyles.partner.mainContentPadding}>
+            <PageHeader title="Dashboard" timer="T 18:46:09" />
             {children}
           </div>
         </main>
