@@ -27,7 +27,7 @@ export default function HorizontalScrollSection({
         {onViewAll && (
           <PartnerButton
             variant="secondary"
-            className="text-sm px-4 py-1.5"
+            className="text-sm px-4 py-1.5 border hover:bg-[var(--partner-button-hover)]"
             onClick={onViewAll}
             style={withVars(
             {

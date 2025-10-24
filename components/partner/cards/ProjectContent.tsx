@@ -8,7 +8,6 @@ interface ProjectContentProps {
   description: string
   time: string
   comments: number
-  onViewClick?: () => void
 }
 
 export default function ProjectContent({
@@ -17,7 +16,6 @@ export default function ProjectContent({
   description,
   time,
   comments,
-  onViewClick,
 }: ProjectContentProps) {
   return (
     <div className="flex flex-col h-full">
@@ -42,47 +40,16 @@ export default function ProjectContent({
         </p>
       </div>
 
-      <div className="flex items-center justify-between shrink-0 mt-auto">
-        <div
-          className="flex items-center gap-2.5 sm:gap-[11px] text-[10px] sm:text-[11px]"
-          style={{ color: partnerText.soft }}
-        >
-          <span>{time}</span>
-          <span
-            className="w-[2px] h-[2px] rounded-full"
-            style={{ backgroundColor: partnerText.muted }}
-          />
-          <div className="flex items-center gap-1">
-            <MessageSquare size={11} />
-            <span>{comments}</span>
-          </div>
+      <div className="flex items-center gap-2.5 sm:gap-[11px] text-[10px] sm:text-[11px] mt-auto">
+        <span style={{ color: partnerText.soft }}>{time}</span>
+        <span
+          className="w-[2px] h-[2px] rounded-full"
+          style={{ backgroundColor: partnerText.muted }}
+        />
+        <div className="flex items-center gap-1" style={{ color: partnerText.soft }}>
+          <MessageSquare size={11} />
+          <span>{comments}</span>
         </div>
-
-        <button
-          onClick={onViewClick}
-          className="flex items-center gap-1.5 text-xs sm:text-[13px] transition-colors hover:text-[var(--view-hover-color)]"
-          style={withVars(
-            { color: partnerText.secondary },
-            { '--view-hover-color': partnerText.primary }
-          )}
-        >
-          View
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M6 12L10 8L6 4"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
       </div>
     </div>
   )

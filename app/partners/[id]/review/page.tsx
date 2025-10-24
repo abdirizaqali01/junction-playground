@@ -51,6 +51,9 @@ export default function ProjectReviewPage() {
 
   if (!project) {
     return (
+      //----------------------------------------------------------//
+      // STATE: NO SUBMISSIONS //
+      //----------------------------------------------------------//
       <PartnerLayout forcedActivePath="/partners/submissions">
         <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center">
           <h1
@@ -78,17 +81,19 @@ export default function ProjectReviewPage() {
     )
   }
 
-  const breadcrumbItems = ['Dashboard', 'Submissions', project.title]
+  const breadcrumbItems = [project.title]
   const projectDropdownItems = projects.map((p) => ({ id: p.id, title: p.title }))
 
   const handleBreadcrumbClick = (index: number) => {
-    if (index === 0) router.push('/partners/dashboard')
-    else if (index === 1) router.push('/partners/submissions')
+    // No breadcrumb navigation needed since we only have the project title
   }
 
   const shouldFrostBackground = isReviewing || showSubmitted
 
   return (
+    //----------------------------------------------------------//
+    // STATE: NO SUBMISSIONS //
+    //----------------------------------------------------------//
     <PartnerLayout forcedActivePath="/partners/submissions">
       {shouldFrostBackground && (
         <div
@@ -99,12 +104,12 @@ export default function ProjectReviewPage() {
         />
       )}
 
-      <div className="relative space-y-6">
+      <div className="relative">
         <div className="flex items-center gap-4">
           <PartnerButton
             variant="ghost"
             onClick={() => router.back()}
-            className="!px-2 !py-2 hover:bg-[var(--partner-icon-button-hover)]"
+            className="!px-2 !py-2 mt-[-15px] hover:bg-[var(--partner-icon-button-hover)]"
             style={withVars(
               {
                 color: partnerText.secondary,
@@ -113,7 +118,7 @@ export default function ProjectReviewPage() {
             )}
             aria-label="Go back"
           >
-            <ArrowLeft className="h-5 w-5" />
+            <ArrowLeft className="h-6 w-6" />
           </PartnerButton>
           <div className="flex-1">
             <PageHeader
@@ -127,18 +132,19 @@ export default function ProjectReviewPage() {
                 router.push(`/partners/${id}/review`)
               }
               currentItemId={project.id}
+              useDropdownAsTitle={true}
             />
           </div>
         </div>
 
         <div>
           <h1
-            className="text-3xl font-semibold"
+            className="text-[2rem] font-semibold"
             style={{ color: partnerText.primary }}
           >
             {project.title}{' '}
             <span
-              className="font-normal"
+              className="text-[1.5rem] font-normal"
               style={{ color: partnerAccents.solid }}
             >
               by {project.team}

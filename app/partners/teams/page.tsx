@@ -64,7 +64,7 @@ export default function TeamsPage() {
   }
 
   return (
-    <PartnerLayout forcedActivePath="/partners/teams" maxWidth="1200px">
+    <PartnerLayout forcedActivePath="/partners/teams">
       <header>
         <h1
           className="text-3xl font-semibold"

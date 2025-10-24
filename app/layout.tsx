@@ -42,9 +42,9 @@ export const metadata: Metadata = {
   description: "Connect, collaborate, and create the future with a global community of innovators and problem-solvers.",
   generator: 'Interract',
   icons: {
-    icon: '/junction_platform_logo.png',
-    shortcut: '/junction_platform_logo.png',
-    apple: '/junction_platform_logo.png',
+    icon: '/junction_platform_logo_2.png',
+    shortcut: '/junction_platform_logo_2.png',
+    apple: '/junction_platform_logo_2.png',
   },
 }
 

@@ -38,7 +38,7 @@ export default function ProjectCard({
 
   return (
     <div
-      className="relative flex border rounded-xl overflow-hidden transition-all w-full h-full hover:border-[var(--project-border-hover)]"
+      className="relative flex border rounded-xl overflow-hidden transition-all w-full h-full hover:border-[var(--project-border-hover)] cursor-pointer"
       style={withVars(
         {
           backgroundColor: partnerSurfaces.card,
@@ -46,12 +46,13 @@ export default function ProjectCard({
         },
         { '--project-border-hover': partnerBorders.hover }
       )}
+      onClick={() => router.push(`/partners/${id}/review`)}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="relative">
         <ProjectThumbnail imageUrl={imageUrl} />
-        <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5">
+        <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5" onClick={(e) => e.stopPropagation()}>
           <BookmarkButton
             isVisible={isHovered || isBookmarked}
             isBookmarked={isBookmarked}
@@ -67,7 +68,6 @@ export default function ProjectCard({
           description={description}
           time={time}
           comments={comments}
-          onViewClick={() => router.push(`/partners/${id}/review`)}
         />
       </div>
 
