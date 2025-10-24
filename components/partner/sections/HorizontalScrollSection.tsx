@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { partnerAccents, PartnerButton, partnerText } from '@/styles/design-system'
-import { withVars } from '../partner/utils/style'
+import { withVars } from '../utils/style'
 
 interface HorizontalScrollSectionProps {
   title: string

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo, useState } from 'react'
-import SearchBar from '@/components/Bar/SearchBar'
+import SearchBar from '@/components/partner/controls/SearchBar'
 import PartnerLayout from '@/components/partner/layout/PartnerLayout'
 import { ParticipantsTable } from '@/components/partner/tables/ParticipantsTable'
 import {
