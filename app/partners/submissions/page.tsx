@@ -18,7 +18,7 @@ export default function ProjectSubmissionsPage() {
   const filteredProjects = useProjectFilters(projects, activeSort, searchQuery)
 
   return (
-    <PartnerLayout forcedActivePath="/partners/submissions" maxWidth="1200px">
+    <PartnerLayout forcedActivePath="/partners/submissions">
       <div className="flex flex-col gap-6">
         <PageHeader title="Project Submissions" />
         <ProjectStats projects={projects} />

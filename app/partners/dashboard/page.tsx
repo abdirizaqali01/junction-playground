@@ -53,15 +53,15 @@ export default function DashboardPage() {
     <PartnerLayout forcedActivePath="/partners/dashboard">
       <div className="space-y-10">
         <div>
-          
+          <PageHeader title="Dashboard" />
         </div>
 
         {/* Stats Section */}
         <section className="w-full space-y-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <h2
-              className="text-base sm:text-lg lg:text-xl"
-              style={{ color: partnerText.secondary }}
+              className="whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-[1.5rem]"
+                style={{ color: partnerText.primary }}
             >
               Your Challenge&apos;s Stats
             </h2>
@@ -78,13 +78,13 @@ export default function DashboardPage() {
           <section className="space-y-4">
             <div className="flex flex-nowrap items-center justify-between gap-4 overflow-x-auto pb-1">
               <h2
-                className="whitespace-nowrap text-lg font-semibold sm:text-xl"
+                className="whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-[1.5rem]"
                 style={{ color: partnerText.primary }}
               >
                 Most Recently Viewed Submission
               </h2>
               <PartnerButton
-                variant="ghost"
+                variant="secondary"
                 onClick={() => router.push('/partners/submissions')}
                 className="flex-shrink-0 whitespace-nowrap border hover:bg-[var(--partner-button-hover)]"
                 style={withVars(

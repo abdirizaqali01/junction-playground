@@ -1,4 +1,6 @@
 import { ReactNode } from 'react'
+import { partnerAccents, PartnerButton, partnerText } from '@/styles/design-system'
+import { withVars } from '../partner/utils/style'
 
 interface HorizontalScrollSectionProps {
   title: string
@@ -16,14 +18,27 @@ export default function HorizontalScrollSection({
   return (
     <section className="mb-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold text-white">{title}</h2>
+        <h2 
+        className="whitespace-nowrap text-lg font-semibold sm:text-xl lg:text-[1.5rem]"
+        style={{ color: partnerText.primary }}
+        >
+          {title}
+        </h2>
         {onViewAll && (
-          <button
+          <PartnerButton
+            variant="secondary"
+            className="text-sm px-4 py-1.5"
             onClick={onViewAll}
-            className="text-sm text-[#55D186] border border-[#55D186] rounded-lg px-4 py-1.5 hover:bg-[#55D186]/10 transition-colors"
+            style={withVars(
+            {
+              borderColor: partnerAccents.solid,
+              color: partnerAccents.solid,
+            },
+            { '--partner-button-hover': partnerAccents.tint }
+          )}
           >
             {viewAllText}
-          </button>
+          </PartnerButton>
         )}
       </div>
       

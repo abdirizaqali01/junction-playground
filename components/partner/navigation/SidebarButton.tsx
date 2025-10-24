@@ -21,7 +21,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
   return (
     <a
       href={href}
-      className={`flex items-center gap-2.5 px-2.5 py-2 ${style.border.radius.middle} transition-colors hover:text-[var(--sidebar-hover)]`}
+      className={`flex items-center gap-2.5 px-2.5 py-2 lg:px-4 lg:py-3 ${style.border.radius.middle} transition-colors hover:text-[var(--sidebar-hover)]`}
       style={withVars(
         {
           backgroundColor: active ? partnerSurfaces.muted : 'transparent',

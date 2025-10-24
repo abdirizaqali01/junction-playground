@@ -51,7 +51,7 @@ export default function ProjectReviewPage() {
 
   if (!project) {
     return (
-      <PartnerLayout forcedActivePath="/partners/submissions" maxWidth="1200px">
+      <PartnerLayout forcedActivePath="/partners/submissions">
         <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center">
           <h1
             className="text-2xl font-semibold"
@@ -89,7 +89,7 @@ export default function ProjectReviewPage() {
   const shouldFrostBackground = isReviewing || showSubmitted
 
   return (
-    <PartnerLayout forcedActivePath="/partners/submissions" maxWidth="1200px">
+    <PartnerLayout forcedActivePath="/partners/submissions">
       {shouldFrostBackground && (
         <div
           className={`fixed inset-y-0 right-0 z-[90] pointer-events-none ${partnerEffects.frostedBackdrop}`}
@@ -184,6 +184,14 @@ export default function ProjectReviewPage() {
               <>
                 {!existingReview ? (
                   <PartnerButton
+                    variant="primary"
+                    style={withVars(
+                      {
+                        backgroundColor: partnerAccents.solid,
+                        color: partnerText.primary,
+                      },
+                      { '--partner-button-hover': partnerAccents.tint }
+                    )}
                     onClick={() => setIsReviewing(true)}
                     className="w-full justify-center py-4 text-base"
                   >

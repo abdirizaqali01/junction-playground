@@ -52,9 +52,15 @@ export const colors = {
     },
     secondary: {
         opacity100: '#9069FF',
+        opacity90: '#9069FFE6',
+        opacity80: '#9069FFCC',
+        opacity70: '#9069FFB3',
         opacity60: '#9069FF99',
         opacity50: '#9069FF80',
         opacity40: '#9069FF66',
+        opacity30: '#9069FF4D',
+        opacity20: '#9069FF33',
+        opacity10: '#9069FF1A',
     },
     alerts: {
         opacity100: '#FF8383',
@@ -279,9 +285,9 @@ export const partnerTheme = {
         surfaceSunken: '#151515',
         surfaceSuccess: '#102219',
         mediaPlaceholder: 'rgba(70, 70, 70, 0.5)',
-        accent: colors.primary.opacity100,
-        accentHover: '#66F1A0',
-        accentTint: colors.primary.opacity10,
+        accent: colors.secondary.opacity100,
+        accentHover: colors.secondary.opacity60,
+        accentTint: colors.secondary.opacity10,
         danger: colors.alerts.opacity100,
         border: 'rgba(255,255,255,0.12)',
         borderSubtle: colors.white.opacity10,
@@ -336,10 +342,30 @@ export const partnerAccents = {
     danger: partnerTheme.colors.danger,
 }
 
+// CSS Variables for the partner theme - single source of truth for runtime theming
+export const partnerCssVars: Record<string, string> = {
+    '--partner-background': partnerTheme.colors.background,
+    '--partner-surface': partnerTheme.colors.surface,
+    '--partner-surface-subtle': partnerTheme.colors.surfaceSubtle,
+    '--partner-surface-muted': partnerTheme.colors.surfaceMuted,
+    '--partner-surface-card': partnerTheme.colors.surfaceCard,
+    '--partner-surface-raised': partnerTheme.colors.surfaceRaised,
+    '--partner-accent': partnerTheme.colors.accent,
+    '--partner-accent-hover': partnerTheme.colors.accentHover,
+    '--partner-accent-tint': partnerTheme.colors.accentTint,
+    '--partner-danger': partnerTheme.colors.danger,
+    '--partner-border': partnerTheme.colors.border,
+    '--partner-border-subtle': partnerTheme.colors.borderSubtle,
+    '--partner-text-primary': partnerTheme.colors.textPrimary,
+    '--partner-text-secondary': partnerTheme.colors.textSecondary,
+    '--partner-text-muted': partnerTheme.colors.textMuted,
+    '--partner-text-soft': partnerTheme.colors.textSoft,
+}
+
 export type PartnerButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
 
 const partnerButtonBaseClasses =
-    'inline-flex items-center justify-center rounded-xl text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50'
+    `${border.radius.outer} inline-flex items-center justify-center text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50`
 
 const partnerAttachableVariants: Partial<Record<PartnerButtonVariant, string>> = {
     primary: mainButtonVariants({ variant: 'primary', size: 'sm' }),
@@ -348,9 +374,9 @@ const partnerAttachableVariants: Partial<Record<PartnerButtonVariant, string>> =
 }
 
 const partnerButtonVariants: Record<PartnerButtonVariant, string> = {
-    primary: cn(partnerAttachableVariants.primary, 'rounded-xl px-5'),
-    danger: cn(partnerAttachableVariants.danger, 'rounded-xl px-5'),
-    ghost: cn(partnerAttachableVariants.ghost, 'rounded-xl px-5'),
+    primary: cn(partnerAttachableVariants.primary, `${border.radius.outer} px-5`),
+    danger: cn(partnerAttachableVariants.danger, `${border.radius.outer} px-5`),
+    ghost: cn(partnerAttachableVariants.ghost, `${border.radius.outer} px-5`),
     secondary: cn(
         'px-5 py-2 border bg-transparent',
         'text-white/80 hover:text-white',

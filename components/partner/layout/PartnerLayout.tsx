@@ -12,7 +12,7 @@ interface PartnerLayoutProps {
 
 export default function PartnerLayout({ 
   children, 
-  maxWidth = '1280px',
+  maxWidth = '1560px',
   forcedActivePath,
 }: PartnerLayoutProps) {
   return (

@@ -68,12 +68,6 @@ const Sidebar: React.FC<{ forcedActivePath?: string }> = ({ forcedActivePath }) 
               active={isActive('/partners/challenges')}
               href="/partners/challenges"
             />
-            <SidebarButton
-              icon={Users}
-              label="Meeting Bookings"
-              active={isActive('/partners/meetings')}
-              href="/partners/meetings"
-            />
           </SidebarSection>
 
           <SidebarSection title="For You">
