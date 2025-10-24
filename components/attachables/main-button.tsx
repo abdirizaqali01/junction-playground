@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import Image from 'next/image';
 
 const mainButtonVariants = cva(
-  "font-space-mono tracking-[-0.02rem] font-[400] px-6 py-3 rounded-lg transition-colors flex items-center justify-center space-x-2 flex-shrink-0",
+  "font-space-grotesk tracking-[-0.02rem] font-[500] px-6 py-3 rounded-lg transition-colors flex items-center justify-center space-x-2 flex-shrink-0",
   {
     variants: {
       variant: {

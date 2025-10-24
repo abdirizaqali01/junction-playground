@@ -21,6 +21,7 @@ import { ScoringSection } from '@/components/partner/review/ScoringSection'
 import { ArrowLeft } from 'lucide-react'
 import { ScoreBox } from '@/components/partner/review/ScoreBox'
 import { ScoreSubmittedCard } from '@/components/partner/review/ScoreSubmittedCard'
+import { NextProjectPrompt } from '@/components/partner/review/NextProjectPrompt'
 import { withVars } from '@/components/partner/utils/style'
 
 export default function ProjectReviewPage() {
@@ -283,6 +284,16 @@ export default function ProjectReviewPage() {
             onClose={() => setShowSubmitted(false)}
           />
         )}
+
+        <div className="mt-12 flex justify-end">
+          <NextProjectPrompt
+            projects={projects}
+            currentProjectId={projectId}
+            reviewerId={currentUserId}
+            onNavigate={(id) => router.push(`/partners/${id}/review`)}
+          />
+        </div>
+
       </div>
     </PartnerLayout>
   )

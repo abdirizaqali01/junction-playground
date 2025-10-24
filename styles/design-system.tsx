@@ -4,7 +4,7 @@
 
 // FONTS - Optimized for instant loading
 import type { ButtonHTMLAttributes } from 'react'
-import { Space_Grotesk, Space_Mono } from 'next/font/google'
+import { Space_Grotesk } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import { mainButtonVariants } from '@/components/attachables/main-button'
 
@@ -17,14 +17,6 @@ export const spaceGrotesk = Space_Grotesk({
     fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
 })
 
-export const spaceMono = Space_Mono({
-    subsets: ['latin', 'latin-ext'],
-    display: 'block',
-    weight: ['400', '700'],
-    variable: '--font-space-mono',
-    preload: true,
-    fallback: ['Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
-})
 
 // COLORS - Pre-computed for instant access
 export const colors = {
@@ -144,8 +136,8 @@ export const font = {
     },
 
     mono: {
-        title: 'font-space-mono !font-[700] tracking-[-0.01rem]',
-        text: 'font-space-mono !font-[400] tracking-[-0.03rem]',
+        title: 'font-space-grotesk !font-[600] tracking-[-0.01rem]',
+        text: 'font-space-grotesk !font-[400] tracking-[-0.02rem]',
     }
 }
 
@@ -205,7 +197,7 @@ export const gradientBorder = {
 
 // TAGS
 export const tag = {
-    main: `bg-[var(--color-light-opacity10)] text-[var(--color-light-opacity90)] px-[8px] ${border.radius.middle} ${border.solid} border-[var(--color-white-opacity10)] border-[0.5px] text-[0.8rem] font-[400] leading-loose font-space-mono`,
+    main: `bg-[var(--color-light-opacity10)] text-[var(--color-light-opacity90)] px-[8px] ${border.radius.middle} ${border.solid} border-[var(--color-white-opacity10)] border-[0.5px] text-[0.8rem] font-[400] leading-loose font-space-grotesk`,
 }
 
 // PERFORMANCE UTILITIES

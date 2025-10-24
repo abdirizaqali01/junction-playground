@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Space_Grotesk, Space_Mono } from "next/font/google"
+import { Space_Grotesk } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { LoadingProvider } from "@/components/loading-context"
@@ -18,14 +18,6 @@ const spaceGrotesk = Space_Grotesk({
   fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
 })
 
-const spaceMono = Space_Mono({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  display: "block",
-  variable: "--font-space-mono",
-  preload: true,
-  fallback: ['Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
-})
 
 const generateCSSVariables = () => {
   let cssVars = '';
@@ -72,14 +64,6 @@ export default function RootLayout({
           type="font/woff2" 
           crossOrigin="" 
         />
-        <link 
-          rel="preload" 
-          href="https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRYE8.woff2" 
-          as="font" 
-          type="font/woff2" 
-          crossOrigin="" 
-        />
-
         {/* Critical font loading optimization */}
         <style
           dangerouslySetInnerHTML={{
@@ -93,21 +77,12 @@ export default function RootLayout({
                 src: url('https://fonts.gstatic.com/s/spacegrotesk/v16/V8mDoQDjQSkFtoMM3T6r8E7mPbF4C8Q.woff2') format('woff2');
                 unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
               }
-              
-              @font-face {
-                font-family: 'Space Mono';
-                font-style: normal;
-                font-weight: 400 700;
-                font-display: block;
-                src: url('https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRYE8.woff2') format('woff2');
-                unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-              }
 
               /* Apply CSS variables and font fallbacks immediately */
               :root {
                 ${generateCSSVariables()}
                 --font-space-grotesk: ${spaceGrotesk.style.fontFamily}, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-                --font-space-mono: ${spaceMono.style.fontFamily}, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+                --font-space-mono: ${spaceGrotesk.style.fontFamily}, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
               }
               
               html {
@@ -146,7 +121,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${spaceMono.variable} ${spaceGrotesk.variable} sidebar-expanded`}>
+      <body className={`${spaceGrotesk.variable} sidebar-expanded`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <LoadingProvider>
             <ProjectsProvider>
