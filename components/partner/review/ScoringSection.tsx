@@ -14,8 +14,8 @@ export function ScoringSection({ reviews = [] }: ScoringSectionProps) {
 
   return (
     <div
-      className="rounded-2xl p-8"
-      style={{ backgroundColor: partnerSurfaces.raised }}
+      className="rounded-2xl p-8 border"
+      style={{ borderColor: partnerBorders.subtle, backgroundColor: partnerSurfaces.raised }}
     >
       <h2
         className="text-2xl font-bold mb-8"

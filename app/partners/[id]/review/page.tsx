@@ -9,6 +9,7 @@ import {
   PartnerButton,
   layoutStyles,
   partnerAccents,
+  partnerBorders,
   partnerEffects,
   partnerSurfaces,
   partnerText,
@@ -206,9 +207,10 @@ export default function ProjectReviewPage() {
                   </PartnerButton>
                 ) : (
                   <div
-                    className="w-full rounded-xl px-[6%] py-[5%] text-center"
+                    className="w-full rounded-xl px-[6%] py-[5%] text-center border flex flex-col justify-center"
                     style={{
-                      backgroundColor: partnerAccents.solid,
+                      backgroundColor: partnerSurfaces.base,
+                      borderColor: partnerBorders.subtle,
                       color: partnerText.primary,
                     }}
                   >
@@ -216,18 +218,18 @@ export default function ProjectReviewPage() {
                       You have submitted a Review already
                     </p>
                     <PartnerButton
-                      variant="ghost"
+                      variant="primary"
                       onClick={() => setIsReviewing(true)}
-                      className="hover:bg-[var(--partner-edit-hover)]"
+                      className="text-[1rem] font-regular px-4 py-3"
                       style={withVars(
                         {
-                          backgroundColor: partnerSurfaces.raised,
+                          backgroundColor: partnerAccents.solid,
                           color: partnerText.primary,
                         },
-                        { '--partner-edit-hover': partnerSurfaces.raisedHover }
+                        { '--partner-edit-hover': partnerAccents.tint }
                       )}
                     >
-                      edit rating
+                      Edit Rating
                     </PartnerButton>
                   </div>
                 )}

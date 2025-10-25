@@ -130,27 +130,49 @@ export function ScoreBox({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [onCancel])
 
+  // Prevent background page scrolling while the scorebox modal is open
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow
+    const prevPaddingRight = document.body.style.paddingRight
+
+    // Compensate for scrollbar to avoid layout shift
+    const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth
+    if (scrollBarWidth > 0) {
+      document.body.style.paddingRight = `${scrollBarWidth}px`
+    }
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = prevOverflow
+      document.body.style.paddingRight = prevPaddingRight
+    }
+  }, [])
+
   return (
     <div
-      className="fixed left-0 right-0 top-1/2 -translate-y-1/2 flex items-center justify-center z-[101] px-[3%]"
+      className="fixed left-0 right-0 top-0 bottom-0 flex items-center justify-center z-[101] px-[3%]"
       style={{ left: 'calc(var(--partner-sidebar-width) + 1.25rem)' }}
     >
       <div
         ref={containerRef}
-        className="rounded-2xl px-7 py-7 shadow-2xl w-full max-w-[590px] border"
+        className="rounded-2xl px-7 pb-7 shadow-2xl w-full max-w-[590px] border max-h-[calc(100vh-6rem)] overflow-auto"
         style={{
           backgroundColor: partnerSurfaces.raised,
           borderColor: partnerBorders.default,
           color: partnerText.primary,
         }}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        {/* Header (sticky) */}
+        <div
+          className="sticky top-0 z-10 pt-7 pb-1"
+          style={{ backgroundColor: partnerSurfaces.raised }}
+        >
+          <div className="flex items-center justify-between mb-4">
           <h3
             className="text-2xl font-semibold"
             style={{ color: partnerAccents.solid }}
           >
-            {existingReview ? 'Update Review' : 'Scoring'}
+            {existingReview ? 'Update Review' : 'Review'}
           </h3>
           <button
             onClick={onCancel}
@@ -160,7 +182,15 @@ export function ScoreBox({
             <X className="w-5 h-5" style={{ color: partnerText.primary }} />
           </button>
         </div>
+        </div>
 
+        {/* Scoring Section */}
+        <h4
+          className="text-lg font-semibold mb-1"
+          style={{ color: partnerAccents.solid }}
+        >
+          Scoring
+        </h4>
         <p className="text-sm mb-6" style={{ color: partnerText.secondary }}>
           Work through each criterion tab to rate the submission from 1–10. We’ll average the three scores into your final rating.
         </p>
@@ -268,8 +298,8 @@ export function ScoreBox({
           <div
             className="flex items-center gap-4 rounded-2xl border p-4"
             style={{
-              backgroundColor: partnerSurfaces.success,
-              borderColor: colors.primary.opacity30,
+              backgroundColor: partnerAccents.tint,
+              borderColor: colors.secondary.opacity60,
             }}
           >
             <div
@@ -301,7 +331,7 @@ export function ScoreBox({
 
         {/* Feedback Section */}
         <h4
-          className="text-lg font-semibold mb-2"
+          className="text-lg font-semibold mb-1"
           style={{ color: partnerAccents.solid }}
         >
           Feedback
@@ -319,7 +349,7 @@ export function ScoreBox({
             style={withVars(
               {
                 backgroundColor: partnerSurfaces.base,
-                borderColor: colors.primary.opacity40,
+                borderColor: colors.secondary.opacity60,
                 color: partnerText.primary,
               },
               {
@@ -350,6 +380,7 @@ export function ScoreBox({
               Cancel
             </PartnerButton>
             <PartnerButton
+              variant={existingReview ? 'danger' : 'accent'}
               onClick={handleSubmit}
               disabled={!feedback.trim() || !allCriteriaRated}
             >

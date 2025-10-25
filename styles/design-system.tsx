@@ -354,10 +354,10 @@ export const partnerCssVars: Record<string, string> = {
     '--partner-text-soft': partnerTheme.colors.textSoft,
 }
 
-export type PartnerButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger'
+export type PartnerButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'accent'
 
 const partnerButtonBaseClasses =
-    `${border.radius.outer} inline-flex items-center justify-center text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50`
+    `${border.radius.middle} inline-flex items-center justify-center text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:cursor-not-allowed disabled:opacity-50`
 
 const partnerAttachableVariants: Partial<Record<PartnerButtonVariant, string>> = {
     primary: mainButtonVariants({ variant: 'primary', size: 'sm' }),
@@ -366,9 +366,14 @@ const partnerAttachableVariants: Partial<Record<PartnerButtonVariant, string>> =
 }
 
 const partnerButtonVariants: Record<PartnerButtonVariant, string> = {
-    primary: cn(partnerAttachableVariants.primary, `${border.radius.outer} px-5`),
-    danger: cn(partnerAttachableVariants.danger, `${border.radius.outer} px-5`),
-    ghost: cn(partnerAttachableVariants.ghost, `${border.radius.outer} px-5`),
+    primary: cn(partnerAttachableVariants.primary, `${border.radius.middle} px-5`),
+    danger: cn(partnerAttachableVariants.danger, `${border.radius.middle} px-5`),
+    ghost: cn(partnerAttachableVariants.ghost, `${border.radius.middle} px-5`),
+    accent: cn(
+        `${border.radius.middle} px-5`,
+        // mirror primary button but use secondary color tokens
+        'bg-[var(--color-secondary-opacity100)] text-[var(--color-light-opacity100)] hover:bg-[var(--color-secondary-opacity60)] border-[var(--color-secondary-opacity100)]'
+    ),
     secondary: cn(
         'px-5 py-2 border bg-transparent',
         'text-white/80 hover:text-white',
@@ -381,7 +386,7 @@ export interface PartnerButtonProps extends ButtonHTMLAttributes<HTMLButtonEleme
 }
 
 export function PartnerButton({
-    variant = 'primary',
+    variant = 'accent',
     className,
     ...props
 }: PartnerButtonProps) {

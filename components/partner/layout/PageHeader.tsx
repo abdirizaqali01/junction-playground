@@ -96,7 +96,7 @@ export default function PageHeader({
         {useDropdownAsTitle && breadcrumbDropdownItems ? (
           <div className="flex items-center gap-2">
             <h1
-              className={smallTitle ? "text-xl font-semibold" : "text-[1.4rem] font-semibold"}
+              className={smallTitle ? "text-xl font-semibold" : "text-[1.4rem] font-semibold opacity-50"}
               style={{ color: partnerText.primary }}
             >
               {title}
